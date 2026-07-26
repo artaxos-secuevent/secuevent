@@ -1,0 +1,1221 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SecuEvent — Artaxos</title>
+<style>
+:root {
+  --coral:#F0126A;--coral-lt:#fde8f4;--ink:#111110;--ink2:#4a4a48;--ink3:#9a9a97;
+  --bg:#f7f6f4;--surface:#ffffff;--border:rgba(0,0,0,0.08);--border2:rgba(0,0,0,0.15);
+  --green:#1a6b3a;--green-bg:#eaf4ee;--amber:#8a5c00;--amber-bg:#fff8e1;
+  --red:#a32d2d;--red-bg:#fcebeb;--blue:#1a4080;--blue-bg:#e8f0fb;
+  --radius:10px;--sidebar:220px;--shadow:0 1px 3px rgba(0,0,0,0.08);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html,body{height:100%;}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:var(--ink);font-size:14px;line-height:1.5;}
+.app{display:flex;height:100vh;overflow:hidden;}
+.sidebar{width:var(--sidebar);flex-shrink:0;background:#f0efed;display:flex;flex-direction:column;overflow-y:auto;border-right:1px solid var(--border2);}
+.sidebar-brand{padding:20px 16px 12px;border-bottom:1px solid var(--border2);}
+.sidebar-brand img{height:38px;width:auto;display:block;}
+.sidebar-brand-text{color:var(--ink3);font-size:11px;margin-top:4px;}
+.sidebar-nav{padding:12px 8px;flex:1;}
+.nav-section{color:var(--ink3);font-size:10px;font-weight:600;letter-spacing:.8px;text-transform:uppercase;padding:8px 8px 4px;}
+.nav-item{display:flex;align-items:center;gap:10px;padding:9px 10px;border-radius:8px;cursor:pointer;color:var(--ink2);font-size:13px;transition:all .15s;margin-bottom:2px;}
+.nav-item:hover{background:rgba(0,0,0,0.06);color:var(--ink);}
+.nav-item.active{background:var(--coral);color:#fff;}
+.sidebar-footer{padding:12px 8px;border-top:1px solid var(--border2);}
+.main{flex:1;display:flex;flex-direction:column;overflow:hidden;}
+.topbar{height:52px;display:flex;align-items:center;justify-content:space-between;padding:0 20px;background:var(--surface);border-bottom:1px solid var(--border);flex-shrink:0;}
+.topbar-title{font-size:15px;font-weight:600;color:var(--ink);}
+.topbar-actions{display:flex;gap:8px;align-items:center;}
+.content{flex:1;overflow-y:auto;padding:20px;}
+.panel{display:none;}.panel.active{display:block;}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);margin-bottom:16px;overflow:hidden;box-shadow:var(--shadow);}
+.card-header{display:flex;align-items:center;justify-content:space-between;padding:14px 16px;border-bottom:1px solid var(--border);}
+.card-title{font-size:13px;font-weight:600;color:var(--ink);}
+.metrics{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;margin-bottom:16px;}
+.metric{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:14px 16px;box-shadow:var(--shadow);}
+.metric-label{font-size:11px;color:var(--ink3);text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px;}
+.metric-value{font-size:22px;font-weight:700;color:var(--ink);}
+.btn{display:inline-flex;align-items:center;gap:6px;padding:7px 14px;border:1px solid var(--border2);border-radius:8px;cursor:pointer;font-size:13px;font-weight:500;background:var(--surface);color:var(--ink);transition:all .15s;white-space:nowrap;}
+.btn:hover{background:var(--bg);}
+.btn-primary{background:var(--coral);color:#fff;border-color:transparent;}
+.btn-primary:hover{background:#d0105c;}
+.btn-sm{padding:5px 10px;font-size:12px;border-radius:6px;}
+.btn-icon{padding:5px 8px;}
+.btn-danger{color:var(--red);}
+.btn-danger:hover{background:var(--red-bg);}
+.table-wrap{overflow-x:auto;}
+table{width:100%;border-collapse:collapse;font-size:13px;}
+th{padding:10px 12px;text-align:left;font-size:11px;font-weight:600;color:var(--ink3);text-transform:uppercase;letter-spacing:.4px;border-bottom:1px solid var(--border);background:var(--bg);}
+td{padding:11px 12px;border-bottom:1px solid var(--border);color:var(--ink);}
+tr:last-child td{border-bottom:none;}
+tr:hover td{background:var(--bg);}
+.empty{text-align:center;color:var(--ink3);padding:32px;font-size:13px;}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+.form-group{display:flex;flex-direction:column;gap:5px;}
+.form-group.full{grid-column:1/-1;}
+label{font-size:12px;font-weight:500;color:var(--ink2);}
+input,select,textarea{padding:8px 10px;border:1px solid var(--border2);border-radius:7px;font-size:13px;font-family:inherit;background:var(--surface);color:var(--ink);transition:border-color .15s;width:100%;}
+input:focus,select:focus,textarea:focus{outline:none;border-color:var(--coral);}
+textarea{resize:vertical;min-height:70px;}
+.search-row{display:flex;gap:10px;padding:12px 16px;border-bottom:1px solid var(--border);}
+.search-row input,.search-row select{flex:1;}
+.badge{display:inline-block;padding:3px 9px;border-radius:20px;font-size:11px;font-weight:600;}
+.badge-gray{background:#f0f0f0;color:var(--ink2);}
+.badge-info{background:var(--blue-bg);color:var(--blue);}
+.badge-success{background:var(--green-bg);color:var(--green);}
+.badge-warning{background:var(--amber-bg);color:var(--amber);}
+.badge-danger{background:var(--red-bg);color:var(--red);}
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.4);z-index:100;align-items:center;justify-content:center;padding:1rem;}
+.modal-overlay.open{display:flex;}
+.modal{background:var(--surface);border-radius:14px;padding:24px;width:100%;box-shadow:0 20px 60px rgba(0,0,0,0.2);max-height:90vh;overflow-y:auto;}
+.modal-title{font-size:16px;font-weight:700;margin-bottom:20px;}
+.modal-actions{display:flex;justify-content:flex-end;gap:10px;margin-top:20px;}
+.item-row{display:flex;gap:8px;align-items:center;margin-bottom:8px;}
+.dash-btn{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:18px 16px;cursor:pointer;text-align:left;display:flex;flex-direction:column;gap:10px;transition:all .15s;font-family:inherit;}
+.dash-btn:hover{border-color:var(--border2);box-shadow:0 4px 12px rgba(0,0,0,0.08);transform:translateY(-2px);}
+.dash-icon{width:44px;height:44px;border-radius:10px;display:flex;align-items:center;justify-content:center;}
+#save-indicator{font-size:11px;color:var(--ink3);opacity:0;transition:opacity .3s;}
+#save-indicator.show{opacity:1;}
+::-webkit-scrollbar{width:5px;height:5px;}
+::-webkit-scrollbar-thumb{background:rgba(0,0,0,0.15);border-radius:3px;}
+</style>
+</head>
+<body>
+<div class="app">
+  <nav class="sidebar">
+    <div class="sidebar-brand">
+      <img id="brand-logo" src="" alt="Artaxos" onerror="this.style.display='none'">
+      <div class="sidebar-brand-text">Gestión de eventos</div>
+    </div>
+    <div class="sidebar-nav">
+      <div class="nav-section">Principal</div>
+      <div class="nav-item active" onclick="showPanel('dashboard')" id="nav-dashboard">
+        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>Panel principal
+      </div>
+      <div class="nav-section" style="margin-top:8px">Comercial</div>
+      <div class="nav-item" onclick="showPanel('clients')" id="nav-clients">
+        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>Clientes
+      </div>
+      <div class="nav-item" onclick="showPanel('quotes')" id="nav-quotes">
+        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>Cotizaciones
+      </div>
+      <div class="nav-item" onclick="showPanel('events')" id="nav-events">
+        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>Eventos
+      </div>
+      <div class="nav-item" onclick="showPanel('billing')" id="nav-billing">
+        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>Cobros
+      </div>
+      <div class="nav-section" style="margin-top:8px">Operación</div>
+      <div class="nav-item" onclick="showPanel('inventory')" id="nav-inventory">
+        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z"/></svg>Inventario
+      </div>
+      <div class="nav-item" onclick="showPanel('finance')" id="nav-finance">
+        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>Finanzas
+      </div>
+    </div>
+    <div class="sidebar-footer">
+      <div class="nav-item" onclick="gdriveAuth()" id="gdrive-nav-btn" style="font-size:12px">
+        <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+        <span id="gdrive-nav-label">Google Drive</span>
+      </div>
+      <div id="gdrive-status" style="font-size:10px;color:var(--ink3);padding:2px 10px"></div>
+    </div>
+  </nav>
+  <div class="main">
+    <div class="topbar">
+      <div class="topbar-title" id="topbar-title">Panel principal</div>
+      <div class="topbar-actions">
+        <span id="save-indicator">Guardado ✓</span>
+        <button class="btn btn-sm" onclick="exportData()">↓ Exportar</button>
+        <button class="btn btn-sm" onclick="document.getElementById('import-file').click()">↑ Importar</button>
+        <input type="file" id="import-file" accept=".json" style="display:none" onchange="importData(event)">
+      </div>
+    </div>
+    <div class="content">
+
+      <!-- DASHBOARD -->
+      <div class="panel active" id="panel-dashboard">
+        <div class="metrics" id="dash-metrics"></div>
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;margin-bottom:20px">
+          <button class="dash-btn" onclick="showPanel('clients')">
+            <div class="dash-icon" style="background:#e8f0fb"><svg width="22" height="22" fill="none" stroke="#1a4080" stroke-width="1.8" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/></svg></div>
+            <div style="font-size:14px;font-weight:600">Clientes</div><div style="font-size:12px;color:var(--ink3)" id="d-cli">—</div>
+          </button>
+          <button class="dash-btn" onclick="showPanel('quotes')">
+            <div class="dash-icon" style="background:#fde8f4"><svg width="22" height="22" fill="none" stroke="#a0125a" stroke-width="1.8" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></div>
+            <div style="font-size:14px;font-weight:600">Cotizaciones</div><div style="font-size:12px;color:var(--ink3)" id="d-qt">—</div>
+          </button>
+          <button class="dash-btn" onclick="showPanel('events')">
+            <div class="dash-icon" style="background:#eaf4ee"><svg width="22" height="22" fill="none" stroke="#1a6b3a" stroke-width="1.8" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></div>
+            <div style="font-size:14px;font-weight:600">Eventos</div><div style="font-size:12px;color:var(--ink3)" id="d-ev">—</div>
+          </button>
+          <button class="dash-btn" onclick="showPanel('billing')">
+            <div class="dash-icon" style="background:#fff8e1"><svg width="22" height="22" fill="none" stroke="#8a5c00" stroke-width="1.8" viewBox="0 0 24 24"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg></div>
+            <div style="font-size:14px;font-weight:600">Cobros</div><div style="font-size:12px;color:var(--ink3)" id="d-bill">—</div>
+          </button>
+          <button class="dash-btn" onclick="showPanel('inventory')">
+            <div class="dash-icon" style="background:#f0edfe"><svg width="22" height="22" fill="none" stroke="#3c3489" stroke-width="1.8" viewBox="0 0 24 24"><path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z"/></svg></div>
+            <div style="font-size:14px;font-weight:600">Inventario</div><div style="font-size:12px;color:var(--ink3)" id="d-inv">—</div>
+          </button>
+          <button class="dash-btn" onclick="showPanel('finance')">
+            <div class="dash-icon" style="background:#e8f5e9"><svg width="22" height="22" fill="none" stroke="#2e7d32" stroke-width="1.8" viewBox="0 0 24 24"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg></div>
+            <div style="font-size:14px;font-weight:600">Finanzas</div><div style="font-size:12px;color:var(--ink3)" id="d-fin">—</div>
+          </button>
+        </div>
+        <div class="card">
+          <div class="card-header"><span class="card-title">Próximos eventos</span></div>
+          <div id="dash-upcoming" style="padding:4px 0"></div>
+        </div>
+      </div>
+
+      <!-- CLIENTES -->
+      <div class="panel" id="panel-clients">
+        <div class="card">
+          <div class="card-header"><span class="card-title">Clientes</span><button class="btn btn-primary btn-sm" onclick="openClientModal(null)">+ Nuevo cliente</button></div>
+          <div class="search-row"><input type="text" placeholder="Buscar..." id="cli-search" oninput="renderClients()"></div>
+          <div class="table-wrap"><table><thead><tr><th>Nombre</th><th>Empresa</th><th>Teléfono</th><th>Correo</th><th>Eventos</th><th></th></tr></thead><tbody id="cli-body"></tbody></table></div>
+        </div>
+      </div>
+
+      <!-- COTIZACIONES -->
+      <div class="panel" id="panel-quotes">
+        <div class="card">
+          <div class="card-header"><span class="card-title">Cotizaciones</span><button class="btn btn-primary btn-sm" onclick="openQuoteModal(null)">+ Nueva cotización</button></div>
+          <div class="search-row">
+            <input type="text" placeholder="Buscar..." id="qt-search" oninput="renderQuotes()">
+            <select id="qt-filter" onchange="renderQuotes()"><option value="">Todos</option><option>Borrador</option><option>Enviada</option><option>Aprobada</option><option>Rechazada</option></select>
+          </div>
+          <div class="table-wrap"><table><thead><tr><th>Folio</th><th>Cliente</th><th>Evento</th><th>Fechas</th><th>Total</th><th>Estado</th><th></th></tr></thead><tbody id="qt-body"></tbody></table></div>
+        </div>
+      </div>
+
+      <!-- EVENTOS -->
+      <div class="panel" id="panel-events">
+        <div class="metrics" id="ev-metrics"></div>
+        <!-- DISPONIBILIDAD PRIMERO -->
+        <div class="card">
+          <div class="card-header">
+            <span class="card-title">Disponibilidad del inventario</span>
+            <div style="display:flex;align-items:center;gap:8px">
+              <button class="btn btn-sm btn-icon" onclick="calPrev()">◀</button>
+              <span id="cal-label" style="font-size:13px;font-weight:500;min-width:140px;text-align:center"></span>
+              <button class="btn btn-sm btn-icon" onclick="calNext()">▶</button>
+            </div>
+          </div>
+          <div style="padding:12px 16px">
+            <div style="display:flex;gap:16px;flex-wrap:wrap;margin-bottom:10px;font-size:11px;color:var(--ink3)">
+              <span><span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:#e8f5e9;border:1px solid #97c459;margin-right:4px"></span>Libre (100%)</span>
+              <span><span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:#fff8e1;border:1px solid #f0c040;margin-right:4px"></span>Media (30–70%)</span>
+              <span><span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:#ffece0;border:1px solid #f08040;margin-right:4px"></span>Alta (0–30%)</span>
+              <span><span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:#fce8e8;border:1px solid #f09090;margin-right:4px"></span>Saturado (0%)</span>
+            </div>
+            <div id="cal-grid" style="display:grid;grid-template-columns:repeat(7,1fr);gap:4px"></div>
+            <!-- Detail panel for clicked day -->
+            <div id="cal-detail" style="display:none;margin-top:16px;border-top:1px solid var(--border);padding-top:16px">
+              <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
+                <div style="font-size:13px;font-weight:600" id="cal-detail-title">Eventos del día</div>
+                <button class="btn btn-sm btn-icon" onclick="document.getElementById('cal-detail').style.display='none'">✕</button>
+              </div>
+              <div id="cal-detail-body"></div>
+            </div>
+          </div>
+        </div>
+        <!-- TABLA DE EVENTOS DEBAJO -->
+        <div class="card">
+          <div class="card-header"><span class="card-title">Eventos</span><button class="btn btn-primary btn-sm" onclick="openEventModal(null)">+ Nuevo evento</button></div>
+          <div class="search-row">
+            <input type="text" placeholder="Buscar..." id="ev-search" oninput="renderEvents()">
+            <select id="ev-filter" onchange="renderEvents()"><option value="">Todos</option><option>Confirmado</option><option>En curso</option><option>Completado</option><option>Cancelado</option></select>
+          </div>
+          <div class="table-wrap"><table><thead><tr><th>ID</th><th>Cliente</th><th>Evento</th><th>Fechas</th><th>Total</th><th>Cobrado</th><th>Estado</th><th></th></tr></thead><tbody id="ev-body"></tbody></table></div>
+        </div>
+      </div>
+
+      <!-- COBROS -->
+      <div class="panel" id="panel-billing">
+        <div class="metrics" id="bill-metrics"></div>
+        <div class="card">
+          <div class="card-header"><span class="card-title">Cobros</span><button class="btn btn-primary btn-sm" onclick="openPayModal(null)">+ Registrar cobro</button></div>
+          <div class="search-row">
+            <input type="text" placeholder="Buscar..." id="bill-search" oninput="renderBilling()">
+            <select id="bill-filter" onchange="renderBilling()"><option value="">Todos</option><option>Pendiente</option><option>Parcial</option><option>Pagado</option></select>
+          </div>
+          <div class="table-wrap"><table><thead><tr><th>Evento</th><th>Cliente</th><th>Total evento</th><th>Cobrado</th><th>Saldo</th><th>Método</th><th>Fecha</th><th>Estado</th><th></th></tr></thead><tbody id="bill-body"></tbody></table></div>
+        </div>
+      </div>
+
+      <!-- INVENTARIO -->
+      <div class="panel" id="panel-inventory">
+        <div class="card">
+          <div class="card-header"><span class="card-title">Inventario</span><button class="btn btn-primary btn-sm" onclick="openItemModal(null)">+ Agregar equipo</button></div>
+          <div class="search-row">
+            <input type="text" placeholder="Buscar..." id="inv-search" oninput="renderInventory()">
+            <select id="inv-cat" onchange="renderInventory()"><option value="">Todas las categorías</option><option>Arcos detectores</option><option>Vallas</option><option>Unifilas</option><option>Detectores manuales</option><option>Otro</option></select>
+          </div>
+          <div class="table-wrap"><table><thead><tr><th>Nombre</th><th>Categoría</th><th>Total</th><th>Precio/día</th><th>Código</th><th></th></tr></thead><tbody id="inv-body"></tbody></table></div>
+        </div>
+      </div>
+
+      <!-- FINANZAS -->
+      <div class="panel" id="panel-finance">
+        <div class="card" style="margin-bottom:12px">
+          <div style="display:flex;align-items:center;gap:12px;padding:12px 16px;flex-wrap:wrap">
+            <div style="display:flex;gap:4px">
+              <button class="btn btn-sm" id="fin-btn-m" onclick="setFinView('monthly')" style="background:var(--coral);color:#fff">Mensual</button>
+              <button class="btn btn-sm" id="fin-btn-w" onclick="setFinView('weekly')">Semanal</button>
+            </div>
+            <div style="display:flex;align-items:center;gap:6px">
+              <button class="btn btn-sm btn-icon" onclick="finPrev()">◀</button>
+              <span id="fin-label" style="font-size:13px;font-weight:500;min-width:160px;text-align:center"></span>
+              <button class="btn btn-sm btn-icon" onclick="finNext()">▶</button>
+            </div>
+            <button class="btn btn-sm" onclick="finToday()">Hoy</button>
+          </div>
+        </div>
+        <div class="metrics" id="fin-metrics"></div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px">
+          <div class="card" style="margin-bottom:0"><div class="card-header"><span class="card-title">Ingresos vs Egresos</span></div><div id="fin-bars" style="height:140px;display:flex;align-items:flex-end;gap:4px;padding:12px 16px;position:relative"></div></div>
+          <div class="card" style="margin-bottom:0"><div class="card-header"><span class="card-title">IVA</span></div><div id="fin-iva" style="padding:16px"></div></div>
+        </div>
+        <div class="card">
+          <div class="card-header"><span class="card-title">Egresos</span><button class="btn btn-primary btn-sm" onclick="openExpenseModal(null)">+ Egreso</button></div>
+          <div class="search-row">
+            <input type="text" placeholder="Buscar..." id="exp-search" oninput="renderFinance()">
+            <select id="exp-cat-filter" onchange="renderFinance()"><option value="">Todas</option><option>Combustible</option><option>Nómina</option><option>Mantenimiento</option><option>Renta</option><option>Servicios</option><option>Compras</option><option>Logística</option><option>Marketing</option><option>Impuestos</option><option>Otro</option></select>
+          </div>
+          <div class="table-wrap"><table><thead><tr><th>Fecha</th><th>Categoría</th><th>Descripción</th><th>Monto</th><th></th></tr></thead><tbody id="exp-body"></tbody></table></div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- MODALES -->
+<div class="modal-overlay" id="modal-client"><div class="modal" style="max-width:480px">
+  <p class="modal-title" id="cli-modal-title">Nuevo cliente</p><input type="hidden" id="cli-edit-id">
+  <div class="form-grid">
+    <div class="form-group full"><label>Nombre *</label><input type="text" id="cli-name" placeholder="Nombre o razón social"></div>
+    <div class="form-group"><label>Empresa</label><input type="text" id="cli-company"></div>
+    <div class="form-group"><label>Teléfono</label><input type="text" id="cli-phone"></div>
+    <div class="form-group full"><label>Correo</label><input type="email" id="cli-email"></div>
+    <div class="form-group full"><label>Notas</label><textarea id="cli-notes"></textarea></div>
+  </div>
+  <div class="modal-actions"><button class="btn" onclick="closeModal('modal-client')">Cancelar</button><button class="btn btn-primary" onclick="saveClient()">Guardar</button></div>
+</div></div>
+
+<div class="modal-overlay" id="modal-quote"><div class="modal" style="max-width:640px">
+  <p class="modal-title" id="qt-modal-title">Nueva cotización</p><input type="hidden" id="qt-edit-id">
+  <div class="form-grid">
+    <div class="form-group full"><label>Cliente *</label><select id="qt-client"></select></div>
+    <div class="form-group full"><label>Nombre del evento *</label><input type="text" id="qt-event" placeholder="ej. Concierto Arena CDMX"></div>
+    <div class="form-group"><label>Fecha inicio *</label><input type="date" id="qt-start"></div>
+    <div class="form-group"><label>Fecha fin *</label><input type="date" id="qt-end"></div>
+    <div class="form-group"><label>Válida hasta</label><input type="date" id="qt-valid"></div>
+    <div class="form-group"><label>Estado</label><select id="qt-status"><option>Borrador</option><option>Enviada</option><option>Aprobada</option><option>Rechazada</option></select></div>
+    <div class="form-group full">
+      <label style="display:flex;justify-content:space-between"><span>Equipo cotizado</span><button class="btn btn-sm" onclick="addQtItem()" type="button">+ Agregar</button></label>
+      <div style="display:flex;gap:8px;margin:6px 0 4px;padding:0 2px">
+        <span style="flex:2;font-size:11px;color:var(--ink3)">Artículo</span>
+        <span style="width:80px;font-size:11px;color:var(--ink3)">$/día</span>
+        <span style="width:60px;font-size:11px;color:var(--ink3)">Cant.</span>
+        <span style="width:60px;font-size:11px;color:var(--ink3)">Días</span>
+        <span style="width:32px"></span>
+      </div>
+      <div id="qt-items"></div>
+    </div>
+    <div class="form-group"><label>Descuento (%)</label><input type="number" id="qt-discount" placeholder="0" min="0" max="100" oninput="calcQtTotal()"></div>
+    <div class="form-group"><label>Total c/IVA ($MXN)</label><input type="number" id="qt-total" readonly style="background:var(--bg)"></div>
+    <div class="form-group full"><label>Notas</label><textarea id="qt-notes" placeholder="Condiciones adicionales..."></textarea></div>
+  </div>
+  <div class="modal-actions"><button class="btn" onclick="closeModal('modal-quote')">Cancelar</button><button class="btn btn-primary" onclick="saveQuote()">Guardar cotización</button></div>
+</div></div>
+
+<div class="modal-overlay" id="modal-quote-preview"><div class="modal" style="max-width:720px">
+  <p class="modal-title">Vista previa — Cotización</p>
+  <div id="qt-preview-body"></div>
+  <div class="modal-actions"><button class="btn" onclick="closeModal('modal-quote-preview')">Cerrar</button><button class="btn btn-primary" onclick="printQuote()">🖨️ PDF</button></div>
+</div></div>
+
+<div class="modal-overlay" id="modal-event"><div class="modal" style="max-width:500px">
+  <p class="modal-title" id="ev-modal-title">Nuevo evento</p><input type="hidden" id="ev-edit-id">
+  <div class="form-grid">
+    <div class="form-group full"><label>Cliente *</label><select id="ev-client"></select></div>
+    <div class="form-group full"><label>Nombre del evento *</label><input type="text" id="ev-event"></div>
+    <div class="form-group"><label>Fecha inicio *</label><input type="date" id="ev-start"></div>
+    <div class="form-group"><label>Fecha fin *</label><input type="date" id="ev-end"></div>
+    <div class="form-group"><label>Estado</label><select id="ev-status"><option>Confirmado</option><option>En curso</option><option>Completado</option><option>Cancelado</option></select></div>
+    <div class="form-group"><label>Total ($MXN)</label><input type="number" id="ev-total" placeholder="0.00" step="0.01"></div>
+    <div class="form-group full">
+      <label style="display:flex;justify-content:space-between"><span>Equipo</span><button class="btn btn-sm" onclick="addEvItem()" type="button">+ Agregar</button></label>
+      <div id="ev-items"></div>
+    </div>
+    <div class="form-group full"><label>Notas</label><textarea id="ev-notes"></textarea></div>
+  </div>
+  <div class="modal-actions"><button class="btn" onclick="closeModal('modal-event')">Cancelar</button><button class="btn btn-primary" onclick="saveEvent()">Guardar evento</button></div>
+</div></div>
+
+<div class="modal-overlay" id="modal-pay"><div class="modal" style="max-width:460px">
+  <p class="modal-title" id="pay-modal-title">Registrar cobro</p><input type="hidden" id="pay-edit-id">
+  <div class="form-grid">
+    <div class="form-group full"><label>Evento *</label><select id="pay-event"></select></div>
+    <div class="form-group"><label>Monto cobrado ($MXN) *</label><input type="number" id="pay-amount" placeholder="0.00" step="0.01"></div>
+    <div class="form-group"><label>Fecha *</label><input type="date" id="pay-date"></div>
+    <div class="form-group"><label>Forma de pago</label><select id="pay-method"><option>Transferencia</option><option>Efectivo</option></select></div>
+    <div class="form-group"><label>Estado</label><select id="pay-status"><option>Pendiente</option><option>Parcial</option><option>Pagado</option></select></div>
+    <div class="form-group full"><label>Referencia / Clave de rastreo</label><input type="text" id="pay-ref" placeholder="Número de transferencia o recibo"></div>
+    <div class="form-group full"><label>Comprobante PDF</label>
+      <div id="pay-drop" style="border:2px dashed var(--border2);border-radius:8px;padding:14px;text-align:center;cursor:pointer;font-size:12px;color:var(--ink3)"
+        onclick="document.getElementById('pay-file').click()"
+        ondragover="event.preventDefault();this.style.borderColor='var(--coral)'"
+        ondragleave="this.style.borderColor=''"
+        ondrop="handlePayDrop(event)">📎 Arrastra el comprobante o haz clic</div>
+      <input type="file" id="pay-file" accept=".pdf" style="display:none" onchange="handlePayFile(event)">
+      <div id="pay-file-info" style="font-size:11px;color:var(--ink3);margin-top:4px"></div>
+    </div>
+    <div class="form-group full"><label>Notas</label><textarea id="pay-notes"></textarea></div>
+  </div>
+  <div class="modal-actions"><button class="btn" onclick="closeModal('modal-pay')">Cancelar</button><button class="btn btn-primary" onclick="savePayment()">Guardar cobro</button></div>
+</div></div>
+
+<div class="modal-overlay" id="modal-item"><div class="modal" style="max-width:440px">
+  <p class="modal-title" id="item-modal-title">Nuevo equipo</p><input type="hidden" id="item-edit-id">
+  <div class="form-grid">
+    <div class="form-group full"><label>Nombre *</label><input type="text" id="item-name"></div>
+    <div class="form-group"><label>Categoría</label><select id="item-cat"><option>Arcos detectores</option><option>Vallas</option><option>Unifilas</option><option>Detectores manuales</option><option>Otro</option></select></div>
+    <div class="form-group"><label>Precio/día ($MXN) *</label><input type="number" id="item-price" placeholder="0.00" step="0.01"></div>
+    <div class="form-group"><label>Cantidad total *</label><input type="number" id="item-qty" placeholder="0" min="1"></div>
+    <div class="form-group full"><label>Código / Serie</label><input type="text" id="item-code"></div>
+  </div>
+  <div class="modal-actions"><button class="btn" onclick="closeModal('modal-item')">Cancelar</button><button class="btn btn-primary" onclick="saveItem()">Guardar</button></div>
+</div></div>
+
+<div class="modal-overlay" id="modal-expense"><div class="modal" style="max-width:440px">
+  <p class="modal-title" id="exp-modal-title">Registrar egreso</p><input type="hidden" id="exp-edit-id">
+  <div class="form-grid">
+    <div class="form-group"><label>Fecha *</label><input type="date" id="exp-date"></div>
+    <div class="form-group"><label>Categoría</label><select id="exp-cat"><option>Combustible</option><option>Nómina</option><option>Mantenimiento</option><option>Renta</option><option>Servicios</option><option>Compras</option><option>Logística</option><option>Marketing</option><option>Impuestos</option><option>Otro</option></select></div>
+    <div class="form-group full"><label>Descripción *</label><input type="text" id="exp-desc"></div>
+    <div class="form-group"><label>Monto ($MXN) *</label><input type="number" id="exp-amount" step="0.01"></div>
+    <div class="form-group"><label>IVA</label><select id="exp-iva"><option value="si">Incluye IVA</option><option value="no">Sin IVA</option></select></div>
+    <div class="form-group full"><label>Proveedor</label><input type="text" id="exp-vendor"></div>
+  </div>
+  <div class="modal-actions"><button class="btn" onclick="closeModal('modal-expense')">Cancelar</button><button class="btn btn-primary" onclick="saveExpense()">Guardar</button></div>
+</div></div>
+
+<script id="asset-bootstrap">
+(function(){
+  const logo=localStorage.getItem('artaxos_logo');
+  if(logo){const img=document.getElementById('brand-logo');if(img){img.src=logo;img.style.display='block';}}
+})();
+</script>
+
+<script>
+// ── GOOGLE DRIVE ──────────────────────────────────────────────────────────────
+const GDRIVE_CLIENT_ID='40973212413-8mf8km1rmie0jg6dof1n9anno4js0ftr.apps.googleusercontent.com';
+const GDRIVE_SCOPE='https://www.googleapis.com/auth/drive.file';
+const GDRIVE_FILE_NAME='SecuEvent_Artaxos_DB.json';
+const GDRIVE_REDIRECT='https://artaxos-secuevent.github.io/secuevent/';
+const GDRIVE_LS_TOKEN='gdrive_token_v3';
+const GDRIVE_LS_FILEID='gdrive_file_id_v3';
+let _gdriveToken=localStorage.getItem(GDRIVE_LS_TOKEN)||null;
+let _gdriveFileId=localStorage.getItem(GDRIVE_LS_FILEID)||null;
+let _gdriveSyncing=false,_gdriveTimer=null;
+
+function gdriveSetStatus(msg,color='var(--ink3)'){const el=document.getElementById('gdrive-status');if(el){el.textContent=msg;el.style.color=color;}}
+function gdriveSetBtn(label,connected){const lbl=document.getElementById('gdrive-nav-label');if(lbl)lbl.textContent=label;const btn=document.getElementById('gdrive-nav-btn');if(btn)btn.style.color=connected?'#4caf50':'';}
+function gdriveAuth(){
+  if(_gdriveToken){const ok=confirm('✅ Google Drive conectado.\n\nOK → Sincronizar ahora\nCancelar → Desconectar');if(ok)gdriveSave();else{_gdriveToken=null;_gdriveFileId=null;localStorage.removeItem(GDRIVE_LS_TOKEN);localStorage.removeItem(GDRIVE_LS_FILEID);gdriveSetBtn('Google Drive',false);gdriveSetStatus('');}return;}
+  localStorage.setItem(STORAGE_KEY+'_pre_auth',JSON.stringify(db));
+  window.location.href='https://accounts.google.com/o/oauth2/v2/auth?'+new URLSearchParams({client_id:GDRIVE_CLIENT_ID,redirect_uri:GDRIVE_REDIRECT,response_type:'token',scope:GDRIVE_SCOPE,prompt:'consent',state:'gdrive_auth'});
+}
+function gdriveHandleRedirect(){
+  const hash=window.location.hash;if(!hash.includes('access_token'))return false;
+  const p=new URLSearchParams(hash.slice(1));const token=p.get('access_token');
+  if(token&&p.get('state')==='gdrive_auth'){
+    history.replaceState(null,'',window.location.pathname);
+    _gdriveToken=token;localStorage.setItem(GDRIVE_LS_TOKEN,token);
+    const saved=localStorage.getItem(STORAGE_KEY+'_pre_auth');
+    if(saved){try{db=JSON.parse(saved);localStorage.setItem(STORAGE_KEY,saved);}catch(e){}localStorage.removeItem(STORAGE_KEY+'_pre_auth');}
+    gdriveSetBtn('Drive ✓',true);gdriveSetStatus('Sincronizando...','#4caf50');gdriveCheckAndSync();return true;
+  }return false;
+}
+async function gdriveReq(url,opts={}){
+  if(!_gdriveToken)return null;
+  const res=await fetch(url,{...opts,headers:{'Authorization':'Bearer '+_gdriveToken,...(opts.headers||{})}});
+  if(res.status===401){_gdriveToken=null;gdriveSetBtn('Google Drive',false);return null;}return res;
+}
+async function gdriveFindFile(){
+  const q=encodeURIComponent(`name='${GDRIVE_FILE_NAME}' and trashed=false`);
+  const res=await gdriveReq(`https://www.googleapis.com/drive/v3/files?q=${q}&fields=files(id,modifiedTime)`);
+  if(!res)return null;const d=await res.json();return d.files?.[0]||null;
+}
+async function gdriveSave(){
+  if(!_gdriveToken||_gdriveSyncing)return;_gdriveSyncing=true;gdriveSetStatus('Guardando...','#f0b429');
+  try{
+    const blob=new Blob([JSON.stringify(db)],{type:'application/json'});
+    if(!_gdriveFileId){const f=await gdriveFindFile();if(f){_gdriveFileId=f.id;localStorage.setItem(GDRIVE_LS_FILEID,f.id);}}
+    let res;
+    if(_gdriveFileId)res=await gdriveReq(`https://www.googleapis.com/upload/drive/v3/files/${_gdriveFileId}?uploadType=media`,{method:'PATCH',headers:{'Content-Type':'application/json'},body:blob});
+    else{const meta=new Blob([JSON.stringify({name:GDRIVE_FILE_NAME,mimeType:'application/json'})],{type:'application/json'});const form=new FormData();form.append('metadata',meta);form.append('file',blob);res=await gdriveReq('https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart&fields=id',{method:'POST',body:form});if(res?.ok){const d=await res.json();_gdriveFileId=d.id;localStorage.setItem(GDRIVE_LS_FILEID,d.id);}}
+    if(res?.ok){const t=new Date().toLocaleTimeString('es-MX',{hour:'2-digit',minute:'2-digit'});gdriveSetStatus(`☁ ${t}`,'#4caf50');}else gdriveSetStatus('Error','#e53935');
+  }catch(e){gdriveSetStatus('Sin conexión','#ff9800');}
+  _gdriveSyncing=false;
+}
+async function gdriveLoad(){
+  if(!_gdriveToken)return false;
+  try{
+    const file=await gdriveFindFile();if(!file){gdriveSetStatus('Sin archivo','var(--ink3)');return false;}
+    _gdriveFileId=file.id;localStorage.setItem(GDRIVE_LS_FILEID,file.id);
+    const res=await gdriveReq(`https://www.googleapis.com/drive/v3/files/${file.id}?alt=media`);
+    if(!res)return false;db=await res.json();migrateDB();localStorage.setItem(STORAGE_KEY,JSON.stringify(db));
+    gdriveSetStatus(`☁ ${new Date(file.modifiedTime).toLocaleString('es-MX')}`,'#4caf50');return true;
+  }catch(e){return false;}
+}
+async function gdriveCheckAndSync(){
+  const file=await gdriveFindFile();
+  if(file){const use=confirm(`☁️ Archivo en Drive.\nÚltima actualización: ${new Date(file.modifiedTime).toLocaleString('es-MX')}\n\nOK → Cargar desde Drive\nCancelar → Subir datos locales`);if(use){const ok=await gdriveLoad();if(ok)renderAll();}else await gdriveSave();}
+  else await gdriveSave();
+}
+function gdriveAutoSave(){if(!_gdriveToken)return;clearTimeout(_gdriveTimer);_gdriveTimer=setTimeout(gdriveSave,3000);}
+function gdriveInit(){if(_gdriveToken){gdriveSetBtn('Drive ✓',true);gdriveSetStatus('Conectado','#4caf50');}}
+
+// ── DATA LAYER ────────────────────────────────────────────────────────────────
+const STORAGE_KEY='secuevent_v3';
+let db={};
+function defaultDB(){return{clients:[],inventory:[],quotes:[],events:[],payments:[],expenses:[],nextClientId:1,nextQuoteNum:1,nextEventNum:1,nextItemId:1};}
+function migrateDB(){
+  ['clients','inventory','quotes','events','payments','expenses'].forEach(k=>{if(!db[k])db[k]=[];});
+  ['nextClientId','nextQuoteNum','nextEventNum','nextItemId'].forEach(k=>{if(!db[k])db[k]=1;});
+  // Migrate old reservations → events
+  if(db.reservations?.length && !db.events?.length){
+    db.events = db.reservations.map(r=>({
+      id: r.id, clientId: r.clientId, event: r.event,
+      start: r.start, end: r.end, total: r.total||0,
+      status: r.status==='Completada'?'Completado':r.status==='Cancelada'?'Cancelado':r.status||'Confirmado',
+      notes: r.notes||'', items: r.items||[], quoteId: r.quoteId||null
+    }));
+    // Link quotes to events
+    db.quotes.forEach(q=>{if(q.resId){const ev=db.events.find(e=>e.id===q.resId);if(ev){q.eventId=q.resId;}}});
+    // Migrate payments — change resId to eventId
+    db.payments.forEach(p=>{if(p.resId&&!p.eventId){p.eventId=p.resId;}});
+    delete db.reservations;
+    console.log('Migrated reservations to events');
+  }
+  if(!db.nextEventNum) db.nextEventNum = (db.events.length||0)+1;
+}
+function loadDB(){
+  try{
+    // Try new key first
+    let s=localStorage.getItem(STORAGE_KEY);
+    // If empty, try migrating from old keys
+    if(!s){
+      const oldKeys=['secuevent_v2','secuevent_v1','secuevent'];
+      for(const k of oldKeys){
+        const old=localStorage.getItem(k);
+        if(old){s=old;console.log('Migrated from',k);break;}
+      }
+    }
+    db=s?JSON.parse(s):defaultDB();
+  }catch(e){db=defaultDB();}
+  migrateDB();
+}
+function saveDB(){try{localStorage.setItem(STORAGE_KEY,JSON.stringify(db));showSaved();gdriveAutoSave();}catch(e){alert('Error al guardar.');}}
+function showSaved(){const el=document.getElementById('save-indicator');if(!el)return;el.classList.add('show');clearTimeout(el._t);el._t=setTimeout(()=>el.classList.remove('show'),2000);}
+
+// ── HELPERS ───────────────────────────────────────────────────────────────────
+const MONTHS=['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
+const MONTHS_S=['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
+function fmtD(n){return Number(n).toLocaleString('es-MX',{minimumFractionDigits:2,maximumFractionDigits:2});}
+function fmtDate(d){if(!d)return'—';const[y,m,dia]=d.split('-');return`${dia}/${m}/${y}`;}
+function fmtFecha(d){if(!d)return'___';const[y,m,dia]=d.split('-');const ms=['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];return`${parseInt(dia)} de ${ms[parseInt(m)-1]} de ${y}`;}
+function clientName(id){const c=db.clients.find(x=>String(x.id)===String(id));return c?c.name:'—';}
+function badge(s){const m={Borrador:'badge-gray',Enviada:'badge-info',Aprobada:'badge-success',Rechazada:'badge-danger',Confirmado:'badge-info','En curso':'badge-warning',Completado:'badge-success',Cancelado:'badge-danger',Pendiente:'badge-warning',Parcial:'badge-info',Pagado:'badge-success'};return`<span class="badge ${m[s]||'badge-gray'}">${s}</span>`;}
+function openModal(id){document.getElementById(id).classList.add('open');}
+function closeModal(id){document.getElementById(id).classList.remove('open');}
+document.querySelectorAll('.modal-overlay').forEach(m=>m.addEventListener('click',e=>{if(e.target===m)m.classList.remove('open');}));
+function exportData(){const blob=new Blob([JSON.stringify(db,null,2)],{type:'application/json'});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download=`SecuEvent_backup_${new Date().toISOString().slice(0,10)}.json`;a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);}
+function importData(e){const file=e.target.files[0];if(!file)return;const r=new FileReader();r.onload=ev=>{try{db=JSON.parse(ev.target.result);migrateDB();saveDB();renderAll();alert('✅ Datos importados.');}catch(err){alert('Error al importar.');}};r.readAsText(file);e.target.value='';}
+
+// ── NAVIGATION ────────────────────────────────────────────────────────────────
+const TITLES={dashboard:'Panel principal',clients:'Clientes',quotes:'Cotizaciones',events:'Eventos',billing:'Cobros',inventory:'Inventario',finance:'Finanzas'};
+function showPanel(name){
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+  document.getElementById('panel-'+name).classList.add('active');
+  document.getElementById('nav-'+name).classList.add('active');
+  document.getElementById('topbar-title').textContent=TITLES[name]||name;
+  ({dashboard:renderDashboard,clients:renderClients,quotes:renderQuotes,events:renderEvents,billing:renderBilling,inventory:renderInventory,finance:renderFinance})[name]?.();
+}
+function renderAll(){renderDashboard();}
+
+// ── DASHBOARD ─────────────────────────────────────────────────────────────────
+function renderDashboard(){
+  const today=new Date().toISOString().slice(0,10);
+  const active=db.events.filter(e=>e.status==='Confirmado'||e.status==='En curso').length;
+  const totalCobrado=db.payments.filter(p=>p.status==='Pagado').reduce((a,p)=>a+(parseFloat(p.amount)||0),0);
+  const totalPend=db.events.reduce((a,e)=>{const cob=db.payments.filter(p=>String(p.eventId)===String(e.id)).reduce((s,p)=>s+(parseFloat(p.amount)||0),0);return a+Math.max(0,(parseFloat(e.total)||0)-cob);},0);
+  document.getElementById('dash-metrics').innerHTML=`
+    <div class="metric"><div class="metric-label">Eventos activos</div><div class="metric-value">${active}</div></div>
+    <div class="metric"><div class="metric-label">Clientes</div><div class="metric-value">${db.clients.length}</div></div>
+    <div class="metric"><div class="metric-label">Total cobrado</div><div class="metric-value" style="color:var(--green)">$${fmtD(totalCobrado)}</div></div>
+    <div class="metric"><div class="metric-label">Por cobrar</div><div class="metric-value" style="color:var(--amber)">$${fmtD(totalPend)}</div></div>`;
+  document.getElementById('d-cli').textContent=`${db.clients.length} registrado${db.clients.length!==1?'s':''}`;
+  document.getElementById('d-qt').textContent=`${db.quotes.length} cotización${db.quotes.length!==1?'es':''}`;
+  document.getElementById('d-ev').textContent=`${active} activo${active!==1?'s':''}`;
+  const pp=db.payments.filter(p=>p.status!=='Pagado').length;
+  document.getElementById('d-bill').textContent=pp?(pp+' pendiente'+(pp!==1?'s':'')):'Al día';
+  document.getElementById('d-inv').textContent=`${db.inventory.length} tipo${db.inventory.length!==1?'s':''}`;
+  const ti=db.payments.reduce((a,p)=>a+(parseFloat(p.amount)||0),0);
+  document.getElementById('d-fin').textContent=`$${fmtD(ti)} ingresos`;
+  const upcoming=db.events.filter(e=>e.start>=today&&e.status!=='Cancelado').sort((a,b)=>a.start.localeCompare(b.start)).slice(0,5);
+  const up=document.getElementById('dash-upcoming');
+  up.innerHTML=upcoming.length?upcoming.map(e=>`<div style="display:flex;align-items:center;gap:12px;padding:12px 16px;border-bottom:1px solid var(--border)"><div style="width:8px;height:8px;border-radius:50%;background:var(--coral);flex-shrink:0"></div><div style="flex:1"><div style="font-weight:600;font-size:13px">${e.event}</div><div style="font-size:12px;color:var(--ink3)">${clientName(e.clientId)} · ${fmtDate(e.start)} → ${fmtDate(e.end)}</div></div>${badge(e.status)}</div>`).join(''):'<p class="empty">Sin eventos próximos</p>';
+}
+
+// ── CLIENTES ──────────────────────────────────────────────────────────────────
+function renderClients(){
+  const s=(document.getElementById('cli-search')?.value||'').toLowerCase();
+  const list=db.clients.filter(c=>`${c.name} ${c.company||''} ${c.email||''}`.toLowerCase().includes(s));
+  const tbody=document.getElementById('cli-body');
+  if(!list.length){tbody.innerHTML=`<tr><td colspan="6" class="empty">Sin clientes registrados</td></tr>`;return;}
+  tbody.innerHTML=list.map(c=>{const ec=db.events.filter(e=>String(e.clientId)===String(c.id)).length;return`<tr><td style="font-weight:500">${c.name}</td><td style="color:var(--ink3)">${c.company||'—'}</td><td>${c.phone||'—'}</td><td>${c.email||'—'}</td><td>${ec} evento${ec!==1?'s':''}</td><td><div style="display:flex;gap:4px"><button class="btn btn-sm btn-icon" onclick="openClientModal('${c.id}')">✏️</button><button class="btn btn-sm btn-icon btn-danger" onclick="deleteClient('${c.id}')">🗑</button></div></td></tr>`;}).join('');
+}
+function openClientModal(id){
+  const c=id?db.clients.find(x=>String(x.id)===String(id)):null;
+  document.getElementById('cli-modal-title').textContent=c?'Editar cliente':'Nuevo cliente';
+  document.getElementById('cli-edit-id').value=c?c.id:'';
+  ['cli-name','cli-company','cli-phone','cli-email','cli-notes'].forEach(i=>document.getElementById(i).value=c?c[i.replace('cli-','')]||'':'');
+  openModal('modal-client');
+}
+function saveClient(){
+  const name=document.getElementById('cli-name').value.trim();if(!name){alert('Ingresa el nombre del cliente.');return;}
+  const editId=document.getElementById('cli-edit-id').value;
+  const data={name,company:document.getElementById('cli-company').value,phone:document.getElementById('cli-phone').value,email:document.getElementById('cli-email').value,notes:document.getElementById('cli-notes').value};
+  if(editId){const c=db.clients.find(x=>String(x.id)===String(editId));if(c)Object.assign(c,data);}else db.clients.push({id:'c'+db.nextClientId++,...data});
+  saveDB();closeModal('modal-client');renderClients();
+}
+function deleteClient(id){if(!confirm('¿Eliminar este cliente?'))return;db.clients=db.clients.filter(x=>String(x.id)!==String(id));saveDB();renderClients();}
+
+// ── INVENTARIO ────────────────────────────────────────────────────────────────
+function renderInventory(){
+  const s=(document.getElementById('inv-search')?.value||'').toLowerCase();
+  const cat=document.getElementById('inv-cat')?.value||'';
+  const list=db.inventory.filter(i=>i.name.toLowerCase().includes(s)&&(!cat||i.cat===cat));
+  const tbody=document.getElementById('inv-body');
+  if(!list.length){tbody.innerHTML=`<tr><td colspan="6" class="empty">Sin equipo registrado</td></tr>`;return;}
+  tbody.innerHTML=list.map(i=>`<tr><td style="font-weight:500">${i.name}</td><td>${i.cat||'—'}</td><td style="text-align:center">${i.qty}</td><td style="font-weight:600">$${fmtD(i.price)}/día</td><td style="color:var(--ink3);font-size:12px">${i.code||'—'}</td><td><div style="display:flex;gap:4px"><button class="btn btn-sm btn-icon" onclick="openItemModal('${i.id}')">✏️</button><button class="btn btn-sm btn-icon btn-danger" onclick="deleteItem('${i.id}')">🗑</button></div></td></tr>`).join('');
+}
+function openItemModal(id){
+  const item=id?db.inventory.find(x=>String(x.id)===String(id)):null;
+  document.getElementById('item-modal-title').textContent=item?'Editar equipo':'Nuevo equipo';
+  document.getElementById('item-edit-id').value=item?item.id:'';
+  document.getElementById('item-name').value=item?item.name:'';
+  document.getElementById('item-cat').value=item?item.cat:'Arcos detectores';
+  document.getElementById('item-price').value=item?item.price:'';
+  document.getElementById('item-qty').value=item?item.qty:'';
+  document.getElementById('item-code').value=item?item.code||'':'';
+  openModal('modal-item');
+}
+function saveItem(){
+  const name=document.getElementById('item-name').value.trim();
+  const price=parseFloat(document.getElementById('item-price').value)||0;
+  const qty=parseInt(document.getElementById('item-qty').value)||0;
+  if(!name||!price||!qty){alert('Completa nombre, precio y cantidad.');return;}
+  const editId=document.getElementById('item-edit-id').value;
+  const data={name,cat:document.getElementById('item-cat').value,price,qty,code:document.getElementById('item-code').value};
+  if(editId){const i=db.inventory.find(x=>String(x.id)===String(editId));if(i)Object.assign(i,data);}else db.inventory.push({id:'i'+db.nextItemId++,...data});
+  saveDB();closeModal('modal-item');renderInventory();
+}
+function deleteItem(id){if(!confirm('¿Eliminar?'))return;db.inventory=db.inventory.filter(x=>String(x.id)!==String(id));saveDB();renderInventory();}
+
+// ── COTIZACIONES ──────────────────────────────────────────────────────────────
+function renderQuotes(){
+  const s=(document.getElementById('qt-search')?.value||'').toLowerCase();
+  const filter=document.getElementById('qt-filter')?.value||'';
+  const list=db.quotes.filter(q=>{const c=db.clients.find(x=>String(x.id)===String(q.clientId));return`${q.folio} ${c?c.name:''} ${q.event}`.toLowerCase().includes(s)&&(!filter||q.status===filter);}).sort((a,b)=>b.folio.localeCompare(a.folio));
+  const tbody=document.getElementById('qt-body');
+  if(!list.length){tbody.innerHTML=`<tr><td colspan="7" class="empty">Sin cotizaciones</td></tr>`;return;}
+  tbody.innerHTML=list.map(q=>`<tr>
+    <td style="font-size:12px;color:var(--ink3);font-weight:500">${q.folio}</td>
+    <td style="font-weight:500">${clientName(q.clientId)}</td>
+    <td>${q.event}</td>
+    <td style="font-size:12px">${fmtDate(q.start)} → ${fmtDate(q.end)}</td>
+    <td style="font-weight:600">$${fmtD(q.total)}</td>
+    <td>${badge(q.status)}</td>
+    <td><div style="display:flex;gap:4px;flex-wrap:wrap">
+      <button class="btn btn-sm btn-icon" onclick="cycleQuoteStatus('${q.id}')" title="Cambiar estado">🔄</button>
+      <button class="btn btn-sm btn-icon" onclick="previewQuote('${q.id}')" title="Vista previa / PDF">👁</button>
+      <button class="btn btn-sm btn-icon" onclick="openQuoteModal('${q.id}')" title="Editar">✏️</button>
+      ${q.eventId?`<button class="btn btn-sm btn-icon" style="color:var(--blue)" onclick="generarContrato('${q.id}')" title="Contrato">📄</button>`:''}
+      ${q.status==='Aprobada'&&!q.eventId?`<button class="btn btn-sm" style="background:var(--green-bg);color:var(--green);border-color:#97c459;font-size:11px" onclick="aprobarCotizacion('${q.id}')">✓ Crear evento</button>`:''}
+      <button class="btn btn-sm btn-icon btn-danger" onclick="deleteQuote('${q.id}')">🗑</button>
+    </div></td>
+  </tr>`).join('');
+}
+
+function openQuoteModal(id){
+  const q=id?db.quotes.find(x=>x.id===id):null;
+  document.getElementById('qt-modal-title').textContent=q?'Editar cotización':'Nueva cotización';
+  document.getElementById('qt-edit-id').value=q?q.id:'';
+  const sel=document.getElementById('qt-client');
+  sel.innerHTML=db.clients.map(c=>`<option value="${c.id}">${c.name}${c.company?' — '+c.company:''}</option>`).join('');
+  if(q){sel.value=q.clientId;document.getElementById('qt-event').value=q.event||'';document.getElementById('qt-start').value=q.start||'';document.getElementById('qt-end').value=q.end||'';document.getElementById('qt-valid').value=q.validUntil||'';document.getElementById('qt-status').value=q.status||'Borrador';document.getElementById('qt-discount').value=q.discount||0;document.getElementById('qt-total').value=q.total||0;document.getElementById('qt-notes').value=q.notes||'';}
+  else{['qt-event','qt-start','qt-end','qt-notes'].forEach(i=>document.getElementById(i).value='');const d=new Date();d.setDate(d.getDate()+15);document.getElementById('qt-valid').value=d.toISOString().slice(0,10);document.getElementById('qt-status').value='Borrador';document.getElementById('qt-discount').value=0;document.getElementById('qt-total').value=0;}
+  const list=document.getElementById('qt-items');list.innerHTML='';
+  (q?.items||[]).forEach(ri=>addQtItemRow(ri));calcQtTotal();openModal('modal-quote');
+}
+
+function addQtItemRow(ri){
+  const list=document.getElementById('qt-items');
+  const div=document.createElement('div');div.className='item-row';
+  const savedPrice=ri?.unitPrice!=null?ri.unitPrice:(ri?db.inventory.find(x=>String(x.id)===String(ri?.itemId))?.price||0:0);
+  div.innerHTML=`
+    <select onchange="syncQtPrice(this);calcQtTotal()" style="flex:2;min-width:0">
+      ${db.inventory.map(i=>`<option value="${i.id}" ${ri&&String(ri.itemId)===String(i.id)?'selected':''} data-price="${i.price}">${i.name}</option>`).join('')}
+    </select>
+    <input type="number" min="0" step="0.01" value="${savedPrice||0}" placeholder="$/día" title="Precio/día" style="width:80px;flex-shrink:0;font-weight:600" oninput="calcQtTotal()">
+    <input type="number" min="1" value="${ri?ri.qty:1}" placeholder="Cant." style="width:60px;flex-shrink:0" oninput="calcQtTotal()">
+    <input type="number" min="1" value="${ri?ri.days:1}" placeholder="Días" style="width:60px;flex-shrink:0" oninput="calcQtTotal()">
+    <button class="btn btn-sm btn-icon btn-danger" onclick="this.parentElement.remove();calcQtTotal()">✕</button>`;
+  list.appendChild(div);
+  if(!ri){const s=div.querySelector('select');const pi=div.querySelectorAll('input')[0];const inv=db.inventory.find(x=>String(x.id)===String(s.value));if(inv)pi.value=inv.price;}
+}
+function addQtItem(){addQtItemRow(null);}
+function syncQtPrice(sel){const row=sel.closest('.item-row');const pi=row.querySelectorAll('input')[0];const inv=db.inventory.find(x=>String(x.id)===String(sel.value));if(inv)pi.value=inv.price;calcQtTotal();}
+function calcQtTotal(){
+  let sub=0;
+  document.querySelectorAll('#qt-items .item-row').forEach(row=>{const ins=row.querySelectorAll('input[type=number]');sub+=(parseFloat(ins[0]?.value)||0)*(parseInt(ins[1]?.value)||1)*(parseInt(ins[2]?.value)||1);});
+  const disc=parseFloat(document.getElementById('qt-discount')?.value||0);
+  const el=document.getElementById('qt-total');if(el)el.value=(sub*(1-disc/100)*1.16).toFixed(2);
+}
+
+function saveQuote(){
+  const clientId=document.getElementById('qt-client').value;
+  const event=document.getElementById('qt-event').value.trim();
+  const start=document.getElementById('qt-start').value;
+  const end=document.getElementById('qt-end').value;
+  if(!clientId||!event||!start||!end){alert('Completa cliente, evento y fechas.');return;}
+  const items=[];
+  document.querySelectorAll('#qt-items .item-row').forEach(row=>{
+    const sel=row.querySelector('select');const ins=row.querySelectorAll('input[type=number]');
+    if(!sel?.value)return;
+    const inv=db.inventory.find(x=>String(x.id)===String(sel.value));
+    const precio=parseFloat(ins[0]?.value)||0;const qty=parseInt(ins[1]?.value)||1;const days=parseInt(ins[2]?.value)||1;
+    if(inv||precio)items.push({itemId:sel.value,name:inv?inv.name:'',unitPrice:precio,qty,days});
+  });
+  if(!items.length){alert('Agrega al menos un artículo.');return;}
+  const disc=parseFloat(document.getElementById('qt-discount').value)||0;
+  const sub=items.reduce((a,ri)=>a+ri.unitPrice*ri.qty*ri.days,0);
+  const total=sub*(1-disc/100)*1.16;
+  const editId=document.getElementById('qt-edit-id').value;
+  const payload={clientId,event,start,end,validUntil:document.getElementById('qt-valid').value,status:document.getElementById('qt-status').value,discount:disc,total:parseFloat(total.toFixed(2)),notes:document.getElementById('qt-notes').value,items};
+  let savedId=editId;
+  if(editId){const q=db.quotes.find(x=>x.id===editId);if(q){const evId=q.eventId;Object.assign(q,payload);if(evId){q.eventId=evId;}}}
+  else{if(!db.nextQuoteNum)db.nextQuoteNum=1;const folio='COT-'+String(db.nextQuoteNum++).padStart(4,'0');const newQ={id:'q'+Date.now(),folio,createdAt:new Date().toISOString().slice(0,10),...payload};db.quotes.push(newQ);savedId=newQ.id;}
+  saveDB();closeModal('modal-quote');renderQuotes();
+  // If edited quote has linked event, offer to update event
+  if(editId){const q=db.quotes.find(x=>x.id===editId);if(q?.eventId){setTimeout(()=>{if(confirm('🔗 Cotización vinculada a un evento.\n\n¿Actualizar el evento con los nuevos datos?')){const ev=db.events.find(x=>x.id===q.eventId);if(ev){ev.event=payload.event;ev.start=payload.start;ev.end=payload.end;ev.total=payload.total;ev.items=payload.items.map(i=>({itemId:i.itemId,qty:i.qty}));saveDB();}}},200);}}
+}
+
+function deleteQuote(id){if(!confirm('¿Eliminar esta cotización?'))return;db.quotes=db.quotes.filter(x=>x.id!==id);saveDB();renderQuotes();}
+
+const quoteCycle=['Borrador','Enviada','Aprobada','Rechazada'];
+function cycleQuoteStatus(id){
+  const q=db.quotes.find(x=>x.id===id);if(!q)return;
+  q.status=quoteCycle[(quoteCycle.indexOf(q.status)+1)%quoteCycle.length];
+  saveDB();renderQuotes();
+  if(q.status==='Aprobada'){setTimeout(()=>{if(confirm('✅ Cotización aprobada.\n\n¿Crear el evento y generar el contrato automáticamente?'))aprobarCotizacion(id);},100);}
+}
+
+function aprobarCotizacion(id){
+  const q=db.quotes.find(x=>x.id===id);if(!q)return;
+  if(q.eventId){const existing=db.events.find(x=>x.id===q.eventId);if(existing){if(confirm(`Ya existe el evento ${q.eventId}.\n\n¿Regenerar el contrato?`))generarContrato(id);return;}}
+  if(!db.nextEventNum)db.nextEventNum=1;
+  const evId='EV-'+String(db.nextEventNum++).padStart(3,'0');
+  db.events.push({id:evId,clientId:q.clientId,event:q.event,start:q.start,end:q.end,total:q.total,status:'Confirmado',notes:'Generado desde '+q.folio,items:q.items.map(i=>({itemId:i.itemId,qty:i.qty})),quoteId:q.id});
+  q.eventId=evId;saveDB();renderQuotes();
+  if(confirm(`✅ Evento ${evId} creado.\n\n¿Generar el contrato ahora?`))generarContrato(id);
+}
+
+// ── PREVIEW / CONTRATO ────────────────────────────────────────────────────────
+function buildQtHTML(q){
+  const c=db.clients.find(x=>String(x.id)===String(q.clientId));
+  const logoSrc=localStorage.getItem('artaxos_logo')||'';
+  const firmaSrc=localStorage.getItem('artaxos_firma')||'';
+  const disc=q.discount||0;
+  const sub=(q.items||[]).reduce((a,ri)=>{const p=ri.unitPrice??0;const pf=disc?p*(1-disc/100):p;return a+pf*(ri.qty||1)*(ri.days||1);},0);
+  const iva=sub*.16;const total=sub+iva;const anticipo=total*.5;
+  const rows=(q.items||[]).map((ri,i)=>{const p=ri.unitPrice??0;const pf=disc?p*(1-disc/100):p;const st=pf*(ri.qty||1)*(ri.days||1);return`<tr style="background:${i%2?'#f8f8f8':'#fff'}"><td style="padding:6px 10px;border:1px solid #e5e5e5">${ri.name||'—'}</td><td style="padding:6px 10px;border:1px solid #e5e5e5;text-align:center">${ri.qty||1}</td><td style="padding:6px 10px;border:1px solid #e5e5e5;text-align:center">${ri.days||1}</td><td style="padding:6px 10px;border:1px solid #e5e5e5;text-align:right">$${fmtD(pf)}</td><td style="padding:6px 10px;border:1px solid #e5e5e5;text-align:right;font-weight:600">$${fmtD(st)}</td></tr>`;}).join('');
+  const logoHtml=logoSrc?`<img src="${logoSrc}" style="height:44px;width:auto">`:'<span style="font-size:18px;font-weight:800;color:#F0126A">ARTAXOS</span>';
+  const firmaHtml=firmaSrc?`<img src="${firmaSrc}" style="height:54px;width:auto;display:block;margin-bottom:2px">`:'<div style="height:54px"></div>';
+  return{c,logoHtml,firmaHtml,sub,iva,total,anticipo,rows,logoSrc,firmaSrc};
+}
+
+function previewQuote(id){
+  const q=db.quotes.find(x=>x.id===id);if(!q)return;
+  const{c,logoHtml,firmaHtml,sub,iva,total,anticipo,rows}=buildQtHTML(q);
+  document.getElementById('qt-preview-body').innerHTML=`
+  <div id="printable-qt" style="font-family:-apple-system,sans-serif;font-size:12px;color:#111">
+    <div style="display:flex;justify-content:space-between;align-items:flex-start;padding-bottom:12px;margin-bottom:16px;border-bottom:3px solid #F0126A">
+      <div>${logoHtml}<div style="font-size:10px;color:#666;margin-top:4px">Lago Zirahuén 214, Col. Anáhuac I Secc.<br>Alcaldía Miguel Hidalgo, C.P. 11320, CDMX<br>Tel. 55 31 96 90 83 · contacto@artaxos.com</div></div>
+      <div style="text-align:right"><div style="font-size:18px;font-weight:700">${q.folio}</div><div style="font-size:11px;color:#666">Emitida: ${fmtDate(q.createdAt||q.start)}</div><div style="font-size:11px;color:#666">Válida hasta: ${q.validUntil?fmtDate(q.validUntil):'—'}</div></div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px">
+      <div style="padding:10px 12px;background:#f5f5f5;border-radius:8px"><div style="font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.5px;color:#888;margin-bottom:6px">Cliente</div><div style="font-weight:600">${c?c.name:'—'}</div>${c?.company?`<div style="font-size:11px;color:#666">${c.company}</div>`:''} ${c?.phone?`<div style="font-size:11px;color:#666">${c.phone}</div>`:''} ${c?.email?`<div style="font-size:11px;color:#666">${c.email}</div>`:''}</div>
+      <div style="padding:10px 12px;background:#f5f5f5;border-radius:8px"><div style="font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.5px;color:#888;margin-bottom:6px">Evento</div><div style="font-weight:600">${q.event}</div><div style="font-size:11px;color:#666;margin-top:3px">Inicio: ${fmtDate(q.start)}</div><div style="font-size:11px;color:#666">Fin: ${fmtDate(q.end)}</div></div>
+    </div>
+    <table style="width:100%;border-collapse:collapse;font-size:12px;margin-bottom:16px">
+      <thead><tr style="background:#111;color:#fff"><th style="padding:7px 10px;text-align:left">Equipo</th><th style="padding:7px 10px;text-align:center">Cant.</th><th style="padding:7px 10px;text-align:center">Días</th><th style="padding:7px 10px;text-align:right">$/día</th><th style="padding:7px 10px;text-align:right">Subtotal</th></tr></thead>
+      <tbody>${rows||'<tr><td colspan="5" style="padding:12px;text-align:center;color:#999">Sin artículos</td></tr>'}</tbody>
+    </table>
+    <div style="display:flex;gap:14px;margin-bottom:16px;align-items:flex-start;flex-wrap:wrap">
+      <div style="flex:1;min-width:240px;border:1px solid #e5e5e5;border-radius:8px;overflow:hidden">
+        <div style="background:#111;padding:7px 12px"><span style="font-weight:700;font-size:11px;color:#F0126A">Datos para transferencia</span></div>
+        <div style="padding:8px 12px;font-size:11px;display:grid;grid-template-columns:auto 1fr;gap:3px 10px;color:#555">
+          <span>Razón Social</span><span style="font-weight:600;color:#111">Artaxos Comercializadora S.A.S. de C.V.</span>
+          <span>Banco</span><span style="font-weight:600;color:#111">Banco Santander</span>
+          <span>No. de cuenta</span><span style="font-weight:600;color:#111">65-51105499-1</span>
+          <span>CLABE</span><span style="font-weight:600;color:#111">014744655110549912</span>
+        </div>
+      </div>
+      <div style="min-width:200px;border:1px solid #e5e5e5;border-radius:8px;overflow:hidden">
+        <div style="display:flex;justify-content:space-between;padding:6px 12px;background:#f8f8f8;border-bottom:1px solid #e5e5e5"><span style="color:#555">Subtotal:</span><span>$${fmtD(sub)}</span></div>
+        <div style="display:flex;justify-content:space-between;padding:6px 12px;background:#f8f8f8;border-bottom:1px solid #e5e5e5"><span style="color:#555">IVA (16%):</span><span>$${fmtD(iva)}</span></div>
+        <div style="display:flex;justify-content:space-between;padding:8px 12px;background:#111;color:#fff"><span style="font-weight:700">TOTAL:</span><span style="font-weight:800;color:#F0126A">$${fmtD(total)}</span></div>
+        <div style="padding:6px 12px;background:#fff8e1;font-size:11px;color:#7a5c00"><strong>Anticipo 50%:</strong> $${fmtD(anticipo)}<br><strong>Liquidación:</strong> $${fmtD(anticipo)} el día del evento</div>
+      </div>
+    </div>
+    <div style="padding:8px 12px;background:#f9f9f9;border-left:3px solid #F0126A;border-radius:4px;font-size:11px;color:#444;line-height:1.6;margin-bottom:16px">
+      <strong>Condiciones:</strong> Modalidad cliente opera el equipo · Envío, montaje y desmontaje en planta baja incluido en CDMX (L-S 08:00–18:00 hrs.) · Anticipo 50% para confirmar el evento, 50% el día del evento · Cancelación: 10% del total · El equipo queda bajo responsabilidad del arrendatario desde su entrega
+    </div>
+    <div>${firmaHtml}<div style="font-weight:700;font-size:12px">Guillermo Castillo Villela</div><div style="font-size:11px;color:#888">Representante Legal</div></div>
+  </div>`;
+  openModal('modal-quote-preview');
+}
+
+function printQuote(){
+  const content=document.getElementById('printable-qt')?.innerHTML;if(!content)return;
+  const html=`<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Cotización Artaxos</title><style>*{box-sizing:border-box;margin:0;padding:0;-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important}body{font-family:-apple-system,sans-serif;padding:20px 28px;font-size:12px;color:#111}table{width:100%;border-collapse:collapse}.np{text-align:center;margin-bottom:16px;padding:10px;background:#f5f5f5;border-radius:6px}@media print{.np{display:none}@page{size:A4;margin:10mm 12mm}}</style></head><body><div class="np">Ctrl+P → Guardar como PDF&nbsp;&nbsp;<button onclick="window.print()" style="padding:6px 16px;background:#111;color:#fff;border:none;border-radius:4px;cursor:pointer">🖨️ Imprimir</button></div>${content}</body></html>`;
+  const blob=new Blob([html],{type:'text/html'});const url=URL.createObjectURL(blob);
+  const w=window.open(url,'_blank');if(!w)alert('Activa ventanas emergentes.');
+  setTimeout(()=>URL.revokeObjectURL(url),15000);
+}
+
+function generarContrato(quoteId){
+  const q=db.quotes.find(x=>x.id===quoteId);if(!q){alert('Cotización no encontrada.');return;}
+  const ev=q.eventId?db.events.find(x=>x.id===q.eventId):null;
+  const{c,logoHtml,firmaHtml,sub,iva,total,anticipo,rows}=buildQtHTML(q);
+  const folio=q.folio?q.folio.replace('COT','CONT'):'CONT-'+Date.now();
+  q.contratoFolio=folio;saveDB();
+  const html=`<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Contrato ${folio}</title><style>*{box-sizing:border-box;margin:0;padding:0;-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important}body{font-family:'Calibri',sans-serif;font-size:12px;color:#111;padding:16mm 18mm}.hdr{display:flex;justify-content:space-between;align-items:flex-start;border-bottom:3px solid #F0126A;padding-bottom:10px;margin-bottom:16px}h2{font-size:13px;margin:10px 0 4px;border-bottom:1px solid #eee;padding-bottom:3px}p{margin:4px 0;line-height:1.6;text-align:justify}.cl{font-weight:700;margin-top:12px;margin-bottom:4px}table{width:100%;border-collapse:collapse;margin:8px 0}.fr{display:flex;justify-content:space-between;margin-top:40px}.fb{text-align:center;width:44%}.fl{border-top:1.5px solid #111;padding-top:6px;margin-top:4px}.np{text-align:center;margin-bottom:16px;padding:10px;background:#f5f5f5;border-radius:6px}.pb{page-break-after:always}@media print{.np{display:none}@page{size:A4;margin:12mm 18mm}}</style></head><body>
+  <div class="np">Ctrl+P → <strong>Guardar como PDF</strong>&nbsp;&nbsp;<button onclick="window.print()" style="padding:6px 16px;background:#111;color:#fff;border:none;border-radius:4px;cursor:pointer">🖨️ Imprimir</button></div>
+  <div class="hdr"><div>${logoHtml}<div style="font-size:10px;color:#666;margin-top:4px">Comercializadora S.A.S. de C.V.<br>Lago Zirahuén 214, Col. Anáhuac I Secc., C.P. 11320, CDMX<br>Tel. 55 31 96 90 83 · contacto@artaxos.com</div></div>
+  <div style="text-align:right"><div style="font-size:16px;font-weight:700">CONTRATO DE ARRENDAMIENTO</div><div style="font-size:12px;color:#666">Folio: <strong>${folio}</strong></div><div style="font-size:12px;color:#666">Cotización: ${q.folio}</div>${ev?`<div style="font-size:12px;color:#666">Evento: ${ev.id}</div>`:''}<div style="font-size:12px;color:#666">Fecha: ${fmtFecha(new Date().toISOString().slice(0,10))}</div></div></div>
+  <p>En la Ciudad de México, siendo el día ${fmtFecha(new Date().toISOString().slice(0,10))}, comparecen a celebrar el presente Contrato de Arrendamiento de Equipo:</p>
+  <h2>DECLARACIONES</h2>
+  <p class="cl">I. EL ARRENDADOR:</p><p>Artaxos Comercializadora S.A.S. de C.V., representada por <strong>Guillermo Castillo Villela</strong>, Representante Legal, Lago Zirahuén 214, Col. Anáhuac I Secc., Alcaldía Miguel Hidalgo, C.P. 11320, Ciudad de México.</p>
+  <p class="cl">II. EL ARRENDATARIO:</p>
+  <table style="border:none"><tr><td style="width:35%;color:#666;padding:2px 0">Nombre:</td><td><strong>${c?.name||'_________________________'}</strong></td></tr>${c?.company?`<tr><td style="color:#666;padding:2px 0">Empresa:</td><td>${c.company}</td></tr>`:''}<tr><td style="color:#666;padding:2px 0">Teléfono:</td><td>${c?.phone||'_________________________'}</td></tr><tr><td style="color:#666;padding:2px 0">Correo:</td><td>${c?.email||'_________________________'}</td></tr></table>
+  <p class="cl">III. DATOS DEL EVENTO:</p>
+  <table style="border:none"><tr><td style="width:35%;color:#666;padding:2px 0">Evento:</td><td><strong>${q.event}</strong></td></tr><tr><td style="color:#666;padding:2px 0">Fecha inicio:</td><td>${fmtFecha(q.start)}</td></tr><tr><td style="color:#666;padding:2px 0">Fecha término:</td><td>${fmtFecha(q.end)}</td></tr></table>
+  <h2>CLÁUSULAS</h2>
+  <p class="cl">PRIMERA.- OBJETO</p><p>EL ARRENDADOR da en arrendamiento el equipo del Anexo A para uso exclusivo en el evento indicado. Queda prohibido subarrendar o ceder el uso a terceros.</p>
+  <p class="cl">SEGUNDA.- VIGENCIA</p><p>Del <strong>${fmtFecha(q.start)}</strong> al <strong>${fmtFecha(q.end)}</strong>. Cualquier extensión deberá acordarse por escrito.</p>
+  <p class="cl">TERCERA.- OPERACIÓN</p><p>EL ARRENDATARIO opera el equipo por su cuenta. Instalación y desinstalación en planta baja incluidas dentro de CDMX, días hábiles (L-S 08:00–18:00 hrs.).</p>
+  <p class="cl">CUARTA.- PAGO</p><p>Total: <strong>$${fmtD(total)}</strong> (IVA incluido). Anticipo 50%: <strong>$${fmtD(anticipo)}</strong> al confirmar el evento. Liquidación: <strong>$${fmtD(anticipo)}</strong> el día del evento.</p>
+  <p class="cl">QUINTA.- CANCELACIÓN</p><p>Penalización del 10% del total ($${fmtD(total*.1)}).</p>
+  <p class="cl">SEXTA.- RESPONSABILIDAD</p><p>El equipo queda bajo responsabilidad de EL ARRENDATARIO desde su entrega. Daños o pérdidas se cobrarán a precio de mercado.</p>
+  <p class="cl">SÉPTIMA.- DATOS PERSONALES</p><p>Conforme a la LFPDPPP, los datos se tratarán exclusivamente para los fines de esta relación contractual.</p>
+  <p class="cl">OCTAVA.- JURISDICCIÓN</p><p>Las partes se someten al Código Civil para la Ciudad de México y la jurisdicción de sus tribunales competentes.</p>
+  <p style="margin-top:14px">Leído el presente y enteradas las partes de su contenido, lo firman en la Ciudad de México el día indicado.</p>
+  <div class="fr">
+    <div class="fb"><div style="margin-bottom:4px;font-size:11px;color:#555">Atentamente</div>${firmaHtml}<div class="fl"><strong>Guillermo Castillo Villela</strong><br><span style="color:#666;font-size:11px">Representante Legal — EL ARRENDADOR</span></div></div>
+    <div class="fb"><div style="height:58px"></div><div class="fl"><strong>${c?.name||'_______________________'}</strong><br><span style="color:#666;font-size:11px">${c?.company||'EL ARRENDATARIO'}</span></div></div>
+  </div>
+  <div class="pb"></div>
+  <div class="hdr"><div style="font-size:16px;font-weight:800;color:#F0126A">ARTAXOS</div><div style="text-align:right"><div style="font-size:14px;font-weight:700">ANEXO A — EQUIPO ARRENDADO</div><div style="font-size:11px;color:#666">Contrato: ${folio}</div></div></div>
+  <table><thead><tr style="background:#111;color:#fff"><th style="padding:7px 10px;text-align:left">Equipo</th><th style="padding:7px 10px;text-align:center">Cant.</th><th style="padding:7px 10px;text-align:center">Días</th><th style="padding:7px 10px;text-align:right">$/día</th><th style="padding:7px 10px;text-align:right">Subtotal</th></tr></thead>
+  <tbody>${rows}</tbody>
+  <tfoot><tr style="background:#f5f5f5"><td colspan="4" style="padding:6px 10px;text-align:right;border:1px solid #ddd">Subtotal:</td><td style="padding:6px 10px;text-align:right;border:1px solid #ddd">$${fmtD(sub)}</td></tr><tr style="background:#f5f5f5"><td colspan="4" style="padding:6px 10px;text-align:right;border:1px solid #ddd">IVA (16%):</td><td style="padding:6px 10px;text-align:right;border:1px solid #ddd">$${fmtD(iva)}</td></tr><tr style="background:#111"><td colspan="4" style="padding:8px 10px;text-align:right;color:#fff;font-weight:700">TOTAL:</td><td style="padding:8px 10px;text-align:right;color:#F0126A;font-weight:800">$${fmtD(total)}</td></tr><tr style="background:#fff8e1"><td colspan="5" style="padding:6px 10px;font-size:11px;color:#7a5c00"><strong>Anticipo 50%:</strong> $${fmtD(anticipo)} &nbsp;|&nbsp; <strong>Liquidación:</strong> $${fmtD(anticipo)} el día del evento</td></tr></tfoot></table>
+  <p style="margin-top:12px">Estado del equipo en entrega: ___________________________________________________</p>
+  <div class="fr" style="margin-top:30px">
+    <div class="fb">${firmaHtml}<div class="fl"><strong>EL ARRENDADOR</strong><br><span style="color:#666;font-size:11px">Entregó conforme</span></div></div>
+    <div class="fb"><div style="height:58px"></div><div class="fl"><strong>EL ARRENDATARIO</strong><br><span style="color:#666;font-size:11px">Recibió conforme</span></div></div>
+  </div>
+  <div class="pb"></div>
+  <div class="hdr"><div style="font-size:16px;font-weight:800;color:#F0126A">ARTAXOS</div><div style="text-align:right"><div style="font-size:14px;font-weight:700">ANEXO B — DATOS BANCARIOS</div><div style="font-size:11px;color:#666">Contrato: ${folio}</div></div></div>
+  <table><tr style="background:#111"><td style="padding:7px 10px;color:#fff;font-weight:700;width:35%">Razón Social</td><td style="padding:7px 10px;color:#fff">Artaxos Comercializadora S.A.S. de C.V.</td></tr><tr style="background:#f8f8f8"><td style="padding:7px 10px;font-weight:700">Banco</td><td>Banco Santander</td></tr><tr style="background:#111"><td style="padding:7px 10px;color:#fff;font-weight:700">No. de cuenta</td><td style="padding:7px 10px;color:#fff">65-51105499-1</td></tr><tr style="background:#f8f8f8"><td style="padding:7px 10px;font-weight:700">CLABE</td><td>014744655110549912</td></tr><tr style="background:#111"><td style="padding:7px 10px;color:#fff;font-weight:700">Concepto</td><td style="padding:7px 10px;color:#fff">Contrato ${folio} — ${q.event}</td></tr></table>
+  <p style="margin-top:10px;color:#666;font-size:11px">Enviar comprobante a <strong>contacto@artaxos.com</strong> o WhatsApp <strong>55 31 96 90 83</strong>.</p>
+  </body></html>`;
+  const blob=new Blob([html],{type:'text/html'});const url=URL.createObjectURL(blob);
+  const w=window.open(url,'_blank');if(!w)alert('Activa ventanas emergentes.');
+  setTimeout(()=>URL.revokeObjectURL(url),15000);
+}
+
+// ── EVENTOS ───────────────────────────────────────────────────────────────────
+let calYear=new Date().getFullYear(),calMonth=new Date().getMonth();
+
+function renderEvents(){
+  const today=new Date().toISOString().slice(0,10);
+  const active=db.events.filter(e=>e.status==='Confirmado'||e.status==='En curso').length;
+  const completed=db.events.filter(e=>e.status==='Completado').length;
+  document.getElementById('ev-metrics').innerHTML=`
+    <div class="metric"><div class="metric-label">Activos</div><div class="metric-value">${active}</div></div>
+    <div class="metric"><div class="metric-label">Completados</div><div class="metric-value">${completed}</div></div>
+    <div class="metric"><div class="metric-label">Total</div><div class="metric-value">${db.events.length}</div></div>`;
+  const s=(document.getElementById('ev-search')?.value||'').toLowerCase();
+  const filter=document.getElementById('ev-filter')?.value||'';
+  const list=db.events.filter(e=>`${e.id} ${clientName(e.clientId)} ${e.event}`.toLowerCase().includes(s)&&(!filter||e.status===filter)).sort((a,b)=>b.start.localeCompare(a.start));
+  const tbody=document.getElementById('ev-body');
+  if(!list.length){tbody.innerHTML=`<tr><td colspan="8" class="empty">Sin eventos</td></tr>`;return;}
+  tbody.innerHTML=list.map(e=>{
+    const cobrado=db.payments.filter(p=>String(p.eventId)===String(e.id)).reduce((a,p)=>a+(parseFloat(p.amount)||0),0);
+    const q=db.quotes.find(x=>x.eventId===e.id);
+    return`<tr>
+      <td style="font-size:12px;color:var(--ink3);font-weight:500">${e.id}</td>
+      <td style="font-weight:500">${clientName(e.clientId)}</td>
+      <td>${e.event}</td>
+      <td style="font-size:12px">${fmtDate(e.start)} → ${fmtDate(e.end)}</td>
+      <td style="font-weight:600">$${fmtD(e.total||0)}</td>
+      <td style="color:var(--green);font-weight:600">$${fmtD(cobrado)}</td>
+      <td>${badge(e.status)}</td>
+      <td><div style="display:flex;gap:4px">
+        <button class="btn btn-sm btn-icon" onclick="cycleEventStatus('${e.id}')" title="Cambiar estado">🔄</button>
+        <button class="btn btn-sm btn-icon" onclick="openEventModal('${e.id}')" title="Editar">✏️</button>
+        ${q?`<button class="btn btn-sm btn-icon" style="color:var(--blue)" onclick="generarContrato('${q.id}')" title="Contrato">📄</button>`:''}
+        <button class="btn btn-sm btn-icon" onclick="openPayModal(null,'${e.id}')" title="Registrar cobro" style="color:var(--green)">💰</button>
+        <button class="btn btn-sm btn-icon btn-danger" onclick="deleteEvent('${e.id}')">🗑</button>
+      </div></td>
+    </tr>`;
+  }).join('');
+  renderCal();
+}
+
+function openEventModal(id){
+  const ev=id?db.events.find(x=>x.id===id):null;
+  document.getElementById('ev-modal-title').textContent=ev?'Editar evento':'Nuevo evento';
+  document.getElementById('ev-edit-id').value=ev?ev.id:'';
+  const sel=document.getElementById('ev-client');
+  sel.innerHTML=db.clients.map(c=>`<option value="${c.id}">${c.name}${c.company?' — '+c.company:''}</option>`).join('');
+  if(ev){sel.value=ev.clientId;document.getElementById('ev-event').value=ev.event||'';document.getElementById('ev-start').value=ev.start||'';document.getElementById('ev-end').value=ev.end||'';document.getElementById('ev-status').value=ev.status||'Confirmado';document.getElementById('ev-total').value=ev.total||0;document.getElementById('ev-notes').value=ev.notes||'';}
+  else{['ev-event','ev-start','ev-end','ev-notes'].forEach(i=>document.getElementById(i).value='');document.getElementById('ev-status').value='Confirmado';document.getElementById('ev-total').value='';}
+  const list=document.getElementById('ev-items');list.innerHTML='';
+  (ev?.items||[]).forEach(ri=>addEvItemRow(ri));openModal('modal-event');
+}
+function addEvItemRow(ri){
+  const list=document.getElementById('ev-items');const div=document.createElement('div');div.className='item-row';
+  div.innerHTML=`<select style="flex:2;min-width:0">${db.inventory.map(i=>`<option value="${i.id}" ${ri&&String(ri.itemId)===String(i.id)?'selected':''}>${i.name}</option>`).join('')}</select><input type="number" min="1" value="${ri?ri.qty:1}" placeholder="Cant." style="width:80px;flex-shrink:0"><button class="btn btn-sm btn-icon btn-danger" onclick="this.parentElement.remove()">✕</button>`;
+  list.appendChild(div);
+}
+function addEvItem(){addEvItemRow(null);}
+function saveEvent(){
+  const clientId=document.getElementById('ev-client').value;const event=document.getElementById('ev-event').value.trim();
+  const start=document.getElementById('ev-start').value;const end=document.getElementById('ev-end').value;
+  if(!clientId||!event||!start||!end){alert('Completa cliente, evento y fechas.');return;}
+  const items=[];
+  document.querySelectorAll('#ev-items .item-row').forEach(row=>{const sel=row.querySelector('select');const inp=row.querySelector('input');if(sel?.value)items.push({itemId:sel.value,qty:parseInt(inp?.value)||1});});
+  const conflicts=[];const editId=document.getElementById('ev-edit-id').value;
+  for(const item of items){const inv=db.inventory.find(x=>String(x.id)===String(item.itemId));if(!inv)continue;const committed=db.events.filter(e=>e.status!=='Cancelado'&&e.id!==editId&&e.start<=end&&e.end>=start).flatMap(e=>e.items||[]).filter(ri=>String(ri.itemId)===String(item.itemId)).reduce((a,ri)=>a+(ri.qty||1),0);if(item.qty>inv.qty-committed)conflicts.push(`• ${inv.name}: pedido ${item.qty}, disponible ${Math.max(0,inv.qty-committed)}`);}
+  if(conflicts.length&&!confirm(`⚠️ Sin disponibilidad:\n${conflicts.join('\n')}\n\n¿Continuar?`))return;
+  const data={clientId,event,start,end,status:document.getElementById('ev-status').value,total:parseFloat(document.getElementById('ev-total').value)||0,notes:document.getElementById('ev-notes').value,items};
+  if(editId){const ev=db.events.find(x=>x.id===editId);if(ev){const oldTotal=ev.total;const qi=ev.quoteId;Object.assign(ev,data);if(qi)ev.quoteId=qi;if(Math.abs(data.total-oldTotal)>0.01&&db.payments.filter(p=>String(p.eventId)===String(editId)).length)alert('ℹ️ El total cambió. Revisa el módulo de Cobros.');}}
+  else{if(!db.nextEventNum)db.nextEventNum=1;const id='EV-'+String(db.nextEventNum++).padStart(3,'0');db.events.push({id,...data});}
+  saveDB();closeModal('modal-event');renderEvents();
+}
+const evCycle=['Confirmado','En curso','Completado','Cancelado'];
+function cycleEventStatus(id){
+  const ev=db.events.find(x=>x.id===id);if(!ev)return;
+  ev.status=evCycle[(evCycle.indexOf(ev.status)+1)%evCycle.length];saveDB();renderEvents();
+  if(ev.status==='Completado'){const cobrado=db.payments.filter(p=>String(p.eventId)===String(id)).reduce((a,p)=>a+(parseFloat(p.amount)||0),0);const saldo=(parseFloat(ev.total)||0)-cobrado;if(saldo>0.01)alert(`⚠️ Evento completado con saldo pendiente de $${fmtD(saldo)}.`);}
+}
+function deleteEvent(id){if(!confirm('¿Eliminar este evento?'))return;db.events=db.events.filter(x=>x.id!==id);saveDB();renderEvents();}
+
+function renderCal(){
+  const label=document.getElementById('cal-label');if(label)label.textContent=`${MONTHS[calMonth]} ${calYear}`;
+  const grid=document.getElementById('cal-grid');if(!grid)return;
+  const days=['Dom','Lun','Mar','Mié','Jue','Vie','Sáb'];
+  const totalUnits=db.inventory.reduce((a,i)=>a+i.qty,0)||1;
+  const today=new Date().toISOString().slice(0,10);
+
+  let html=days.map(d=>`<div style="font-size:10px;font-weight:600;color:var(--ink3);text-align:center;padding:6px 4px">${d}</div>`).join('');
+  const first=new Date(calYear,calMonth,1).getDay();
+  for(let i=0;i<first;i++)html+=`<div></div>`;
+  const dim=new Date(calYear,calMonth+1,0).getDate();
+
+  for(let d=1;d<=dim;d++){
+    const ds=`${calYear}-${String(calMonth+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+    const dayEvents=db.events.filter(e=>e.status!=='Cancelado'&&e.start<=ds&&e.end>=ds);
+    const committed=dayEvents.flatMap(e=>e.items||[]).reduce((a,ri)=>a+(ri.qty||1),0);
+    const pct=totalUnits>0?Math.min(committed/totalUnits,1):0;
+    const dispPct=Math.max(0,Math.round((1-pct)*100));
+    const bg=pct===0?'#e8f5e9':pct<.3?'#e8f5e9':pct<.7?'#fff8e1':pct<1?'#ffece0':'#fce8e8';
+    const bor=pct===0?'#97c459':pct<.3?'#97c459':pct<.7?'#f0c040':pct<1?'#f08040':'#f09090';
+    const textColor=pct===0?'#1a6b3a':pct<.7?'#8a5c00':pct<1?'#7a3a00':'#a32d2d';
+    const isToday=ds===today;
+
+    // Show up to 2 event IDs
+    const evLabels=dayEvents.slice(0,2).map(e=>`<div style="font-size:9px;font-weight:600;color:${textColor};background:rgba(255,255,255,0.6);border-radius:3px;padding:1px 3px;margin-top:2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${e.id}</div>`).join('');
+    const more=dayEvents.length>2?`<div style="font-size:9px;color:${textColor};margin-top:1px">+${dayEvents.length-2} más</div>`:'';
+
+    html+=`<div onclick="showCalDetail('${ds}')"
+      style="background:${bg};border:${isToday?'2px solid var(--coral)':'1px solid '+bor};border-radius:6px;padding:6px 4px 4px;cursor:${dayEvents.length?'pointer':'default'};min-height:64px;display:flex;flex-direction:column;transition:box-shadow .15s;${dayEvents.length?'':'opacity:.85'}"
+      onmouseover="if(${dayEvents.length>0})this.style.boxShadow='0 2px 8px rgba(0,0,0,0.15)'"
+      onmouseout="this.style.boxShadow='none'"
+      title="${dayEvents.length?dayEvents.map(e=>e.event).join(', '):'Sin eventos'}">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start">
+        <span style="font-size:13px;font-weight:${isToday?'800':'600'};color:${isToday?'var(--coral)':textColor}">${d}</span>
+        ${pct>0?`<span style="font-size:9px;font-weight:700;color:${textColor};background:rgba(255,255,255,0.7);border-radius:3px;padding:1px 4px">${dispPct}%</span>`:''}
+      </div>
+      ${evLabels}${more}
+    </div>`;
+  }
+  grid.innerHTML=html;
+}
+
+function showCalDetail(ds){
+  const dayEvents=db.events.filter(e=>e.status!=='Cancelado'&&e.start<=ds&&e.end>=ds);
+  const detail=document.getElementById('cal-detail');
+  const title=document.getElementById('cal-detail-title');
+  const body=document.getElementById('cal-detail-body');
+  if(!detail||!title||!body)return;
+
+  const[y,m,d]=ds.split('-');
+  const meses=['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
+  title.textContent=`Eventos del ${parseInt(d)} de ${meses[parseInt(m)-1]} de ${y}`;
+
+  if(!dayEvents.length){
+    body.innerHTML=`<p style="color:var(--ink3);font-size:13px;text-align:center;padding:12px">Sin eventos este día</p>`;
+    detail.style.display='block';return;
+  }
+
+  const totalUnits=db.inventory.reduce((a,i)=>a+i.qty,0)||1;
+  const committed=dayEvents.flatMap(e=>e.items||[]).reduce((a,ri)=>a+(ri.qty||1),0);
+  const dispPct=Math.max(0,Math.round((1-Math.min(committed/totalUnits,1))*100));
+
+  body.innerHTML=`
+    <div style="display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap">
+      <div style="padding:6px 12px;background:var(--green-bg);border-radius:6px;font-size:12px;color:var(--green);font-weight:600">
+        ${dayEvents.length} evento${dayEvents.length!==1?'s':''} activo${dayEvents.length!==1?'s':''}
+      </div>
+      <div style="padding:6px 12px;background:${dispPct>30?'var(--green-bg)':dispPct>0?'var(--amber-bg)':'var(--red-bg)'};border-radius:6px;font-size:12px;color:${dispPct>30?'var(--green)':dispPct>0?'var(--amber)':'var(--red)'};font-weight:600">
+        ${dispPct}% disponible
+      </div>
+    </div>
+    ${dayEvents.map(e=>{
+      const c=db.clients.find(x=>String(x.id)===String(e.clientId));
+      const cobrado=db.payments.filter(p=>String(p.eventId)===String(e.id)).reduce((a,p)=>a+(parseFloat(p.amount)||0),0);
+      const saldo=Math.max(0,(parseFloat(e.total)||0)-cobrado);
+      const itemsNames=(e.items||[]).map(ri=>{const inv=db.inventory.find(x=>String(x.id)===String(ri.itemId));return inv?`${inv.name} ×${ri.qty||1}`:null;}).filter(Boolean).join(', ');
+      const q=db.quotes.find(x=>x.eventId===e.id);
+      return`<div style="border:1px solid var(--border);border-radius:8px;padding:14px;margin-bottom:10px;background:var(--surface)">
+        <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:8px">
+          <div>
+            <div style="font-weight:700;font-size:14px">${e.event}</div>
+            <div style="font-size:12px;color:var(--ink3);margin-top:2px">${e.id} · ${c?c.name:'—'}</div>
+          </div>
+          <span class="badge ${e.status==='Confirmado'?'badge-info':e.status==='En curso'?'badge-warning':e.status==='Completado'?'badge-success':'badge-danger'}">${e.status}</span>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;font-size:12px;margin-bottom:10px">
+          <div style="background:var(--bg);border-radius:6px;padding:8px">
+            <div style="color:var(--ink3);font-size:10px;margin-bottom:2px">PERÍODO</div>
+            <div style="font-weight:600">${fmtDate(e.start)}</div>
+            <div style="color:var(--ink3)">→ ${fmtDate(e.end)}</div>
+          </div>
+          <div style="background:var(--bg);border-radius:6px;padding:8px">
+            <div style="color:var(--ink3);font-size:10px;margin-bottom:2px">TOTAL</div>
+            <div style="font-weight:700;color:var(--ink)">$${fmtD(e.total||0)}</div>
+            <div style="color:var(--green);font-size:11px">Cobrado: $${fmtD(cobrado)}</div>
+          </div>
+          <div style="background:${saldo>0?'var(--amber-bg)':'var(--green-bg)'};border-radius:6px;padding:8px">
+            <div style="color:var(--ink3);font-size:10px;margin-bottom:2px">SALDO</div>
+            <div style="font-weight:700;color:${saldo>0?'var(--amber)':'var(--green)'}">$${fmtD(saldo)}</div>
+            <div style="font-size:11px;color:${saldo>0?'var(--amber)':'var(--green)'}"">${saldo>0?'Pendiente':'Liquidado'}</div>
+          </div>
+        </div>
+        ${itemsNames?`<div style="font-size:12px;color:var(--ink2);margin-bottom:10px"><span style="color:var(--ink3)">Equipo:</span> ${itemsNames}</div>`:''}
+        <div style="display:flex;gap:6px;flex-wrap:wrap">
+          <button class="btn btn-sm" onclick="openEventModal('${e.id}')">✏️ Editar</button>
+          <button class="btn btn-sm" style="color:var(--green)" onclick="openPayModal(null,'${e.id}')">💰 Cobro</button>
+          ${q?`<button class="btn btn-sm" style="color:var(--blue)" onclick="generarContrato('${q.id}')">📄 Contrato</button>`:''}
+          <button class="btn btn-sm" onclick="cycleEventStatus('${e.id}')">🔄 ${e.status}</button>
+        </div>
+      </div>`;
+    }).join('')}`;
+
+  detail.style.display='block';
+  detail.scrollIntoView({behavior:'smooth',block:'nearest'});
+}
+
+function calPrev(){calMonth--;if(calMonth<0){calMonth=11;calYear--;}renderCal();}
+function calNext(){calMonth++;if(calMonth>11){calMonth=0;calYear++;}renderCal();}
+
+// ── COBROS ────────────────────────────────────────────────────────────────────
+function renderBilling(){
+  const totalCobrado=db.payments.filter(p=>p.status==='Pagado').reduce((a,p)=>a+(parseFloat(p.amount)||0),0);
+  const totalPend=db.payments.filter(p=>p.status!=='Pagado').reduce((a,p)=>a+(parseFloat(p.amount)||0),0);
+  document.getElementById('bill-metrics').innerHTML=`
+    <div class="metric"><div class="metric-label">Total cobrado</div><div class="metric-value" style="color:var(--green)">$${fmtD(totalCobrado)}</div></div>
+    <div class="metric"><div class="metric-label">Pendiente</div><div class="metric-value" style="color:var(--amber)">$${fmtD(totalPend)}</div></div>
+    <div class="metric"><div class="metric-label">Registros</div><div class="metric-value">${db.payments.length}</div></div>`;
+  const s=(document.getElementById('bill-search')?.value||'').toLowerCase();
+  const filter=document.getElementById('bill-filter')?.value||'';
+  const list=db.payments.filter(p=>{const ev=db.events.find(x=>String(x.id)===String(p.eventId));const c=ev?db.clients.find(x=>String(x.id)===String(ev.clientId)):null;return`${ev?.event||''} ${c?.name||''}`.toLowerCase().includes(s)&&(!filter||p.status===filter);}).sort((a,b)=>(b.date||'').localeCompare(a.date||''));
+  const tbody=document.getElementById('bill-body');
+  if(!list.length){tbody.innerHTML=`<tr><td colspan="9" class="empty">Sin cobros registrados</td></tr>`;return;}
+  tbody.innerHTML=list.map(p=>{
+    const ev=db.events.find(x=>String(x.id)===String(p.eventId));
+    const c=ev?db.clients.find(x=>String(x.id)===String(ev.clientId)):null;
+    const totalEv=parseFloat(ev?.total||0);
+    const allPaid=db.payments.filter(x=>String(x.eventId)===String(p.eventId)).reduce((a,x)=>a+(parseFloat(x.amount)||0),0);
+    const saldo=Math.max(0,totalEv-allPaid);
+    return`<tr>
+      <td style="font-weight:500">${ev?.event||'—'}</td>
+      <td>${c?.name||'—'}</td>
+      <td>$${fmtD(totalEv)}</td>
+      <td style="color:var(--green);font-weight:600">$${fmtD(p.amount)}</td>
+      <td style="color:${saldo>0?'var(--red)':'var(--green)'};font-weight:600">$${fmtD(saldo)}</td>
+      <td style="font-size:12px">${p.method||'—'}</td>
+      <td style="font-size:12px">${fmtDate(p.date)}</td>
+      <td>${badge(p.status)}</td>
+      <td><div style="display:flex;gap:4px">
+        ${p.pdfData?`<button class="btn btn-sm btn-icon" onclick="viewPayPdf('${p.id}')" style="color:var(--red)" title="Ver comprobante">📄</button>`:''}
+        <button class="btn btn-sm btn-icon" onclick="openPayModal('${p.id}')" title="Editar">✏️</button>
+        <button class="btn btn-sm btn-icon btn-danger" onclick="deletePay('${p.id}')">🗑</button>
+      </div></td>
+    </tr>`;
+  }).join('');
+}
+
+function openPayModal(id,preEventId){
+  const p=(id&&typeof id==='string'&&!id.startsWith('EV-'))?db.payments.find(x=>x.id===id):null;
+  document.getElementById('pay-modal-title').textContent=p?'Editar cobro':'Registrar cobro';
+  document.getElementById('pay-edit-id').value=p?p.id:'';
+  const sel=document.getElementById('pay-event');
+  sel.innerHTML=db.events.filter(e=>e.status!=='Cancelado').map(e=>{const c=db.clients.find(x=>String(x.id)===String(e.clientId));return`<option value="${e.id}">${e.id} — ${c?c.name:'?'} — ${e.event}</option>`;}).join('');
+  if(p){sel.value=p.eventId;document.getElementById('pay-amount').value=p.amount||'';document.getElementById('pay-date').value=p.date||'';document.getElementById('pay-method').value=p.method||'Transferencia';document.getElementById('pay-status').value=p.status||'Pendiente';document.getElementById('pay-ref').value=p.ref||'';document.getElementById('pay-notes').value=p.notes||'';}
+  else{document.getElementById('pay-amount').value='';document.getElementById('pay-date').value=new Date().toISOString().slice(0,10);document.getElementById('pay-method').value='Transferencia';document.getElementById('pay-status').value='Pendiente';document.getElementById('pay-ref').value='';document.getElementById('pay-notes').value='';}
+  if(preEventId)sel.value=preEventId;
+  window._payPdfData=p?.pdfData||null;window._payPdfName=p?.pdfName||null;
+  const drop=document.getElementById('pay-drop');
+  if(p?.pdfName){drop.innerHTML=`📄 <strong>${p.pdfName}</strong> — <a href="#" onclick="window._payPdfData=null;window._payPdfName=null;this.parentElement.innerHTML='📎 Arrastra el comprobante o haz clic';this.parentElement.style.borderColor='';return false" style="color:var(--ink3)">Quitar</a>`;drop.style.borderColor='#97c459';}
+  else{drop.innerHTML='📎 Arrastra el comprobante o haz clic';drop.style.borderColor='';}
+  document.getElementById('pay-file-info').textContent='';
+  openModal('modal-pay');
+}
+function handlePayFile(e){const f=e.target.files[0];if(f)loadPayPdf(f);e.target.value='';}
+function handlePayDrop(e){e.preventDefault();document.getElementById('pay-drop').style.borderColor='';const f=e.dataTransfer.files[0];if(f&&f.type==='application/pdf')loadPayPdf(f);}
+function loadPayPdf(file){
+  const drop=document.getElementById('pay-drop');const info=document.getElementById('pay-file-info');drop.innerHTML='⏳ Cargando...';
+  const reader=new FileReader();
+  reader.onload=e=>{
+    window._payPdfData=e.target.result;window._payPdfName=file.name;
+    drop.innerHTML=`📄 <strong>${file.name}</strong> — <a href="#" onclick="window._payPdfData=null;window._payPdfName=null;this.parentElement.innerHTML='📎 Arrastra el comprobante o haz clic';this.parentElement.style.borderColor='';return false" style="color:var(--ink3)">Quitar</a>`;
+    drop.style.borderColor='#97c459';
+    try{const binary=atob(e.target.result.split(',')[1]);extractPayPdf(binary,info);}catch(err){if(info)info.textContent='⚠️ No se pudo extraer texto.';}
+  };reader.readAsDataURL(file);
+}
+function extractPayPdf(binary,infoEl){
+  let text='';const re=/BT([\s\S]*?)ET/g;let m;
+  while((m=re.exec(binary))!==null){const b=m[1];const sr=/\(([^)\\]*(?:\\.[^)\\]*)*)\)/g;let sm;while((sm=sr.exec(b))!==null)text+=sm[1].replace(/\\n/g,' ')+' ';}
+  if(text.trim().length<10){for(let i=0;i<Math.min(binary.length,40000);i++){const c=binary.charCodeAt(i);if(c>31&&c<127)text+=binary[i];else text+=' ';}}
+  let amount=null,date=null,ref=null,found=[];
+  const ap=[/(?:importe|monto|total)[:\s$]*([0-9]{1,3}(?:,[0-9]{3})*(?:\.[0-9]{2})?)/i,/\$\s*([0-9]{1,3}(?:,[0-9]{3})*(?:\.[0-9]{2})?)/];
+  for(const p of ap){const mm=text.match(p);if(mm){amount=parseFloat(mm[1].replace(/,/g,''));if(amount>0)break;}}
+  const dp=[/(\d{2})[\/\-](\d{2})[\/\-](\d{4})/,/(\d{4})[\/\-](\d{2})[\/\-](\d{2})/];
+  for(const p of dp){const mm=text.match(p);if(mm){date=p.source.startsWith('(\\d{2})')?`${mm[3]}-${mm[2]}-${mm[1]}`:`${mm[1]}-${mm[2]}-${mm[3]}`;break;}}
+  const rp=[/(?:clave\s+de\s+rastreo|referencia)[:\s]*([A-Z0-9]{6,25})/i,/\b([0-9]{18})\b/];
+  for(const p of rp){const mm=text.match(p);if(mm){ref=mm[1].trim();break;}}
+  if(amount&&amount>0){document.getElementById('pay-amount').value=amount.toFixed(2);found.push(`$${fmtD(amount)}`);}
+  if(date){document.getElementById('pay-date').value=date;found.push(date);}
+  if(ref&&!document.getElementById('pay-ref').value){document.getElementById('pay-ref').value=ref;found.push(`Ref: ${ref}`);}
+  if(infoEl)infoEl.textContent=found.length?`✅ Extraído: ${found.join(' · ')}`:'⚠️ No se detectaron datos.';
+  if(amount&&amount>0){const evId=document.getElementById('pay-event').value;const ev=db.events.find(x=>x.id===evId);if(ev){const t=parseFloat(ev.total)||0;const a=t*.5;if(Math.abs(amount-t)<=1)setTimeout(()=>alert(`✅ Coincide con el TOTAL ($${fmtD(t)}).`),200);else if(Math.abs(amount-a)<=1)setTimeout(()=>alert(`✅ Coincide con el ANTICIPO 50% ($${fmtD(a)}).`),200);else if(amount>t)setTimeout(()=>alert(`⚠️ El importe ($${fmtD(amount)}) es mayor al total ($${fmtD(t)}).`),200);else setTimeout(()=>alert(`⚠️ El importe ($${fmtD(amount)}) no coincide con total ($${fmtD(t)}) ni anticipo ($${fmtD(a)}).`),200);}}
+}
+function savePayment(){
+  const eventId=document.getElementById('pay-event').value;const amount=parseFloat(document.getElementById('pay-amount').value);const date=document.getElementById('pay-date').value;
+  if(!eventId||!amount||!date){alert('Completa evento, monto y fecha.');return;}
+  const editId=document.getElementById('pay-edit-id').value;
+  const data={eventId,amount,date,method:document.getElementById('pay-method').value,status:document.getElementById('pay-status').value,ref:document.getElementById('pay-ref').value,notes:document.getElementById('pay-notes').value};
+  if(window._payPdfData){data.pdfData=window._payPdfData;data.pdfName=window._payPdfName;}
+  else if(editId){const ep=db.payments.find(x=>x.id===editId);if(ep?.pdfData){data.pdfData=ep.pdfData;data.pdfName=ep.pdfName;}}
+  if(editId){const p=db.payments.find(x=>x.id===editId);if(p)Object.assign(p,data);}else db.payments.push({id:'pay'+Date.now(),...data});
+  saveDB();closeModal('modal-pay');renderBilling();
+}
+function deletePay(id){if(!confirm('¿Eliminar este cobro?'))return;db.payments=db.payments.filter(x=>x.id!==id);saveDB();renderBilling();}
+function viewPayPdf(id){const p=db.payments.find(x=>x.id===id);if(!p?.pdfData){alert('Sin comprobante.');return;}const w=window.open('');w.document.write(`<html><body style="margin:0"><embed src="${p.pdfData}" type="application/pdf" width="100%" height="100%"></body></html>`);}
+
+// ── FINANZAS ──────────────────────────────────────────────────────────────────
+let _finView='monthly',_finYear=new Date().getFullYear(),_finMonth=new Date().getMonth(),_finWeek=0;
+const CAT_COLORS={Combustible:'#e67e22',Nómina:'#2980b9',Mantenimiento:'#8e44ad',Renta:'#c0392b',Servicios:'#16a085',Compras:'#f39c12',Logística:'#27ae60',Marketing:'#d35400',Impuestos:'#7f8c8d',Otro:'#95a5a6'};
+function setFinView(v){_finView=v;document.getElementById('fin-btn-m').style.cssText=v==='monthly'?'background:var(--coral);color:#fff':'';document.getElementById('fin-btn-w').style.cssText=v==='weekly'?'background:var(--coral);color:#fff':'';if(v==='weekly'){const now=new Date();_finYear=now.getFullYear();_finWeek=Math.floor((now-new Date(_finYear,0,1))/(7*24*3600*1000));}renderFinance();}
+function finToday(){const now=new Date();_finYear=now.getFullYear();_finMonth=now.getMonth();_finWeek=Math.floor((now-new Date(_finYear,0,1))/(7*24*3600*1000));renderFinance();}
+function finPrev(){if(_finView==='monthly'){_finMonth--;if(_finMonth<0){_finMonth=11;_finYear--;}}else{_finWeek--;if(_finWeek<0){_finYear--;_finWeek=52;}}renderFinance();}
+function finNext(){if(_finView==='monthly'){_finMonth++;if(_finMonth>11){_finMonth=0;_finYear++;}}else{_finWeek++;if(_finWeek>52){_finYear++;_finWeek=0;}}renderFinance();}
+function getFinDates(){if(_finView==='monthly')return{start:`${_finYear}-${String(_finMonth+1).padStart(2,'0')}-01`,end:new Date(_finYear,_finMonth+1,0).toISOString().slice(0,10)};const j=new Date(_finYear,0,1);const s=new Date(j.getTime()+_finWeek*7*24*3600*1000);const e=new Date(s.getTime()+6*24*3600*1000);return{start:s.toISOString().slice(0,10),end:e.toISOString().slice(0,10)};}
+function renderFinance(){
+  const{start,end}=getFinDates();
+  const label=_finView==='monthly'?`${MONTHS[_finMonth]} ${_finYear}`:`${fmtDate(start)} — ${fmtDate(end)}`;
+  document.getElementById('fin-label').textContent=label;
+  const ingresos=db.payments.filter(p=>p.date>=start&&p.date<=end).reduce((a,p)=>a+(parseFloat(p.amount)||0),0);
+  const egresos=db.expenses.filter(e=>e.date>=start&&e.date<=end).reduce((a,e)=>a+(parseFloat(e.amount)||0),0);
+  const utilidad=ingresos-egresos;
+  const totalCxC=db.events.reduce((a,ev)=>{const cob=db.payments.filter(p=>String(p.eventId)===String(ev.id)).reduce((s,p)=>s+(parseFloat(p.amount)||0),0);return a+Math.max(0,(parseFloat(ev.total)||0)-cob);},0);
+  document.getElementById('fin-metrics').innerHTML=`
+    <div class="metric"><div class="metric-label">Ingresos</div><div class="metric-value" style="color:var(--green)">$${fmtD(ingresos)}</div></div>
+    <div class="metric"><div class="metric-label">Egresos</div><div class="metric-value" style="color:var(--red)">$${fmtD(egresos)}</div></div>
+    <div class="metric"><div class="metric-label">Utilidad neta</div><div class="metric-value" style="color:${utilidad>=0?'var(--green)':'var(--red)'}">$${fmtD(utilidad)}</div></div>
+    <div class="metric"><div class="metric-label">Por cobrar</div><div class="metric-value" style="color:var(--amber)">$${fmtD(totalCxC)}</div></div>`;
+  const bars=[];
+  for(let i=5;i>=0;i--){
+    let s2,e2,lbl;
+    if(_finView==='monthly'){let mm=_finMonth-i,yy=_finYear;while(mm<0){mm+=12;yy--;}s2=`${yy}-${String(mm+1).padStart(2,'0')}-01`;e2=new Date(yy,mm+1,0).toISOString().slice(0,10);lbl=MONTHS_S[mm];}
+    else{const wk=_finWeek-i;const j=new Date(_finYear,0,1);const sd=new Date(j.getTime()+(wk<0?wk+52:wk)*7*24*3600*1000);s2=sd.toISOString().slice(0,10);e2=new Date(sd.getTime()+6*24*3600*1000).toISOString().slice(0,10);lbl=`S${(wk<0?wk+52:wk)+1}`;}
+    const ing=db.payments.filter(p=>p.date>=s2&&p.date<=e2).reduce((a,p)=>a+(parseFloat(p.amount)||0),0);
+    const egr=db.expenses.filter(e=>e.date>=s2&&e.date<=e2).reduce((a,e)=>a+(parseFloat(e.amount)||0),0);
+    bars.push({lbl,ing,egr});
+  }
+  const maxB=Math.max(...bars.flatMap(b=>[b.ing,b.egr]),1);const barH=100;
+  document.getElementById('fin-bars').innerHTML=bars.map(b=>`<div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:2px"><div style="width:100%;display:flex;gap:2px;align-items:flex-end;height:${barH}px"><div style="flex:1;background:#2e7d32;border-radius:3px 3px 0 0;height:${Math.max(4,Math.round(b.ing/maxB*barH))}px;opacity:.85" title="$${fmtD(b.ing)}"></div><div style="flex:1;background:#c0392b;border-radius:3px 3px 0 0;height:${Math.max(4,Math.round(b.egr/maxB*barH))}px;opacity:.85" title="$${fmtD(b.egr)}"></div></div><div style="font-size:10px;color:var(--ink3)">${b.lbl}</div></div>`).join('')+`<div style="position:absolute;bottom:6px;left:16px;display:flex;gap:10px;font-size:10px;color:var(--ink3)"><span><span style="display:inline-block;width:8px;height:8px;background:#2e7d32;border-radius:2px;margin-right:3px"></span>Ingresos</span><span><span style="display:inline-block;width:8px;height:8px;background:#c0392b;border-radius:2px;margin-right:3px"></span>Egresos</span></div>`;
+  const ivaI=ingresos/1.16*.16;const ivaE=db.expenses.filter(e=>e.date>=start&&e.date<=end&&e.iva==='si').reduce((a,e)=>a+(parseFloat(e.amount)||0)/1.16*.16,0);const ivaSAT=ivaI-ivaE;
+  document.getElementById('fin-iva').innerHTML=`<div style="font-size:12px"><div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--border)"><span style="color:var(--ink3)">IVA cobrado:</span><span style="color:var(--green);font-weight:600">$${fmtD(ivaI)}</span></div><div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--border)"><span style="color:var(--ink3)">IVA acreditable:</span><span style="color:var(--red);font-weight:600">$${fmtD(ivaE)}</span></div><div style="padding:10px 12px;margin-top:8px;background:${ivaSAT>=0?'var(--amber-bg)':'var(--green-bg)'};border-radius:8px;text-align:center"><div style="font-size:11px;font-weight:600;color:${ivaSAT>=0?'var(--amber)':'var(--green)'};margin-bottom:4px">${ivaSAT>=0?'IVA a pagar al SAT':'IVA a favor'}</div><div style="font-size:20px;font-weight:800;color:${ivaSAT>=0?'var(--amber)':'var(--green)'}">$${fmtD(Math.abs(ivaSAT))}</div></div></div>`;
+  const expSearch=(document.getElementById('exp-search')?.value||'').toLowerCase();const catF=document.getElementById('exp-cat-filter')?.value||'';
+  const expList=db.expenses.filter(e=>e.date>=start&&e.date<=end&&`${e.desc} ${e.vendor||''}`.toLowerCase().includes(expSearch)&&(!catF||e.cat===catF)).sort((a,b)=>b.date.localeCompare(a.date));
+  const tbody=document.getElementById('exp-body');
+  if(!expList.length){tbody.innerHTML=`<tr><td colspan="5" class="empty">Sin egresos en este período</td></tr>`;return;}
+  tbody.innerHTML=expList.map(e=>`<tr><td style="font-size:12px">${fmtDate(e.date)}</td><td><span style="padding:2px 8px;border-radius:12px;font-size:11px;background:${CAT_COLORS[e.cat]||'#95a5a6'}22;color:${CAT_COLORS[e.cat]||'#555'};font-weight:600">${e.cat}</span></td><td>${e.desc}${e.vendor?` <span style="color:var(--ink3);font-size:11px">— ${e.vendor}</span>`:''}</td><td style="font-weight:600;color:var(--red)">$${fmtD(e.amount)}</td><td><div style="display:flex;gap:4px"><button class="btn btn-sm btn-icon" onclick="openExpenseModal('${e.id}')">✏️</button><button class="btn btn-sm btn-icon btn-danger" onclick="deleteExpense('${e.id}')">🗑</button></div></td></tr>`).join('');
+}
+function openExpenseModal(id){
+  const e=id?db.expenses.find(x=>x.id===id):null;
+  document.getElementById('exp-modal-title').textContent=e?'Editar egreso':'Registrar egreso';
+  document.getElementById('exp-edit-id').value=e?e.id:'';
+  document.getElementById('exp-date').value=e?e.date:new Date().toISOString().slice(0,10);
+  document.getElementById('exp-cat').value=e?e.cat:'Combustible';
+  document.getElementById('exp-desc').value=e?e.desc:'';
+  document.getElementById('exp-amount').value=e?e.amount:'';
+  document.getElementById('exp-iva').value=e?e.iva||'si':'si';
+  document.getElementById('exp-vendor').value=e?e.vendor||'':'';
+  openModal('modal-expense');
+}
+function saveExpense(){
+  const date=document.getElementById('exp-date').value;const desc=document.getElementById('exp-desc').value.trim();const amount=parseFloat(document.getElementById('exp-amount').value);
+  if(!date||!desc||!amount){alert('Completa fecha, descripción y monto.');return;}
+  const editId=document.getElementById('exp-edit-id').value;
+  const data={date,desc,cat:document.getElementById('exp-cat').value,amount,iva:document.getElementById('exp-iva').value,vendor:document.getElementById('exp-vendor').value};
+  if(editId){const e=db.expenses.find(x=>x.id===editId);if(e)Object.assign(e,data);}else db.expenses.push({id:'exp'+Date.now(),...data});
+  saveDB();closeModal('modal-expense');renderFinance();
+}
+function deleteExpense(id){if(!confirm('¿Eliminar?'))return;db.expenses=db.expenses.filter(x=>x.id!==id);saveDB();renderFinance();}
+
+// ── INIT ──────────────────────────────────────────────────────────────────────
+loadDB();
+if(gdriveHandleRedirect()){renderDashboard();}else{renderDashboard();gdriveInit();}
+const _logo=localStorage.getItem('artaxos_logo');
+if(_logo){const img=document.getElementById('brand-logo');if(img){img.src=_logo;img.style.display='block';}}
+</script>
+</body>
+</html>
