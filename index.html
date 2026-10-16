@@ -3,300 +3,192 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SecuEvent · Artaxos — Gestión de Equipo de Seguridad</title>
+<title>SecuEvent — Artaxos</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
-<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23131315'/%3E%3Ccircle cx='32' cy='18' r='4.8' fill='%23FF015B'/%3E%3Ccircle cx='46' cy='32' r='4.8' fill='%23FF015B'/%3E%3Ccircle cx='32' cy='46' r='4.8' fill='%23FF015B'/%3E%3Ccircle cx='18' cy='32' r='4.8' fill='%23FF015B'/%3E%3Ccircle cx='41.9' cy='22.1' r='3.5' fill='%23FF015B'/%3E%3Ccircle cx='41.9' cy='41.9' r='3.5' fill='%23FF015B'/%3E%3Ccircle cx='22.1' cy='41.9' r='3.5' fill='%23FF015B'/%3E%3Ccircle cx='22.1' cy='22.1' r='3.5' fill='%23FF015B'/%3E%3Ccircle cx='38' cy='18.9' r='2' fill='%23FF015B'/%3E%3Ccircle cx='45.1' cy='26' r='2' fill='%23FF015B'/%3E%3Ccircle cx='45.1' cy='38' r='2' fill='%23FF015B'/%3E%3Ccircle cx='38' cy='45.1' r='2' fill='%23FF015B'/%3E%3Ccircle cx='26' cy='45.1' r='2' fill='%23FF015B'/%3E%3Ccircle cx='18.9' cy='38' r='2' fill='%23FF015B'/%3E%3Ccircle cx='18.9' cy='26' r='2' fill='%23FF015B'/%3E%3Ccircle cx='26' cy='18.9' r='2' fill='%23FF015B'/%3E%3C/svg%3E">
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@700;800&family=Inter:wght@400;600&display=swap" rel="stylesheet">
 <style>
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-  :root {
-    /* ── Artaxos brand palette ── */
-    --ax-rosa:      #FF015B;
-    --ax-rosa-deep: #D9004C;
-    --ax-negro:     #131315;
-    --ax-carbon:    #1B1B1E;
-    --ax-blanco:    #F6F4F5;
-    --ax-gris:      #B4B4BC;
+:root {
+  --ax-rosa:#FF015B;--ax-rosa-deep:#D9004C;--ax-negro:#131315;--ax-carbon:#1B1B1E;
+  --ax-blanco:#F6F4F5;--ax-gris:#B4B4BC;
+  --coral:var(--ax-rosa);--coral-lt:#fde8f4;
+  --ink:#111110;--ink2:#4a4a48;--ink3:#9a9a97;
+  --bg:#f7f6f4;--surface:#ffffff;--border:rgba(0,0,0,0.08);--border2:rgba(0,0,0,0.15);
+  --green:#1a6b3a;--green-bg:#eaf4ee;--amber:#8a5c00;--amber-bg:#fff8e1;
+  --red:#a32d2d;--red-bg:#fcebeb;--blue:#1a4080;--blue-bg:#e8f0fb;
+  --radius:10px;--sidebar:220px;--shadow:0 1px 3px rgba(0,0,0,0.08);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html,body{height:100%;}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--ink);font-size:14px;line-height:1.5;}
+h1,h2,h3,.modal-title,.card-title,.metric-value{font-family:'Archivo',sans-serif;}
+.app{display:flex;height:100vh;overflow:hidden;}
 
-    /* ── UI tokens ── */
-    --bg:      var(--ax-blanco);
-    --surface: #ffffff;
-    --surface2: #eeecee;
-    --border:  rgba(0,0,0,0.09);
-    --border2: rgba(0,0,0,0.16);
-    --text:    #131315;
-    --text2:   #4a4850;
-    --text3:   var(--ax-gris);
-    --accent:  var(--ax-rosa);
-    --accent-hover: var(--ax-rosa-deep);
+/* SIDEBAR */
+.sidebar{width:var(--sidebar);flex-shrink:0;background:var(--ax-negro);display:flex;flex-direction:column;overflow-y:auto;border-right:none;}
+.sidebar-brand{padding:20px 16px 16px;border-bottom:1px solid rgba(255,255,255,0.08);}
+.sidebar-brand-text{color:var(--ax-gris);font-size:11px;margin-top:6px;font-family:'Inter',sans-serif;}
+.sidebar-nav{padding:12px 8px;flex:1;}
+.nav-section{color:rgba(255,255,255,0.35);font-size:10px;font-weight:600;letter-spacing:.8px;text-transform:uppercase;padding:8px 8px 4px;font-family:'Inter',sans-serif;}
+.nav-item{display:flex;align-items:center;gap:10px;padding:9px 10px;border-radius:8px;cursor:pointer;color:rgba(255,255,255,0.65);font-size:13px;transition:all .15s;margin-bottom:2px;}
+.nav-item:hover{background:rgba(255,255,255,0.08);color:#fff;}
+.nav-item.active{background:var(--ax-rosa);color:#fff;}
+.sidebar-footer{padding:12px 8px;border-top:1px solid rgba(255,255,255,0.08);}
+.sidebar-footer .nav-item{color:rgba(255,255,255,0.5);}
 
-    /* ── Semantic ── */
-    --blue-bg: #e4edfb; --blue-text: #0c3e7c; --blue-border: #7aade8;
-    --green-bg: #e5f4d8; --green-text: #2d6010; --green-border: #7ebc44;
-    --amber-bg: #faebd5; --amber-text: #7a4608; --amber-border: #e08d1c;
-    --red-bg:   #fde8ec; --red-text:   #991f38; --red-border:   #f07090;
-    --purple-bg:#eeedfe; --purple-text:#3c3489;
+/* MAIN */
+.main{flex:1;display:flex;flex-direction:column;overflow:hidden;}
+.topbar{height:52px;display:flex;align-items:center;justify-content:space-between;padding:0 20px;background:var(--surface);border-bottom:1px solid var(--border);flex-shrink:0;}
+.topbar-title{font-size:15px;font-weight:700;color:var(--ink);font-family:'Archivo',sans-serif;}
+.topbar-actions{display:flex;gap:8px;align-items:center;}
+.content{flex:1;overflow-y:auto;padding:20px;}
+.panel{display:none;}.panel.active{display:block;}
 
-    --radius: 8px; --radius-lg: 12px;
-    --shadow: 0 1px 4px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.05);
+/* CARDS */
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);margin-bottom:16px;overflow:hidden;box-shadow:var(--shadow);}
+.card-header{display:flex;align-items:center;justify-content:space-between;padding:14px 16px;border-bottom:1px solid var(--border);}
+.card-title{font-size:13px;font-weight:700;color:var(--ink);}
 
-    /* ── Typography ── */
-    --font-title: 'Archivo', 'Arial Black', sans-serif;
-    --font-body:  'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
-  }
-  body { font-family: var(--font-body); background: var(--bg); color: var(--text); font-size: 14px; min-height: 100vh; }
+/* METRICS */
+.metrics{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;margin-bottom:16px;}
+.metric{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:14px 16px;box-shadow:var(--shadow);}
+.metric-label{font-size:11px;color:var(--ink3);text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px;}
+.metric-value{font-size:22px;font-weight:800;color:var(--ink);}
 
-  /* Layout */
-  .layout { display: flex; min-height: 100vh; }
-  .sidebar { width: 224px; background: var(--ax-negro); border-right: none; display: flex; flex-direction: column; position: fixed; top: 0; bottom: 0; left: 0; z-index: 10; }
-  .sidebar-logo { padding: 1.4rem 1.1rem 1.1rem; border-bottom: 1px solid rgba(255,255,255,0.07); }
-  .logo-title { font-family: var(--font-title); font-size: 17px; font-weight: 800; letter-spacing: -0.2px; color: #fff; display: flex; align-items: center; gap: 10px; }
-  .logo-sub { font-size: 10px; color: rgba(255,255,255,0.38); margin-top: 4px; letter-spacing: 0.2px; text-transform: uppercase; }
-  .sidebar-nav { padding: 0.9rem 0.6rem; flex: 1; }
-  .nav-section { font-size: 9px; font-weight: 600; letter-spacing: 1.2px; color: rgba(255,255,255,0.28); text-transform: uppercase; padding: 4px 10px 6px; }
-  .nav-item { display: flex; align-items: center; gap: 10px; padding: 9px 12px; border-radius: var(--radius); color: rgba(255,255,255,0.55); font-size: 13px; cursor: pointer; margin-bottom: 2px; transition: all 0.15s; }
-  .nav-item:hover { background: rgba(255,255,255,0.06); color: #fff; }
-  .nav-item.active { background: var(--ax-rosa); color: #fff; font-weight: 600; }
-  .nav-item svg { width: 16px; height: 16px; flex-shrink: 0; }
-  .sidebar-footer { padding: 1rem 1.1rem; border-top: 1px solid rgba(255,255,255,0.07); font-size: 10px; color: rgba(255,255,255,0.28); line-height: 1.6; }
+/* BUTTONS */
+.btn{display:inline-flex;align-items:center;gap:6px;padding:7px 14px;border:1px solid var(--border2);border-radius:8px;cursor:pointer;font-size:13px;font-weight:600;background:var(--surface);color:var(--ink);transition:all .15s;white-space:nowrap;font-family:'Inter',sans-serif;}
+.btn:hover{background:var(--bg);}
+.btn-primary{background:var(--ax-rosa);color:#fff;border-color:transparent;}
+.btn-primary:hover{background:var(--ax-rosa-deep);}
+.btn-sm{padding:5px 10px;font-size:12px;border-radius:6px;}
+.btn-icon{padding:5px 8px;}
+.btn-danger{color:var(--red);}
+.btn-danger:hover{background:var(--red-bg);}
 
-  .main { margin-left: 224px; flex: 1; }
-  .topbar { background: var(--surface); border-bottom: 1px solid var(--border); padding: 0 1.5rem; height: 56px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 5; border-left: 3px solid var(--ax-rosa); }
-  .topbar-title { font-family: var(--font-title); font-size: 15px; font-weight: 700; letter-spacing: -0.2px; color: var(--ax-negro); }
-  .topbar-actions { display: flex; gap: 8px; }
-  .content { padding: 1.5rem; max-width: 1200px; }
+/* TABLE */
+.table-wrap{overflow-x:auto;}
+table{width:100%;border-collapse:collapse;font-size:13px;}
+th{padding:10px 12px;text-align:left;font-size:11px;font-weight:600;color:var(--ink3);text-transform:uppercase;letter-spacing:.4px;border-bottom:1px solid var(--border);background:var(--bg);}
+td{padding:11px 12px;border-bottom:1px solid var(--border);color:var(--ink);}
+tr:last-child td{border-bottom:none;}
+tr:hover td{background:var(--bg);}
+.empty{text-align:center;color:var(--ink3);padding:32px;font-size:13px;}
 
-  /* Buttons */
-  .btn { display: inline-flex; align-items: center; gap: 6px; padding: 7px 14px; border: 1px solid var(--border2); border-radius: var(--radius); background: transparent; color: var(--text); font-size: 13px; cursor: pointer; transition: all 0.15s; font-family: var(--font-body); white-space: nowrap; }
-  .btn:hover { background: var(--surface2); }
-  .btn:active { transform: scale(0.98); }
-  .btn-primary { background: var(--ax-rosa); color: #fff; border-color: var(--ax-rosa); font-weight: 600; }
-  .btn-primary:hover { background: var(--ax-rosa-deep); border-color: var(--ax-rosa-deep); }
-  .btn-sm { padding: 4px 10px; font-size: 12px; }
-  .btn-danger { color: var(--red-text); border-color: var(--red-border); }
-  .btn-danger:hover { background: var(--red-bg); }
-  .btn-icon { padding: 6px 8px; }
+/* FORMS */
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+.form-group{display:flex;flex-direction:column;gap:5px;}
+.form-group.full{grid-column:1/-1;}
+label{font-size:12px;font-weight:600;color:var(--ink2);}
+input,select,textarea{padding:8px 10px;border:1px solid var(--border2);border-radius:7px;font-size:13px;font-family:'Inter',inherit;background:var(--surface);color:var(--ink);transition:border-color .15s;width:100%;}
+input:focus,select:focus,textarea:focus{outline:none;border-color:var(--ax-rosa);}
+textarea{resize:vertical;min-height:70px;}
+.search-row{display:flex;gap:10px;padding:12px 16px;border-bottom:1px solid var(--border);}
+.search-row input,.search-row select{flex:1;}
 
-  /* Metrics */
-  .metrics { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; margin-bottom: 1.5rem; }
-  .metric { background: var(--ax-carbon); border-radius: var(--radius); padding: 1rem 1.1rem; position: relative; overflow: hidden; }
-  .metric::after { content:''; position:absolute; right:-14px; bottom:-14px; width:54px; height:54px; border-radius:50%; background:var(--ax-rosa); opacity:0.08; }
-  .metric-label { font-size: 10px; color: rgba(255,255,255,0.45); text-transform: uppercase; letter-spacing: 0.7px; margin-bottom: 5px; font-weight: 500; }
-  .metric-value { font-family: var(--font-title); font-size: 26px; font-weight: 800; line-height: 1; color: #fff; }
-  .metric-sub { font-size: 11px; color: rgba(255,255,255,0.38); margin-top: 4px; }
+/* BADGES */
+.badge{display:inline-block;padding:3px 9px;border-radius:20px;font-size:11px;font-weight:600;}
+.badge-gray{background:#f0f0f0;color:var(--ink2);}
+.badge-info{background:var(--blue-bg);color:var(--blue);}
+.badge-success{background:var(--green-bg);color:var(--green);}
+.badge-warning{background:var(--amber-bg);color:var(--amber);}
+.badge-danger{background:var(--red-bg);color:var(--red);}
 
-  /* Cards */
-  .card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 1.25rem; margin-bottom: 1rem; box-shadow: var(--shadow); }
-  .card-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.25rem; padding-bottom: 0.75rem; border-bottom: 1px solid var(--border); }
-  .card-title { font-family: var(--font-title); font-size: 13px; font-weight: 700; letter-spacing: -0.1px; color: var(--ax-negro); text-transform: uppercase; letter-spacing: 0.4px; }
+/* MODAL */
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:100;align-items:center;justify-content:center;padding:1rem;}
+.modal-overlay.open{display:flex;}
+.modal{background:var(--surface);border-radius:14px;width:100%;box-shadow:0 20px 60px rgba(0,0,0,0.2);max-height:90vh;overflow-y:auto;}
+.modal-header{background:var(--ax-negro);padding:18px 24px;border-radius:14px 14px 0 0;border-bottom:3px solid var(--ax-rosa);}
+.modal-title{font-size:16px;font-weight:800;color:#fff;font-family:'Archivo',sans-serif;}
+.modal-body{padding:24px;}
+.modal-actions{display:flex;justify-content:flex-end;gap:10px;margin-top:20px;}
 
-  /* Table */
-  .table-wrap { overflow-x: auto; }
-  table { width: 100%; border-collapse: collapse; font-size: 13px; }
-  th { text-align: left; padding: 9px 12px; color: var(--text2); font-weight: 600; font-size: 10px; text-transform: uppercase; letter-spacing: 0.6px; border-bottom: 2px solid var(--ax-rosa); background: var(--surface); }
-  td { padding: 11px 12px; border-bottom: 1px solid var(--border); color: var(--text); vertical-align: middle; }
-  tr:last-child td { border-bottom: none; }
-  tr:hover td { background: #fff0f5; }
+/* MISC */
+.item-row{display:flex;gap:8px;align-items:center;margin-bottom:8px;}
+.dash-btn{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:18px 16px;cursor:pointer;text-align:left;display:flex;flex-direction:column;gap:10px;transition:all .15s;font-family:inherit;}
+.dash-btn:hover{border-color:var(--ax-rosa);box-shadow:0 4px 12px rgba(255,1,91,0.12);transform:translateY(-2px);}
+.dash-icon{width:44px;height:44px;border-radius:10px;display:flex;align-items:center;justify-content:center;}
+#save-indicator{font-size:11px;color:var(--ink3);opacity:0;transition:opacity .3s;}
+#save-indicator.show{opacity:1;}
+::-webkit-scrollbar{width:5px;height:5px;}
+::-webkit-scrollbar-thumb{background:rgba(0,0,0,0.15);border-radius:3px;}
 
-  /* Badges */
-  .badge { display: inline-flex; align-items: center; padding: 3px 9px; border-radius: 20px; font-size: 11px; font-weight: 500; }
-  .badge-success { background: var(--green-bg); color: var(--green-text); }
-  .badge-warning { background: var(--amber-bg); color: var(--amber-text); }
-  .badge-danger { background: var(--red-bg); color: var(--red-text); }
-  .badge-info { background: var(--blue-bg); color: var(--blue-text); }
-  .badge-purple { background: var(--purple-bg); color: var(--purple-text); }
-  .badge-gray { background: var(--surface2); color: var(--text2); }
-
-  /* Forms */
-  .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
-  .form-group { display: flex; flex-direction: column; gap: 5px; }
-  .form-group.full { grid-column: 1 / -1; }
-  label { font-size: 11px; font-weight: 600; color: var(--text2); text-transform: uppercase; letter-spacing: 0.5px; }
-  input, select, textarea { padding: 8px 10px; border: 1px solid var(--border2); border-radius: var(--radius); font-size: 13px; font-family: var(--font-body); color: var(--text); background: var(--surface); transition: border-color 0.15s, box-shadow 0.15s; outline: none; width: 100%; }
-  input:focus, select:focus, textarea:focus { border-color: var(--ax-rosa); box-shadow: 0 0 0 3px rgba(255,1,91,0.10); }
-  textarea { resize: vertical; min-height: 70px; }
-
-  /* Modal */
-  .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(19,19,21,0.55); z-index: 100; align-items: center; justify-content: center; padding: 1rem; backdrop-filter: blur(2px); }
-  .modal-overlay.open { display: flex; }
-  .modal { background: var(--surface); border-radius: var(--radius-lg); padding: 0; width: 100%; max-width: 540px; box-shadow: 0 24px 72px rgba(0,0,0,0.25); animation: pop 0.18s ease; overflow: hidden; }
-  .modal-header { background: var(--ax-negro); padding: 1rem 1.5rem; }
-  @keyframes pop { from { transform: scale(0.96); opacity:0; } to { transform: scale(1); opacity:1; } }
-  .modal-title { font-family: var(--font-title); font-size: 15px; font-weight: 700; color: #fff; letter-spacing: 0.1px; }
-  .modal-body { padding: 1.4rem 1.5rem; }
-  .modal-actions { display: flex; gap: 8px; justify-content: flex-end; margin-top: 1.25rem; padding-top: 1rem; border-top: 1px solid var(--border); }
-
-  /* Misc */
-  .empty { text-align: center; padding: 2.5rem; color: var(--text3); font-size: 13px; }
-  .search-row { display: flex; gap: 8px; margin-bottom: 1rem; }
-  .search-row input { flex: 1; }
-  .search-row select { width: 180px; flex-shrink: 0; }
-  .progress-bar { height: 5px; border-radius: 3px; background: var(--surface2); overflow: hidden; margin-top: 3px; }
-  .progress-fill { height: 100%; border-radius: 3px; transition: width 0.3s; }
-  .avail-dots { display: flex; gap: 2px; flex-wrap: wrap; }
-  .avail-dot { width: 9px; height: 9px; border-radius: 50%; }
-  .dot-used { background: #E24B4A; }
-  .dot-free { background: #639922; }
-  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
-  .timeline { display: flex; flex-direction: column; gap: 10px; }
-  .tl-item { display: flex; gap: 10px; align-items: flex-start; }
-  .tl-dot { width: 8px; height: 8px; border-radius: 50%; margin-top: 4px; flex-shrink: 0; }
-  .bar-chart { display: flex; align-items: flex-end; gap: 5px; height: 100px; padding-bottom: 4px; }
-  .bar-col { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 3px; }
-  .bar { width: 100%; border-radius: 3px 3px 0 0; min-height: 3px; background: var(--ax-rosa); transition: height 0.3s; }
-  .bar-label { font-size: 10px; color: var(--text3); }
-  .panel { display: none; }
-  .panel.active { display: block; }
-  .tag { font-size: 11px; padding: 2px 7px; border-radius: 4px; background: var(--surface2); color: var(--text2); display: inline-block; margin: 1px; }
-  .items-list { display: flex; flex-direction: column; gap: 6px; }
-  .item-row { display: flex; gap: 8px; align-items: center; }
-  .item-row select { flex: 1; }
-  .item-row input[type=number] { width: 80px; flex-shrink: 0; }
-  .save-indicator { display: none; position: fixed; bottom: 1.5rem; right: 1.5rem; background: var(--ax-negro); color: #fff; border: 1px solid var(--ax-rosa); padding: 9px 16px; border-radius: var(--radius); font-size: 12px; font-weight: 600; z-index: 200; animation: fadein 0.2s; letter-spacing: 0.3px; }
-  @keyframes fadein { from { opacity:0; transform:translateY(6px); } to { opacity:1; transform:translateY(0); } }
-  .detail-row { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid var(--border); font-size: 13px; }
-  .detail-row:last-child { border-bottom: none; }
-  .detail-label { color: var(--text2); font-weight: 500; }
-
-  /* ── Artaxos section heading style ── */
-  .section-label {
-    font-size: 10px; font-weight: 700; letter-spacing: 1.2px; text-transform: uppercase;
-    color: var(--ax-rosa); display: flex; align-items: center; gap: 8px; margin-bottom: 8px;
-  }
-  .section-label::after { content:''; flex:1; height:1px; background:var(--ax-rosa); opacity:.25; }
-
-  /* ── Print / document styles ── */
-  @media print {
-    @page { margin: 18mm 20mm; }
-    body { background: #fff !important; }
-    .layout, .sidebar, .topbar, .modal-overlay { display: none !important; }
-    #print-doc { display: block !important; }
-  }
-  #print-doc {
-    display: none;
-    font-family: 'Inter', Arial, sans-serif;
-    color: #131315;
-    font-size: 12px;
-    line-height: 1.55;
-  }
-  /* Document header band */
-  .doc-header {
-    background: #131315;
-    color: #fff;
-    padding: 18px 24px 14px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    border-radius: 4px 4px 0 0;
-  }
-  .doc-header-brand { display: flex; align-items: center; gap: 10px; }
-  .doc-header-brand .brand-name { font-family: 'Archivo', 'Arial Black', sans-serif; font-size: 22px; font-weight: 800; color: #FF015B; letter-spacing: -0.3px; }
-  .doc-header-brand .brand-tagline { font-size: 9px; color: rgba(255,255,255,0.5); text-transform: uppercase; letter-spacing: 1px; margin-top: 2px; }
-  .doc-header-meta { text-align: right; font-size: 11px; color: rgba(255,255,255,0.7); }
-  .doc-header-meta strong { display: block; color: #FF015B; font-size: 13px; margin-bottom: 2px; }
-  /* Rosa stripe */
-  .doc-stripe { height: 4px; background: #FF015B; margin-bottom: 20px; }
-  /* Document body */
-  .doc-body { padding: 0 2px; }
-  .doc-section-title { font-size: 9px; font-weight: 700; letter-spacing: 1.4px; text-transform: uppercase; color: #FF015B; border-bottom: 1px solid #FF015B; padding-bottom: 4px; margin: 16px 0 8px; }
-  .doc-table { width: 100%; border-collapse: collapse; font-size: 11px; margin-bottom: 12px; }
-  .doc-table th { background: #131315; color: #fff; padding: 6px 10px; text-align: left; font-size: 9px; letter-spacing: 0.8px; text-transform: uppercase; }
-  .doc-table td { padding: 8px 10px; border-bottom: 1px solid #e8e5e8; vertical-align: top; }
-  .doc-table tr:nth-child(even) td { background: #faf8f9; }
-  .doc-total { background: #131315; color: #fff; padding: 12px 16px; border-radius: 4px; display: flex; justify-content: space-between; align-items: center; margin-top: 12px; }
-  .doc-total-label { font-size: 10px; text-transform: uppercase; letter-spacing: 1px; color: rgba(255,255,255,0.6); }
-  .doc-total-value { font-family: 'Archivo', 'Arial Black', sans-serif; font-size: 20px; font-weight: 800; color: #FF015B; }
-  /* Watermark */
-  .doc-watermark { position: fixed; bottom: 40mm; right: 20mm; opacity: 0.04; pointer-events: none; transform: rotate(-15deg); font-family: 'Archivo', 'Arial Black', sans-serif; font-size: 72px; font-weight: 900; color: #FF015B; white-space: nowrap; }
-  /* Footer */
-  .doc-footer { margin-top: 24px; padding-top: 10px; border-top: 1px solid #e8e5e8; display: flex; justify-content: space-between; font-size: 9px; color: #aaa; }
-  .doc-footer-brand { color: #FF015B; font-weight: 600; }
+@media print{
+  .sidebar,.topbar,.modal-overlay,.btn,.search-row,.nav-item{display:none!important;}
+  .app{display:block;}
+  .content{padding:0;}
+  .panel{display:block!important;}
+}
 </style>
 </head>
 <body>
-
-<div class="save-indicator" id="save-indicator">✓ Guardado</div>
-
-<div class="layout">
+<div class="app">
   <!-- SIDEBAR -->
-  <aside class="sidebar">
-    <div class="sidebar-logo">
-      <div class="logo-title">
-        <!-- Artaxos isotipo: anillo de puntos (fiel al logotipo oficial) -->
-        <svg width="30" height="30" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" style="flex-shrink:0;">
-          <!-- Puntos grandes: posiciones cardinales (0°,90°,180°,270°) r=22 del centro -->
-          <circle cx="50"   cy="28"   r="7.5"  fill="#FF015B"/>
-          <circle cx="72"   cy="50"   r="7.5"  fill="#FF015B"/>
-          <circle cx="50"   cy="72"   r="7.5"  fill="#FF015B"/>
-          <circle cx="28"   cy="50"   r="7.5"  fill="#FF015B"/>
-          <!-- Puntos medianos: posiciones diagonales (45°,135°,225°,315°) r=22 -->
-          <circle cx="65.6" cy="34.4" r="5.5"  fill="#FF015B"/>
-          <circle cx="65.6" cy="65.6" r="5.5"  fill="#FF015B"/>
-          <circle cx="34.4" cy="65.6" r="5.5"  fill="#FF015B"/>
-          <circle cx="34.4" cy="34.4" r="5.5"  fill="#FF015B"/>
-          <!-- Puntos pequeños: entre cardinal y diagonal (~22.5°,67.5°,112.5°,157.5°,202.5°,247.5°,292.5°,337.5°) -->
-          <circle cx="59.5" cy="29.5" r="3.2"  fill="#FF015B"/>
-          <circle cx="70.5" cy="40.5" r="3.2"  fill="#FF015B"/>
-          <circle cx="70.5" cy="59.5" r="3.2"  fill="#FF015B"/>
-          <circle cx="59.5" cy="70.5" r="3.2"  fill="#FF015B"/>
-          <circle cx="40.5" cy="70.5" r="3.2"  fill="#FF015B"/>
-          <circle cx="29.5" cy="59.5" r="3.2"  fill="#FF015B"/>
-          <circle cx="29.5" cy="40.5" r="3.2"  fill="#FF015B"/>
-          <circle cx="40.5" cy="29.5" r="3.2"  fill="#FF015B"/>
-          <circle cx="21" cy="9.5" r="2.4" fill="#FF015B" opacity=".7"/>
-          <!-- Centro -->
-          <circle cx="30" cy="30" r="5" fill="#FF015B" opacity=".18"/>
-        </svg>
-        Artaxos
-      </div>
-      <div class="logo-sub">SecuEvent · Gestión de equipo</div>
+  <nav class="sidebar">
+    <div class="sidebar-brand">
+      <svg width="36" height="36" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="50" cy="28" r="7.5" fill="#FF015B"/>
+        <circle cx="72" cy="50" r="7.5" fill="#FF015B"/>
+        <circle cx="50" cy="72" r="7.5" fill="#FF015B"/>
+        <circle cx="28" cy="50" r="7.5" fill="#FF015B"/>
+        <circle cx="65.6" cy="34.4" r="5.5" fill="#FF015B"/>
+        <circle cx="65.6" cy="65.6" r="5.5" fill="#FF015B"/>
+        <circle cx="34.4" cy="65.6" r="5.5" fill="#FF015B"/>
+        <circle cx="34.4" cy="34.4" r="5.5" fill="#FF015B"/>
+        <circle cx="59.5" cy="29.5" r="3.2" fill="#FF015B"/>
+        <circle cx="70.5" cy="40.5" r="3.2" fill="#FF015B"/>
+        <circle cx="70.5" cy="59.5" r="3.2" fill="#FF015B"/>
+        <circle cx="59.5" cy="70.5" r="3.2" fill="#FF015B"/>
+        <circle cx="40.5" cy="70.5" r="3.2" fill="#FF015B"/>
+        <circle cx="29.5" cy="59.5" r="3.2" fill="#FF015B"/>
+        <circle cx="29.5" cy="40.5" r="3.2" fill="#FF015B"/>
+        <circle cx="40.5" cy="29.5" r="3.2" fill="#FF015B"/>
+      </svg>
+      <div style="margin-top:6px;font-family:'Archivo',sans-serif;font-weight:800;font-size:16px;color:#fff;letter-spacing:1px">ARTAXOS</div>
+      <div class="sidebar-brand-text">Gestión de eventos</div>
     </div>
-    <nav class="sidebar-nav">
+    <div class="sidebar-nav">
+      <div class="nav-section">Principal</div>
       <div class="nav-item active" onclick="showPanel('dashboard')" id="nav-dashboard">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
-        Panel principal
+        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>Panel principal
       </div>
-      <div class="nav-item" onclick="showPanel('inventory')" id="nav-inventory">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>
-        Inventario
-      </div>
-      <div class="nav-item" onclick="showPanel('reservations')" id="nav-reservations">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-        Reservaciones
-      </div>
+      <div class="nav-section" style="margin-top:8px">Comercial</div>
       <div class="nav-item" onclick="showPanel('clients')" id="nav-clients">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>
-        Clientes
+        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>Clientes
       </div>
-      <div class="nav-item" onclick="showPanel('availability')" id="nav-availability">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-        Disponibilidad
+      <div class="nav-item" onclick="showPanel('quotes')" id="nav-quotes">
+        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>Cotizaciones
       </div>
-      <div class="nav-item" onclick="showPanel('reports')" id="nav-reports">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
-        Reportes
+      <div class="nav-item" onclick="showPanel('events')" id="nav-events">
+        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>Eventos
       </div>
-    </nav>
-    <div class="sidebar-footer">
-      Artaxos Comercializadora<br>S.A.S. de C.V.<br>
-      <span style="color:rgba(255,255,255,0.18);font-size:9px;">Datos guardados localmente</span>
+      <div class="nav-item" onclick="showPanel('billing')" id="nav-billing">
+        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>Cobros
+      </div>
+      <div class="nav-section" style="margin-top:8px">Operación</div>
+      <div class="nav-item" onclick="showPanel('inventory')" id="nav-inventory">
+        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z"/></svg>Inventario
+      </div>
+      <div class="nav-item" onclick="showPanel('finance')" id="nav-finance">
+        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>Finanzas
+      </div>
     </div>
-  </aside>
+    <div class="sidebar-footer">
+      <div class="nav-item" onclick="gdriveAuth()" id="gdrive-nav-btn" style="font-size:12px">
+        <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+        <span id="gdrive-nav-label">Google Drive</span>
+      </div>
+      <div id="gdrive-status" style="font-size:10px;color:var(--ax-gris);padding:2px 10px"></div>
+    </div>
+  </nav>
 
   <!-- MAIN -->
   <div class="main">
     <div class="topbar">
       <div class="topbar-title" id="topbar-title">Panel principal</div>
       <div class="topbar-actions">
-        <button class="btn btn-sm" onclick="exportData()" title="Exportar datos como JSON">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-          Exportar
-        </button>
-        <button class="btn btn-sm" onclick="document.getElementById('import-file').click()" title="Importar datos desde JSON">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
-          Importar
-        </button>
+        <span id="save-indicator">Guardado ✓</span>
+        <button class="btn btn-sm" onclick="exportData()">↓ Exportar</button>
+        <button class="btn btn-sm" onclick="document.getElementById('import-file').click()">↑ Importar</button>
         <input type="file" id="import-file" accept=".json" style="display:none" onchange="importData(event)">
       </div>
     </div>
@@ -305,1144 +197,1408 @@
       <!-- DASHBOARD -->
       <div class="panel active" id="panel-dashboard">
         <div class="metrics" id="dash-metrics"></div>
-
-        <!-- CALENDAR -->
-        <div class="card" style="margin-bottom:1rem;">
-          <div class="card-header">
-            <span class="card-title">Demanda del inventario por mes</span>
-            <div style="display:flex;align-items:center;gap:8px;">
-              <button class="btn btn-sm btn-icon" onclick="calPrevMonth()" title="Mes anterior">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg>
-              </button>
-              <span id="cal-title" style="font-size:13px;font-weight:500;min-width:130px;text-align:center;"></span>
-              <button class="btn btn-sm btn-icon" onclick="calNextMonth()" title="Mes siguiente">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
-              </button>
-            </div>
-          </div>
-          <!-- Legend -->
-          <div style="display:flex;gap:16px;margin-bottom:1rem;flex-wrap:wrap;">
-            <div style="display:flex;align-items:center;gap:6px;font-size:12px;color:var(--text2)"><div style="width:12px;height:12px;border-radius:3px;background:#e8f5d9;border:1px solid #97c459;"></div>Libre (0–30%)</div>
-            <div style="display:flex;align-items:center;gap:6px;font-size:12px;color:var(--text2)"><div style="width:12px;height:12px;border-radius:3px;background:#fff3cd;border:1px solid #ef9f27;"></div>Demanda media (30–70%)</div>
-            <div style="display:flex;align-items:center;gap:6px;font-size:12px;color:var(--text2)"><div style="width:12px;height:12px;border-radius:3px;background:#ffe0d6;border:1px solid #f0735a;"></div>Demanda alta (70–100%)</div>
-            <div style="display:flex;align-items:center;gap:6px;font-size:12px;color:var(--text2)"><div style="width:12px;height:12px;border-radius:3px;background:#fce8e8;border:1px solid #f09595;"></div>Saturado (+100%)</div>
-          </div>
-          <!-- Grid -->
-          <div id="cal-grid" style="display:grid;grid-template-columns:repeat(7,1fr);gap:4px;"></div>
-          <!-- Day detail -->
-          <div id="cal-day-detail" style="margin-top:1rem;"></div>
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;margin-bottom:20px">
+          <button class="dash-btn" onclick="showPanel('clients')">
+            <div class="dash-icon" style="background:#e8f0fb"><svg width="22" height="22" fill="none" stroke="#1a4080" stroke-width="1.8" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/></svg></div>
+            <div style="font-size:14px;font-weight:700;font-family:'Archivo',sans-serif">Clientes</div><div style="font-size:12px;color:var(--ink3)" id="d-cli">—</div>
+          </button>
+          <button class="dash-btn" onclick="showPanel('quotes')">
+            <div class="dash-icon" style="background:#fde8f4"><svg width="22" height="22" fill="none" stroke="#D9004C" stroke-width="1.8" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></div>
+            <div style="font-size:14px;font-weight:700;font-family:'Archivo',sans-serif">Cotizaciones</div><div style="font-size:12px;color:var(--ink3)" id="d-qt">—</div>
+          </button>
+          <button class="dash-btn" onclick="showPanel('events')">
+            <div class="dash-icon" style="background:#eaf4ee"><svg width="22" height="22" fill="none" stroke="#1a6b3a" stroke-width="1.8" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></div>
+            <div style="font-size:14px;font-weight:700;font-family:'Archivo',sans-serif">Eventos</div><div style="font-size:12px;color:var(--ink3)" id="d-ev">—</div>
+          </button>
+          <button class="dash-btn" onclick="showPanel('billing')">
+            <div class="dash-icon" style="background:#fff8e1"><svg width="22" height="22" fill="none" stroke="#8a5c00" stroke-width="1.8" viewBox="0 0 24 24"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg></div>
+            <div style="font-size:14px;font-weight:700;font-family:'Archivo',sans-serif">Cobros</div><div style="font-size:12px;color:var(--ink3)" id="d-bill">—</div>
+          </button>
+          <button class="dash-btn" onclick="showPanel('inventory')">
+            <div class="dash-icon" style="background:#f0edfe"><svg width="22" height="22" fill="none" stroke="#3c3489" stroke-width="1.8" viewBox="0 0 24 24"><path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z"/></svg></div>
+            <div style="font-size:14px;font-weight:700;font-family:'Archivo',sans-serif">Inventario</div><div style="font-size:12px;color:var(--ink3)" id="d-inv">—</div>
+          </button>
+          <button class="dash-btn" onclick="showPanel('finance')">
+            <div class="dash-icon" style="background:#e8f5e9"><svg width="22" height="22" fill="none" stroke="#2e7d32" stroke-width="1.8" viewBox="0 0 24 24"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg></div>
+            <div style="font-size:14px;font-weight:700;font-family:'Archivo',sans-serif">Finanzas</div><div style="font-size:12px;color:var(--ink3)" id="d-fin">—</div>
+          </button>
         </div>
-
-        <div class="grid-2">
-          <div class="card">
-            <div class="card-header"><span class="card-title">Próximas reservaciones</span></div>
-            <div class="timeline" id="dash-upcoming"></div>
-          </div>
-          <div class="card">
-            <div class="card-header"><span class="card-title">Equipos con bajo stock</span></div>
-            <div id="dash-lowstock"></div>
-          </div>
-        </div>
-      </div>
-
-      <!-- INVENTORY -->
-      <div class="panel" id="panel-inventory">
         <div class="card">
-          <div class="card-header">
-            <span class="card-title">Inventario de equipo</span>
-            <button class="btn btn-primary btn-sm" onclick="openModal('modal-item')">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-              Agregar equipo
-            </button>
-          </div>
-          <div class="search-row">
-            <input type="text" placeholder="Buscar por nombre o código..." id="inv-search" oninput="renderInventory()">
-            <select id="inv-filter" onchange="renderInventory()">
-              <option value="">Todas las categorías</option>
-              <option>Comunicación</option><option>Protección</option><option>Vigilancia</option><option>Acceso</option><option>Emergencia</option>
-            </select>
-          </div>
-          <div class="table-wrap">
-            <table>
-              <thead><tr><th>Equipo</th><th>Categoría</th><th>Total</th><th>Disponible</th><th>Visualización</th><th>Precio/día</th><th>Estado</th><th>Acciones</th></tr></thead>
-              <tbody id="inv-body"></tbody>
-            </table>
-          </div>
+          <div class="card-header"><span class="card-title">Próximos eventos</span></div>
+          <div id="dash-upcoming" style="padding:4px 0"></div>
         </div>
       </div>
 
-      <!-- RESERVATIONS -->
-      <div class="panel" id="panel-reservations">
-        <div class="card">
-          <div class="card-header">
-            <span class="card-title">Reservaciones</span>
-            <button class="btn btn-primary btn-sm" onclick="openModal('modal-res')">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-              Nueva reservación
-            </button>
-          </div>
-          <div class="search-row">
-            <input type="text" placeholder="Buscar por cliente, evento o ID..." id="res-search" oninput="renderReservations()">
-            <select id="res-filter" onchange="renderReservations()">
-              <option value="">Todos los estados</option>
-              <option>Pendiente</option><option>Confirmada</option><option>En curso</option><option>Completada</option><option>Cancelada</option>
-            </select>
-          </div>
-          <div class="table-wrap">
-            <table>
-              <thead><tr><th>ID</th><th>Cliente</th><th>Evento</th><th>Inicio</th><th>Fin</th><th>Días</th><th>Equipo</th><th>Total</th><th>Estado</th><th>Acciones</th></tr></thead>
-              <tbody id="res-body"></tbody>
-            </table>
-          </div>
-        </div>
-      </div>
-
-      <!-- CLIENTS -->
+      <!-- CLIENTES -->
       <div class="panel" id="panel-clients">
         <div class="card">
-          <div class="card-header">
-            <span class="card-title">Clientes</span>
-            <button class="btn btn-primary btn-sm" onclick="openModal('modal-client')">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-              Nuevo cliente
-            </button>
-          </div>
-          <div class="table-wrap">
-            <table>
-              <thead><tr><th>Nombre</th><th>Empresa</th><th>Teléfono</th><th>Email</th><th>Reservaciones</th><th>Total facturado</th><th>Acciones</th></tr></thead>
-              <tbody id="cli-body"></tbody>
-            </table>
-          </div>
+          <div class="card-header"><span class="card-title">Clientes</span><button class="btn btn-primary btn-sm" onclick="openClientModal(null)">+ Nuevo cliente</button></div>
+          <div class="search-row"><input type="text" placeholder="Buscar..." id="cli-search" oninput="renderClients()"></div>
+          <div class="table-wrap"><table><thead><tr><th>Nombre</th><th>Empresa</th><th>Teléfono</th><th>Correo</th><th>Eventos</th><th></th></tr></thead><tbody id="cli-body"></tbody></table></div>
         </div>
       </div>
 
-      <!-- AVAILABILITY -->
-      <div class="panel" id="panel-availability">
+      <!-- COTIZACIONES -->
+      <div class="panel" id="panel-quotes">
+        <div class="card">
+          <div class="card-header"><span class="card-title">Cotizaciones</span><button class="btn btn-primary btn-sm" onclick="openQuoteModal(null)">+ Nueva cotización</button></div>
+          <div class="search-row">
+            <input type="text" placeholder="Buscar..." id="qt-search" oninput="renderQuotes()">
+            <select id="qt-filter" onchange="renderQuotes()"><option value="">Todos</option><option>Borrador</option><option>Enviada</option><option>Aprobada</option><option>Rechazada</option></select>
+          </div>
+          <div class="table-wrap"><table><thead><tr><th>Folio</th><th>Cliente</th><th>Evento</th><th>Fechas</th><th>Total</th><th>Estado</th><th></th></tr></thead><tbody id="qt-body"></tbody></table></div>
+        </div>
+      </div>
+
+      <!-- EVENTOS -->
+      <div class="panel" id="panel-events">
+        <div class="metrics" id="ev-metrics"></div>
         <div class="card">
           <div class="card-header">
-            <span class="card-title">Consulta de disponibilidad por fecha</span>
+            <span class="card-title">Búsqueda de eventos</span>
+            <button class="btn btn-primary btn-sm" onclick="openEventModal(null)">+ Nuevo evento</button>
           </div>
-          <div style="display:flex;gap:12px;align-items:flex-end;flex-wrap:wrap;margin-bottom:1.25rem;">
-            <div class="form-group" style="flex:1;min-width:150px;">
-              <label>Fecha de inicio</label>
-              <input type="date" id="avail-start" oninput="renderAvailability()">
-            </div>
-            <div class="form-group" style="flex:1;min-width:150px;">
-              <label>Fecha de fin</label>
-              <input type="date" id="avail-end" oninput="renderAvailability()">
-            </div>
-            <div class="form-group" style="flex:1;min-width:150px;">
-              <label>Categoría</label>
-              <select id="avail-cat" onchange="renderAvailability()">
-                <option value="">Todas las categorías</option>
-                <option>Comunicación</option><option>Protección</option><option>Vigilancia</option><option>Acceso</option><option>Emergencia</option>
-              </select>
-            </div>
-          </div>
-          <div id="avail-info" style="margin-bottom:1rem;"></div>
-          <div class="table-wrap">
-            <table>
-              <thead>
-                <tr>
-                  <th>Equipo</th>
-                  <th>Categoría</th>
-                  <th>Stock total</th>
-                  <th>Comprometido en esas fechas</th>
-                  <th>Disponible para rentar</th>
-                  <th>Precio/día</th>
-                  <th>Estado</th>
-                </tr>
-              </thead>
-              <tbody id="avail-body"></tbody>
-            </table>
-          </div>
-          <div id="avail-conflicts" style="margin-top:1.25rem;"></div>
+          <div class="search-row"><input type="text" placeholder="Buscar evento..." id="ev-search" oninput="renderEventSearch()"></div>
+          <div id="ev-search-results" style="display:none;max-height:300px;overflow-y:auto"></div>
         </div>
-      </div>
-
-
-      <div class="panel" id="panel-reports">
-        <div class="metrics" id="rep-metrics"></div>
-        <div class="grid-2">
-          <div class="card">
-            <div class="card-header"><span class="card-title">Equipo más rentado</span></div>
-            <div id="rep-top"></div>
+        <div class="card">
+          <div class="card-header">
+            <div style="display:flex;align-items:center;gap:12px">
+              <button class="btn btn-sm" onclick="calPrev()">‹</button>
+              <span id="cal-label" style="font-weight:700;min-width:140px;text-align:center;font-family:'Archivo',sans-serif"></span>
+              <button class="btn btn-sm" onclick="calNext()">›</button>
+              <button class="btn btn-sm" onclick="calYear=new Date().getFullYear();calMonth=new Date().getMonth();renderCal()">Hoy</button>
+            </div>
           </div>
-          <div class="card">
-            <div class="card-header"><span class="card-title">Ingresos mensuales</span></div>
-            <div id="rep-chart"></div>
+          <div style="padding:12px">
+            <div id="cal-grid" style="display:grid;grid-template-columns:repeat(7,1fr);gap:4px"></div>
           </div>
-        </div>
-        <div class="card" style="margin-top:0">
-          <div class="card-header"><span class="card-title">Historial completo de reservaciones</span></div>
-          <div class="table-wrap">
-            <table>
-              <thead><tr><th>ID</th><th>Cliente</th><th>Evento</th><th>Fechas</th><th>Total</th><th>Estado</th></tr></thead>
-              <tbody id="rep-history"></tbody>
-            </table>
+          <div id="cal-detail" style="display:none;padding:16px;border-top:1px solid var(--border)">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+              <span id="cal-detail-title" style="font-weight:700;font-family:'Archivo',sans-serif"></span>
+              <button class="btn btn-sm" onclick="document.getElementById('cal-detail').style.display='none'">✕</button>
+            </div>
+            <div id="cal-detail-body"></div>
           </div>
         </div>
       </div>
 
-    </div><!-- content -->
-  </div><!-- main -->
-</div><!-- layout -->
+      <!-- COBROS -->
+      <div class="panel" id="panel-billing">
+        <div class="metrics" id="bill-metrics"></div>
+        <div class="card">
+          <div class="card-header"><span class="card-title">Cobros</span><button class="btn btn-primary btn-sm" onclick="openPayModal(null)">+ Registrar cobro</button></div>
+          <div class="search-row">
+            <input type="text" placeholder="Buscar..." id="bill-search" oninput="renderBilling()">
+            <select id="bill-filter" onchange="renderBilling()"><option value="">Todos</option><option>Pendiente</option><option>Pagado</option></select>
+          </div>
+          <div class="table-wrap"><table><thead><tr><th>Evento</th><th>Cliente</th><th>Total evento</th><th>Cobrado</th><th>Saldo</th><th>Método</th><th>Fecha</th><th>Estado</th><th></th></tr></thead><tbody id="bill-body"></tbody></table></div>
+        </div>
+      </div>
+
+      <!-- INVENTARIO -->
+      <div class="panel" id="panel-inventory">
+        <div class="card">
+          <div class="card-header"><span class="card-title">Inventario de equipos</span><button class="btn btn-primary btn-sm" onclick="openItemModal(null)">+ Agregar equipo</button></div>
+          <div class="search-row"><input type="text" placeholder="Buscar equipo..." id="inv-search" oninput="renderInventory()"></div>
+          <div class="table-wrap"><table><thead><tr><th>Equipo</th><th>Categoría</th><th>Unidades</th><th>Precio/día</th><th>Descripción</th><th></th></tr></thead><tbody id="inv-body"></tbody></table></div>
+        </div>
+      </div>
+
+      <!-- FINANZAS -->
+      <div class="panel" id="panel-finance">
+        <div class="metrics" id="fin-metrics"></div>
+        <div style="display:grid;grid-template-columns:1fr 220px;gap:16px;margin-bottom:16px">
+          <div class="card">
+            <div class="card-header">
+              <span class="card-title">Ingresos vs Egresos</span>
+              <div style="display:flex;gap:6px;align-items:center">
+                <button class="btn btn-sm" id="fin-btn-m" onclick="setFinView('monthly')" style="background:var(--ax-rosa);color:#fff">Mensual</button>
+                <button class="btn btn-sm" id="fin-btn-w" onclick="setFinView('weekly')">Semanal</button>
+                <button class="btn btn-sm" onclick="finPrev()">‹</button>
+                <span id="fin-label" style="font-size:12px;min-width:120px;text-align:center"></span>
+                <button class="btn btn-sm" onclick="finNext()">›</button>
+                <button class="btn btn-sm" onclick="finToday()">Hoy</button>
+              </div>
+            </div>
+            <div style="padding:16px;position:relative">
+              <div id="fin-bars" style="display:flex;align-items:flex-end;gap:8px;height:120px"></div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-header"><span class="card-title">IVA estimado</span></div>
+            <div style="padding:16px" id="fin-iva"></div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-header"><span class="card-title">Egresos</span><button class="btn btn-primary btn-sm" onclick="openExpenseModal(null)">+ Registrar egreso</button></div>
+          <div class="search-row">
+            <input type="text" placeholder="Buscar egreso..." id="exp-search" oninput="renderFinance()">
+            <select id="exp-cat-filter" onchange="renderFinance()">
+              <option value="">Todas las categorías</option>
+              <option>Combustible</option><option>Nómina</option><option>Mantenimiento</option><option>Renta</option>
+              <option>Servicios</option><option>Compras</option><option>Logística</option><option>Marketing</option>
+              <option>Impuestos</option><option>Otro</option>
+            </select>
+          </div>
+          <div class="table-wrap"><table><thead><tr><th>Fecha</th><th>Categoría</th><th>Descripción</th><th>Monto</th><th></th></tr></thead><tbody id="exp-body"></tbody></table></div>
+        </div>
+      </div>
+
+    </div><!-- /content -->
+  </div><!-- /main -->
+</div><!-- /app -->
 
 <!-- MODALS -->
-<!-- Equipo -->
-<div class="modal-overlay" id="modal-item">
-  <div class="modal">
-    <div class="modal-header"><p class="modal-title" id="item-modal-title">Agregar equipo al inventario</p></div>
-    <div class="modal-body">
-    <input type="hidden" id="item-edit-id">
-    <div class="form-grid">
-      <div class="form-group full"><label>Nombre del equipo *</label><input type="text" id="item-name" placeholder="ej. Radio Motorola DP4800"></div>
-      <div class="form-group"><label>Categoría</label>
-        <select id="item-cat"><option>Comunicación</option><option>Protección</option><option>Vigilancia</option><option>Acceso</option><option>Emergencia</option></select>
-      </div>
-      <div class="form-group"><label>Código / Serie</label><input type="text" id="item-code" placeholder="ej. RAD-001"></div>
-      <div class="form-group"><label>Cantidad total *</label><input type="number" id="item-qty" placeholder="0" min="1"></div>
-      <div class="form-group"><label>Precio por día ($MXN) *</label><input type="number" id="item-price" placeholder="0.00" step="0.01" min="0"></div>
-      <div class="form-group full"><label>Notas / Descripción</label><textarea id="item-notes" placeholder="Condición, accesorios incluidos, modelo, etc."></textarea></div>
-    </div>
-    <div class="modal-actions">
-      <button class="btn" onclick="closeModal('modal-item')">Cancelar</button>
-      <button class="btn btn-primary" onclick="saveItem()">Guardar equipo</button>
-    </div>
-    </div>
-  </div>
-</div>
-
-<!-- Reservación -->
-<div class="modal-overlay" id="modal-res">
-  <div class="modal" style="max-width:600px">
-    <div class="modal-header"><p class="modal-title" id="res-modal-title">Nueva reservación</p></div>
-    <div class="modal-body">
-    <input type="hidden" id="res-edit-id">
-    <div class="form-grid">
-      <div class="form-group full"><label>Cliente *</label><select id="res-client"></select></div>
-      <div class="form-group full"><label>Nombre del evento *</label><input type="text" id="res-event" placeholder="ej. Concierto Arena CDMX"></div>
-      <div class="form-group"><label>Fecha de inicio *</label><input type="date" id="res-start"></div>
-      <div class="form-group"><label>Fecha de fin *</label><input type="date" id="res-end"></div>
-      <div class="form-group"><label>Estado</label>
-        <select id="res-status"><option>Pendiente</option><option>Confirmada</option><option>En curso</option><option>Completada</option><option>Cancelada</option></select>
-      </div>
-      <div class="form-group"><label>Notas del evento</label><input type="text" id="res-notes" placeholder="Lugar, contacto, etc."></div>
-      <div class="form-group full">
-        <label>Equipo incluido</label>
-        <div class="items-list" id="res-items-list"></div>
-        <button class="btn btn-sm" style="margin-top:8px;align-self:flex-start" onclick="addResItemRow()">+ Añadir equipo</button>
-      </div>
-      <div class="form-group full"><label>Total estimado ($MXN)</label><input type="number" id="res-total" placeholder="0.00" step="0.01"></div>
-    </div>
-    <div class="modal-actions">
-      <button class="btn" onclick="closeModal('modal-res')">Cancelar</button>
-      <button class="btn btn-primary" onclick="saveReservation()">Guardar reservación</button>
-    </div>
-    </div>
-  </div>
-</div>
-
 <!-- Cliente -->
 <div class="modal-overlay" id="modal-client">
-  <div class="modal">
-    <div class="modal-header"><p class="modal-title" id="cli-modal-title">Nuevo cliente</p></div>
+  <div class="modal" style="max-width:500px">
+    <div class="modal-header"><div class="modal-title" id="cli-modal-title">Nuevo cliente</div></div>
     <div class="modal-body">
-    <input type="hidden" id="cli-edit-id">
-    <div class="form-grid">
-      <div class="form-group"><label>Nombre completo *</label><input type="text" id="cli-name" placeholder="Nombre y apellido"></div>
-      <div class="form-group"><label>Empresa / Organización</label><input type="text" id="cli-company" placeholder="Nombre de la empresa"></div>
-      <div class="form-group"><label>Teléfono</label><input type="text" id="cli-phone" placeholder="+52 55 0000 0000"></div>
-      <div class="form-group"><label>Email</label><input type="email" id="cli-email" placeholder="correo@ejemplo.com"></div>
-      <div class="form-group full"><label>Notas</label><textarea id="cli-notes" placeholder="RFC, dirección, referencias, etc."></textarea></div>
-    </div>
-    <div class="modal-actions">
-      <button class="btn" onclick="closeModal('modal-client')">Cancelar</button>
-      <button class="btn btn-primary" onclick="saveClient()">Guardar cliente</button>
-    </div>
+      <div class="form-grid">
+        <div class="form-group full"><label>Nombre *</label><input id="cli-name" placeholder="Nombre completo"></div>
+        <div class="form-group"><label>Empresa</label><input id="cli-company" placeholder="Nombre de empresa"></div>
+        <div class="form-group"><label>Teléfono</label><input id="cli-phone" placeholder="55 1234 5678"></div>
+        <div class="form-group full"><label>Correo</label><input id="cli-email" type="email" placeholder="correo@ejemplo.com"></div>
+        <div class="form-group full"><label>Notas</label><textarea id="cli-notes" placeholder="Información adicional..."></textarea></div>
+      </div>
+      <input type="hidden" id="cli-edit-id">
+      <div class="modal-actions">
+        <button class="btn" onclick="closeModal('modal-client')">Cancelar</button>
+        <button class="btn btn-primary" onclick="saveClient()">Guardar</button>
+      </div>
     </div>
   </div>
 </div>
 
-<!-- Detalle reservación -->
-<div class="modal-overlay" id="modal-detail">
-  <div class="modal">
-    <div class="modal-header">
-      <p class="modal-title" id="detail-title">Detalle de reservación</p>
-    </div>
+<!-- Cotización -->
+<div class="modal-overlay" id="modal-quote">
+  <div class="modal" style="max-width:680px">
+    <div class="modal-header"><div class="modal-title" id="qt-modal-title">Nueva cotización</div></div>
     <div class="modal-body">
-      <div id="detail-body"></div>
+      <div class="form-grid">
+        <div class="form-group"><label>Cliente *</label><select id="qt-client"></select></div>
+        <div class="form-group"><label>Evento *</label><input id="qt-event" placeholder="Descripción del evento"></div>
+        <div class="form-group"><label>Fecha inicio *</label><input type="date" id="qt-start"></div>
+        <div class="form-group"><label>Fecha fin *</label><input type="date" id="qt-end"></div>
+        <div class="form-group"><label>Válida hasta</label><input type="date" id="qt-valid"></div>
+        <div class="form-group"><label>Descuento (%)</label><input type="number" id="qt-disc" min="0" max="100" value="0" oninput="calcQtTotal()"></div>
+      </div>
+      <div style="margin:14px 0 8px;display:flex;justify-content:space-between;align-items:center">
+        <label style="font-size:13px;font-weight:700">Equipos</label>
+        <button class="btn btn-sm btn-primary" onclick="addQtItemRow(null)">+ Agregar equipo</button>
+      </div>
+      <div id="qt-items"></div>
+      <div id="qt-total-box" style="text-align:right;margin-top:12px;font-size:13px;color:var(--ink2)"></div>
+      <div class="form-group full" style="margin-top:14px"><label>Notas</label><textarea id="qt-notes" placeholder="Condiciones, observaciones..."></textarea></div>
+      <input type="hidden" id="qt-edit-id">
       <div class="modal-actions">
-        <button class="btn" onclick="closeModal('modal-detail')">Cerrar</button>
-        <button class="btn btn-primary" id="btn-print-doc" onclick="printDocument()">🖨️ Imprimir / PDF</button>
+        <button class="btn" onclick="closeModal('modal-quote')">Cancelar</button>
+        <button class="btn btn-primary" onclick="saveQuote()">Guardar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Vista previa cotización -->
+<div class="modal-overlay" id="modal-qt-preview">
+  <div class="modal" style="max-width:780px">
+    <div class="modal-header"><div class="modal-title">Vista previa — Cotización</div></div>
+    <div class="modal-body">
+      <div id="printable-qt"></div>
+      <div class="modal-actions">
+        <button class="btn" onclick="closeModal('modal-qt-preview')">Cerrar</button>
+        <button class="btn btn-primary" onclick="printQuote()">🖨️ Imprimir / PDF</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Evento -->
+<div class="modal-overlay" id="modal-event">
+  <div class="modal" style="max-width:580px">
+    <div class="modal-header"><div class="modal-title" id="ev-modal-title">Nuevo evento</div></div>
+    <div class="modal-body">
+      <div class="form-grid">
+        <div class="form-group"><label>Cliente *</label><select id="ev-client"></select></div>
+        <div class="form-group"><label>Evento *</label><input id="ev-event" placeholder="Nombre del evento"></div>
+        <div class="form-group"><label>Fecha inicio *</label><input type="date" id="ev-start"></div>
+        <div class="form-group"><label>Fecha fin *</label><input type="date" id="ev-end"></div>
+        <div class="form-group"><label>Estado</label>
+          <select id="ev-status"><option>Confirmado</option><option>En curso</option><option>Completado</option><option>Cancelado</option></select>
+        </div>
+        <div class="form-group"><label>Total ($)</label><input type="number" id="ev-total" min="0" step="0.01" placeholder="0.00"></div>
+      </div>
+      <div style="margin:14px 0 8px;display:flex;justify-content:space-between;align-items:center">
+        <label style="font-size:13px;font-weight:700">Equipos asignados</label>
+        <button class="btn btn-sm btn-primary" onclick="addEvItem()">+ Agregar equipo</button>
+      </div>
+      <div id="ev-items"></div>
+      <div class="form-group full" style="margin-top:14px"><label>Notas</label><textarea id="ev-notes" placeholder="Notas del evento..."></textarea></div>
+      <input type="hidden" id="ev-edit-id">
+      <div class="modal-actions">
+        <button class="btn" onclick="closeModal('modal-event')">Cancelar</button>
+        <button class="btn btn-primary" onclick="saveEvent()">Guardar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Cobro -->
+<div class="modal-overlay" id="modal-pay">
+  <div class="modal" style="max-width:580px">
+    <div class="modal-header"><div class="modal-title" id="pay-modal-title">Registrar cobro</div></div>
+    <div class="modal-body">
+      <div class="form-grid">
+        <div class="form-group full"><label>Evento *</label><select id="pay-event" onchange="updatePayEventInfo()"></select></div>
+        <div id="pay-event-info" style="display:none;grid-column:1/-1;background:var(--bg);border-radius:8px;padding:10px 14px;font-size:12px;display:flex;gap:16px">
+          <span>Total: <strong id="pay-ev-total">—</strong></span>
+          <span>Cobrado: <strong id="pay-ev-cobrado" style="color:var(--green)">—</strong></span>
+          <span>Saldo: <strong id="pay-ev-saldo" style="color:var(--amber)">—</strong></span>
+        </div>
+        <div class="form-group"><label>Estado</label>
+          <select id="pay-status"><option>Pendiente</option><option>Pagado</option></select>
+        </div>
+        <div class="form-group"><label>Notas</label><input id="pay-notes" placeholder="Referencia, observaciones..."></div>
+      </div>
+      <div style="margin:14px 0 8px;display:flex;justify-content:space-between;align-items:center">
+        <label style="font-size:13px;font-weight:700">Pagos</label>
+        <button class="btn btn-sm btn-primary" onclick="addPagoRow(null)">+ Agregar pago</button>
+      </div>
+      <div id="pagos-list"></div>
+      <div id="pagos-total" style="display:none;text-align:right;margin-top:8px;font-size:13px;font-weight:700;color:var(--green)"></div>
+      <input type="hidden" id="pay-edit-id">
+      <div class="modal-actions">
+        <button class="btn" onclick="closeModal('modal-pay')">Cancelar</button>
+        <button class="btn btn-primary" onclick="savePayment()">Guardar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Equipo inventario -->
+<div class="modal-overlay" id="modal-item">
+  <div class="modal" style="max-width:480px">
+    <div class="modal-header"><div class="modal-title" id="item-modal-title">Nuevo equipo</div></div>
+    <div class="modal-body">
+      <div class="form-grid">
+        <div class="form-group full"><label>Nombre del equipo *</label><input id="item-name" placeholder="Ej. Pantalla LED 3x2m"></div>
+        <div class="form-group"><label>Categoría</label><input id="item-cat" placeholder="Ej. Pantallas, Audio..."></div>
+        <div class="form-group"><label>Unidades disponibles</label><input type="number" id="item-qty" min="0" value="1"></div>
+        <div class="form-group"><label>Precio/día ($)</label><input type="number" id="item-price" min="0" step="0.01" placeholder="0.00"></div>
+        <div class="form-group full"><label>Descripción</label><textarea id="item-desc" placeholder="Características técnicas..."></textarea></div>
+      </div>
+      <input type="hidden" id="item-edit-id">
+      <div class="modal-actions">
+        <button class="btn" onclick="closeModal('modal-item')">Cancelar</button>
+        <button class="btn btn-primary" onclick="saveItem()">Guardar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Egreso -->
+<div class="modal-overlay" id="modal-expense">
+  <div class="modal" style="max-width:480px">
+    <div class="modal-header"><div class="modal-title" id="exp-modal-title">Registrar egreso</div></div>
+    <div class="modal-body">
+      <div class="form-grid">
+        <div class="form-group"><label>Fecha *</label><input type="date" id="exp-date"></div>
+        <div class="form-group"><label>Categoría</label>
+          <select id="exp-cat">
+            <option>Combustible</option><option>Nómina</option><option>Mantenimiento</option><option>Renta</option>
+            <option>Servicios</option><option>Compras</option><option>Logística</option><option>Marketing</option>
+            <option>Impuestos</option><option>Otro</option>
+          </select>
+        </div>
+        <div class="form-group full"><label>Descripción *</label><input id="exp-desc" placeholder="Descripción del egreso"></div>
+        <div class="form-group"><label>Monto ($) *</label><input type="number" id="exp-amount" min="0" step="0.01" placeholder="0.00"></div>
+        <div class="form-group"><label>IVA incluido</label>
+          <select id="exp-iva"><option value="si">Sí</option><option value="no">No</option></select>
+        </div>
+        <div class="form-group full"><label>Proveedor</label><input id="exp-vendor" placeholder="Nombre del proveedor"></div>
+      </div>
+      <input type="hidden" id="exp-edit-id">
+      <div class="modal-actions">
+        <button class="btn" onclick="closeModal('modal-expense')">Cancelar</button>
+        <button class="btn btn-primary" onclick="saveExpense()">Guardar</button>
       </div>
     </div>
   </div>
 </div>
 
 <script>
-// ─── DATA LAYER ───────────────────────────────────────────────────────────────
-const STORAGE_KEY = 'secuevent_v2';
+// ── ISOTIPO SVG (para documentos impresos) ────────────────────────────────────
+const AX_ISOTIPO_SVG = `<svg width="40" height="40" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+  <circle cx="50" cy="28" r="7.5" fill="#FF015B"/>
+  <circle cx="72" cy="50" r="7.5" fill="#FF015B"/>
+  <circle cx="50" cy="72" r="7.5" fill="#FF015B"/>
+  <circle cx="28" cy="50" r="7.5" fill="#FF015B"/>
+  <circle cx="65.6" cy="34.4" r="5.5" fill="#FF015B"/>
+  <circle cx="65.6" cy="65.6" r="5.5" fill="#FF015B"/>
+  <circle cx="34.4" cy="65.6" r="5.5" fill="#FF015B"/>
+  <circle cx="34.4" cy="34.4" r="5.5" fill="#FF015B"/>
+  <circle cx="59.5" cy="29.5" r="3.2" fill="#FF015B"/>
+  <circle cx="70.5" cy="40.5" r="3.2" fill="#FF015B"/>
+  <circle cx="70.5" cy="59.5" r="3.2" fill="#FF015B"/>
+  <circle cx="59.5" cy="70.5" r="3.2" fill="#FF015B"/>
+  <circle cx="40.5" cy="70.5" r="3.2" fill="#FF015B"/>
+  <circle cx="29.5" cy="59.5" r="3.2" fill="#FF015B"/>
+  <circle cx="29.5" cy="40.5" r="3.2" fill="#FF015B"/>
+  <circle cx="40.5" cy="29.5" r="3.2" fill="#FF015B"/>
+</svg>`;
 
-function defaultData() {
-  return {
-    inventory: [],
-    clients: [],
-    reservations: [],
-    nextItemId: 1,
-    nextClientId: 1,
-    nextResNum: 1,
-  };
+const PRINT_CSS = `
+*{box-sizing:border-box;margin:0;padding:0;-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important}
+body{font-family:'Inter',sans-serif;padding:0;font-size:12px;color:#111}
+@import url('https://fonts.googleapis.com/css2?family=Archivo:wght@700;800&family=Inter:wght@400;600&display=swap');
+.np{text-align:center;margin-bottom:16px;padding:10px;background:#f5f5f5;border-radius:6px}
+@media print{.np{display:none}@page{size:A4;margin:10mm 12mm}}
+table{width:100%;border-collapse:collapse}
+th{background:#131315;color:#fff;padding:8px 10px;text-align:left;font-family:'Archivo',sans-serif}
+td{padding:7px 10px;border-bottom:1px solid #e5e5e5}
+`;
+
+// ── GOOGLE DRIVE OAUTH ────────────────────────────────────────────────────────
+const GDRIVE_CLIENT_ID='40973212413-8mf8km1rmie0jg6dof1n9anno4js0ftr.apps.googleusercontent.com';
+const GDRIVE_SCOPE='https://www.googleapis.com/auth/drive.file';
+const GDRIVE_FILE_KEY='secuevent_gdrive_file_id';
+let _gtoken=null,_gSaveTimer=null;
+
+function gdriveInit(){
+  const t=localStorage.getItem('gdrive_token');
+  const exp=parseInt(localStorage.getItem('gdrive_token_exp')||'0');
+  if(t&&Date.now()<exp){_gtoken=t;updateGdriveUI(true);}
 }
-
-let db = {};
-
-function loadDB() {
-  try { const s = localStorage.getItem(STORAGE_KEY); db = s ? JSON.parse(s) : defaultData(); }
-  catch(e) { db = defaultData(); }
+function gdriveHandleRedirect(){
+  const h=location.hash;
+  if(!h.includes('access_token'))return false;
+  const p=new URLSearchParams(h.slice(1));
+  const tok=p.get('access_token');const exp=parseInt(p.get('expires_in')||'3600');
+  if(tok){_gtoken=tok;localStorage.setItem('gdrive_token',tok);localStorage.setItem('gdrive_token_exp',String(Date.now()+exp*1000-60000));updateGdriveUI(true);history.replaceState(null,'',location.pathname);}
+  return !!tok;
 }
-
-function saveDB() {
-  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(db)); showSaveIndicator(); }
-  catch(e) { alert('Error al guardar. Es posible que el almacenamiento del navegador esté lleno.'); }
+function gdriveAuth(){
+  if(_gtoken){gdriveDisconnect();return;}
+  const url=`https://accounts.google.com/o/oauth2/v2/auth?client_id=${GDRIVE_CLIENT_ID}&redirect_uri=${encodeURIComponent(location.href.split('#')[0])}&response_type=token&scope=${encodeURIComponent(GDRIVE_SCOPE)}`;
+  location.href=url;
 }
-
-function showSaveIndicator() {
-  const el = document.getElementById('save-indicator');
-  el.style.display = 'block';
-  clearTimeout(el._t);
-  el._t = setTimeout(() => el.style.display = 'none', 2000);
+function gdriveDisconnect(){_gtoken=null;localStorage.removeItem('gdrive_token');localStorage.removeItem('gdrive_token_exp');localStorage.removeItem(GDRIVE_FILE_KEY);updateGdriveUI(false);}
+function updateGdriveUI(connected){
+  const lbl=document.getElementById('gdrive-nav-label');
+  const st=document.getElementById('gdrive-status');
+  if(lbl)lbl.textContent=connected?'Drive conectado':'Google Drive';
+  if(st)st.textContent=connected?'✓ Sincronización activa':'';
 }
-
-// ─── NAVIGATION ───────────────────────────────────────────────────────────────
-const panelTitles = { dashboard:'Panel principal', inventory:'Inventario', reservations:'Reservaciones', clients:'Clientes', availability:'Disponibilidad por fecha', reports:'Reportes' };
-
-function showPanel(name) {
-  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
-  document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'));
-  document.getElementById('panel-' + name).classList.add('active');
-  document.getElementById('nav-' + name).classList.add('active');
-  document.getElementById('topbar-title').textContent = panelTitles[name];
-  const renders = { dashboard: renderDashboard, inventory: renderInventory, reservations: renderReservations, clients: renderClients, availability: renderAvailability, reports: renderReports };
-  renders[name]?.();
+function gdriveSaveDebounced(){
+  if(!_gtoken)return;
+  clearTimeout(_gSaveTimer);
+  _gSaveTimer=setTimeout(gdriveSave,3000);
 }
-
-// ─── MODALS ───────────────────────────────────────────────────────────────────
-function openModal(id) {
-  if(id === 'modal-res') prepResModal(null);
-  document.getElementById(id).classList.add('open');
-}
-function closeModal(id) { document.getElementById(id).classList.remove('open'); }
-
-document.querySelectorAll('.modal-overlay').forEach(m => {
-  m.addEventListener('click', e => { if(e.target === m) m.classList.remove('open'); });
-});
-
-// ─── HELPERS ──────────────────────────────────────────────────────────────────
-function avail(item) { return item.total - item.used; }
-function daysBetween(s, e) { return Math.max(1, Math.round((new Date(e)-new Date(s))/(1000*60*60*24))+1); }
-function fmt(n) { return Number(n).toLocaleString('es-MX'); }
-function fmtDate(d) { if(!d) return '—'; const [y,m,dd]=d.split('-'); return `${dd}/${m}/${y}`; }
-
-function statusBadge(s) {
-  const map = { 'Disponible':'badge-success','Confirmada':'badge-info','Pendiente':'badge-warning','En curso':'badge-purple','Completada':'badge-success','Cancelada':'badge-danger','Agotado':'badge-danger','Bajo stock':'badge-warning' };
-  return `<span class="badge ${map[s]||'badge-gray'}">${s}</span>`;
-}
-
-function getItemStatus(item) {
-  const a = avail(item);
-  if(a === 0) return 'Agotado';
-  if(a / item.total < 0.3) return 'Bajo stock';
-  return 'Disponible';
-}
-
-// ─── CALENDAR STATE ───────────────────────────────────────────────────────────
-let calYear  = new Date().getFullYear();
-let calMonth = new Date().getMonth(); // 0-based
-
-function calPrevMonth() { calMonth--; if(calMonth < 0){ calMonth=11; calYear--; } renderCalendar(); }
-function calNextMonth() { calMonth++; if(calMonth > 11){ calMonth=0;  calYear++; } renderCalendar(); }
-
-function getDemandForDate(dateStr) {
-  // Returns fraction of total inventory capacity committed on that date (0–1+)
-  const totalUnits = db.inventory.reduce((a,i) => a + i.total, 0);
-  if(totalUnits === 0) return 0;
-  const active = db.reservations.filter(r => r.status !== 'Cancelada' && r.start <= dateStr && r.end >= dateStr);
-  const committed = {};
-  active.forEach(r => r.items.forEach(ri => { committed[ri.itemId] = (committed[ri.itemId]||0) + ri.qty; }));
-  const totalCommitted = Object.values(committed).reduce((a,v) => a+v, 0);
-  return totalCommitted / totalUnits;
-}
-
-function getReservationsForDate(dateStr) {
-  return db.reservations.filter(r => r.status !== 'Cancelada' && r.start <= dateStr && r.end >= dateStr);
-}
-
-function demandColor(ratio) {
-  if(ratio === 0)      return { bg:'transparent', border:'var(--border)', text:'var(--text2)', label:'' };
-  if(ratio <= 0.30)    return { bg:'#e8f5d9', border:'#97c459', text:'#3b6d11', label:'Libre' };
-  if(ratio <= 0.70)    return { bg:'#fff3cd', border:'#ef9f27', text:'#854f0b', label:'Media' };
-  if(ratio <= 1.00)    return { bg:'#ffe0d6', border:'#f0735a', text:'#a33010', label:'Alta' };
-  return                      { bg:'#fce8e8', border:'#f09595', text:'#a32d2d', label:'Saturado' };
-}
-
-function renderCalendar() {
-  const MONTHS = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
-  const DAYS   = ['Lun','Mar','Mié','Jue','Vie','Sáb','Dom'];
-
-  const titleEl = document.getElementById('cal-title');
-  const grid    = document.getElementById('cal-grid');
-  const detail  = document.getElementById('cal-day-detail');
-  if(!titleEl || !grid) return;
-
-  titleEl.textContent = MONTHS[calMonth] + ' ' + calYear;
-  detail.innerHTML = '';
-
-  const firstDay    = new Date(calYear, calMonth, 1);
-  const totalDays   = new Date(calYear, calMonth + 1, 0).getDate();
-  const startOffset = (firstDay.getDay() + 6) % 7; // Lunes = 0
-  const today       = new Date().toISOString().slice(0, 10);
-
-  let html = DAYS.map(d =>
-    '<div style="text-align:center;font-size:11px;font-weight:500;color:var(--text3);padding:6px 0;">' + d + '</div>'
-  ).join('');
-
-  // Celdas vacías antes del día 1
-  for(let i = 0; i < startOffset; i++) html += '<div></div>';
-
-  for(let d = 1; d <= totalDays; d++) {
-    const mm      = String(calMonth + 1).padStart(2, '0');
-    const dd      = String(d).padStart(2, '0');
-    const dateStr = calYear + '-' + mm + '-' + dd;
-    const ratio   = getDemandForDate(dateStr);
-    const resCount = getReservationsForDate(dateStr).length;
-    const col     = demandColor(ratio);
-    const isToday = (dateStr === today);
-
-    let bg     = col.bg;
-    let border = '1px solid ' + col.border;
-    let numColor = col.text || 'var(--text2)';
-
-    if(isToday) {
-      border   = '2px solid var(--accent, #1a1a18)';
-      numColor = 'var(--text)';
+async function gdriveSave(){
+  if(!_gtoken)return;
+  const data=JSON.stringify(db);
+  const blob=new Blob([data],{type:'application/json'});
+  const fileId=localStorage.getItem(GDRIVE_FILE_KEY);
+  try{
+    let res;
+    if(fileId){
+      res=await fetch(`https://www.googleapis.com/upload/drive/v3/files/${fileId}?uploadType=media`,{method:'PATCH',headers:{'Authorization':'Bearer '+_gtoken,'Content-Type':'application/json'},body:data});
+    } else {
+      const meta=new Blob([JSON.stringify({name:'secuevent_data.json'})],{type:'application/json'});
+      const form=new FormData();form.append('metadata',meta);form.append('file',blob);
+      res=await fetch('https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart',{method:'POST',headers:{'Authorization':'Bearer '+_gtoken},body:form});
+      if(res.ok){const j=await res.json();localStorage.setItem(GDRIVE_FILE_KEY,j.id);}
     }
-    if(ratio === 0) {
-      bg       = 'var(--surface2)';
-      numColor = 'var(--text2)';
+    showSaved();
+  } catch(e){console.warn('GDrive save error',e);}
+}
+
+// ── GOOGLE CALENDAR ───────────────────────────────────────────────────────────
+function createEventReminders(ev){
+  const d=new Date(ev.start);if(isNaN(d))return;
+  const r3=new Date(d);r3.setDate(r3.getDate()-3);
+  const r1=new Date(d);r1.setDate(r1.getDate()-1);
+  const now=new Date();
+  if(r3>now)scheduleNotif(r3,`🔔 Artaxos: "${ev.event}" en 3 días`,ev.id);
+  if(r1>now)scheduleNotif(r1,`⚠️ Artaxos: "${ev.event}" mañana`,ev.id);
+}
+function scheduleNotif(date,msg,evId){
+  const stored=JSON.parse(localStorage.getItem('secuevent_notifs')||'[]');
+  if(!stored.find(n=>n.evId===evId&&n.msg===msg))
+    stored.push({date:date.toISOString(),msg,evId});
+  localStorage.setItem('secuevent_notifs',JSON.stringify(stored));
+}
+function checkNotifs(){
+  const now=new Date();
+  const stored=JSON.parse(localStorage.getItem('secuevent_notifs')||'[]');
+  const pending=stored.filter(n=>new Date(n.date)<=now);
+  const future=stored.filter(n=>new Date(n.date)>now);
+  pending.forEach(n=>{if(Notification.permission==='granted')new Notification(n.msg);});
+  localStorage.setItem('secuevent_notifs',JSON.stringify(future));
+}
+if(Notification.permission==='default')Notification.requestPermission();
+setInterval(checkNotifs,60000);
+
+// ── DATA LAYER ────────────────────────────────────────────────────────────────
+const STORAGE_KEY='secuevent_v3';
+let db={clients:[],quotes:[],events:[],payments:[],inventory:[],expenses:[],nextClientNum:1,nextQuoteNum:1,nextEventNum:1};
+
+function loadDB(){
+  try{
+    const raw=localStorage.getItem(STORAGE_KEY);
+    if(raw){const d=JSON.parse(raw);Object.assign(db,d);}
+    // Migrate from v2 reservations if present
+    const v2=localStorage.getItem('secuevent_v2');
+    if(v2&&!db._migrated){
+      try{
+        const old=JSON.parse(v2);
+        if(old.reservations?.length){
+          old.reservations.forEach(r=>{
+            if(!db.events.find(e=>e._v2id===r.id)){
+              if(!db.nextEventNum)db.nextEventNum=1;
+              db.events.push({id:'EV-'+String(db.nextEventNum++).padStart(3,'0'),_v2id:r.id,clientId:r.clientId||'',event:r.event||r.name||'Evento importado',start:r.start||r.date||'',end:r.end||r.date||'',status:'Completado',total:r.total||0,notes:r.notes||''});
+            }
+          });
+        }
+        if(old.clients?.length){
+          old.clients.forEach(c=>{
+            if(!db.clients.find(x=>x.id===c.id))db.clients.push(c);
+          });
+        }
+        db._migrated=true;saveDB();
+      }catch(e){console.warn('Migration error',e);}
     }
+  }catch(e){console.warn('loadDB error',e);}
+}
+function saveDB(){
+  try{localStorage.setItem(STORAGE_KEY,JSON.stringify(db));}catch(e){console.warn('saveDB error',e);}
+  showSaved();gdriveSaveDebounced();
+}
+function showSaved(){const el=document.getElementById('save-indicator');if(!el)return;el.classList.add('show');setTimeout(()=>el.classList.remove('show'),2000);}
 
-    const badgeHtml = resCount > 0
-      ? '<div style="font-size:10px;font-weight:600;background:' + col.border + ';color:#fff;border-radius:10px;padding:1px 6px;line-height:1.5;margin-top:2px;">' + resCount + (resCount === 1 ? ' res.' : ' res.') + '</div>'
-      : '';
-    const pctHtml = ratio > 0
-      ? '<div style="font-size:10px;color:' + col.text + ';margin-top:1px;">' + Math.round(ratio * 100) + '%</div>'
-      : '';
-
-    html += '<div onclick="showDayDetail(\'' + dateStr + '\')" style="'
-      + 'cursor:pointer;border-radius:6px;padding:6px 4px;text-align:center;'
-      + 'background:' + bg + ';border:' + border + ';'
-      + 'min-height:56px;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;'
-      + 'transition:opacity .12s;"'
-      + ' onmouseover="this.style.opacity=\'.7\'" onmouseout="this.style.opacity=\'1\'">'
-      + '<div style="font-size:13px;font-weight:' + (isToday ? '700' : '400') + ';color:' + numColor + ';">' + d + '</div>'
-      + badgeHtml
-      + pctHtml
-      + '</div>';
-  }
-
-  grid.innerHTML = html;
+function exportData(){
+  const blob=new Blob([JSON.stringify(db,null,2)],{type:'application/json'});
+  const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='secuevent_backup_'+new Date().toISOString().slice(0,10)+'.json';a.click();
+}
+function importData(e){
+  const f=e.target.files[0];if(!f)return;
+  const reader=new FileReader();
+  reader.onload=ev=>{try{const d=JSON.parse(ev.target.result);Object.assign(db,d);saveDB();renderDashboard();alert('✓ Datos importados correctamente.');}catch{alert('Error al importar.');}};
+  reader.readAsText(f);e.target.value='';
 }
 
-function showDayDetail(dateStr) {
-  const detail = document.getElementById('cal-day-detail');
-  if(!detail) return;
-  const res = getReservationsForDate(dateStr);
-  if(!res.length) {
-    detail.innerHTML = '<div style="font-size:13px;color:var(--text3);padding:8px 0;">Sin reservaciones el ' + fmtDate(dateStr) + '.</div>';
-    return;
-  }
-  const ratio = getDemandForDate(dateStr);
-  const col   = demandColor(ratio);
-  const rows  = res.map(function(r) {
-    const c  = db.clients.find(function(x){ return x.id === r.clientId; });
-    const eq = r.items.map(function(ri){
-      const inv = db.inventory.find(function(x){ return x.id === ri.itemId; });
-      return inv ? inv.name + ' ×' + ri.qty : '';
-    }).filter(Boolean).join(', ');
-    return '<div style="display:flex;justify-content:space-between;align-items:flex-start;padding:10px 0;border-bottom:1px solid var(--border);gap:12px;flex-wrap:wrap;">'
-      + '<div>'
-      + '<div style="font-size:13px;font-weight:500;">' + r.event + '</div>'
-      + '<div style="font-size:12px;color:var(--text2);margin-top:2px;">' + (c ? c.name : '—') + ' · ' + fmtDate(r.start) + ' → ' + fmtDate(r.end) + '</div>'
-      + (eq ? '<div style="font-size:11px;color:var(--text3);margin-top:2px;">' + eq + '</div>' : '')
-      + '</div>'
-      + '<div style="flex-shrink:0;">' + statusBadge(r.status) + '</div>'
-      + '</div>';
-  }).join('');
-
-  detail.innerHTML = '<div style="border-top:2px solid ' + col.border + ';padding-top:12px;margin-top:4px;">'
-    + '<div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;flex-wrap:wrap;">'
-    + '<span style="font-size:13px;font-weight:600;">📅 ' + fmtDate(dateStr) + '</span>'
-    + '<span style="font-size:12px;font-weight:500;padding:3px 10px;border-radius:20px;background:' + col.bg + ';color:' + col.text + ';border:1px solid ' + col.border + ';">'
-    + Math.round(ratio * 100) + '% de capacidad comprometida</span>'
-    + '</div>'
-    + rows
-    + '</div>';
+// ── HELPERS ───────────────────────────────────────────────────────────────────
+const MONTHS=['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
+const MONTHS_S=['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
+function fmtD(n){return Number(n).toLocaleString('es-MX',{minimumFractionDigits:2,maximumFractionDigits:2});}
+function fmtDate(s){if(!s)return'—';const[y,m,d]=s.split('-');return`${parseInt(d)} ${MONTHS_S[parseInt(m)-1]} ${y}`;}
+function fmtFecha(s){if(!s)return'—';const[y,m,d]=s.split('-');return`${parseInt(d)} de ${MONTHS[parseInt(m)-1].toLowerCase()} de ${y}`;}
+function clientName(id){const c=db.clients.find(x=>String(x.id)===String(id));return c?c.name:'—';}
+function badge(status){
+  const map={Confirmado:'badge-info','En curso':'badge-warning',Completado:'badge-success',Cancelado:'badge-danger',Pagado:'badge-success',Pendiente:'badge-warning',Borrador:'badge-gray',Enviada:'badge-info',Aprobada:'badge-success',Rechazada:'badge-danger'};
+  return`<span class="badge ${map[status]||'badge-gray'}">${status}</span>`;
 }
 
-// ─── DASHBOARD ────────────────────────────────────────────────────────────────
-function renderDashboard() {
-  const totalItems = db.inventory.reduce((a,i)=>a+i.total,0);
-  const totalAvail = db.inventory.reduce((a,i)=>a+avail(i),0);
-  const activeRes = db.reservations.filter(r=>r.status==='Confirmada'||r.status==='En curso').length;
-  const completedRev = db.reservations.filter(r=>r.status==='Completada').reduce((a,r)=>a+r.total,0);
-  const pendingRev = db.reservations.filter(r=>r.status!=='Completada'&&r.status!=='Cancelada').reduce((a,r)=>a+r.total,0);
-
-  document.getElementById('dash-metrics').innerHTML = `
-    <div class="metric"><div class="metric-label">Unidades totales</div><div class="metric-value">${totalItems}</div><div class="metric-sub">${db.inventory.length} tipos de equipo</div></div>
-    <div class="metric"><div class="metric-label">Disponibles</div><div class="metric-value">${totalAvail}</div><div class="metric-sub">listas para rentar</div></div>
-    <div class="metric"><div class="metric-label">Reservas activas</div><div class="metric-value">${activeRes}</div><div class="metric-sub">confirmadas / en curso</div></div>
-    <div class="metric"><div class="metric-label">Clientes</div><div class="metric-value">${db.clients.length}</div><div class="metric-sub">registrados</div></div>
-    <div class="metric"><div class="metric-label">Por cobrar</div><div class="metric-value">$${fmt(pendingRev)}</div><div class="metric-sub">reservas activas</div></div>
-    <div class="metric"><div class="metric-label">Total cobrado</div><div class="metric-value">$${fmt(completedRev)}</div><div class="metric-sub">reservas completadas</div></div>
-  `;
-
-  const upcoming = db.reservations.filter(r=>r.status!=='Cancelada'&&r.status!=='Completada').sort((a,b)=>a.start.localeCompare(b.start)).slice(0,5);
-  document.getElementById('dash-upcoming').innerHTML = upcoming.length ? upcoming.map(r => {
-    const c = db.clients.find(x=>x.id===r.clientId);
-    const dotColor = {Confirmada:'#639922','En curso':'#378ADD',Pendiente:'#BA7517'}[r.status]||'#888';
-    return `<div class="tl-item"><div class="tl-dot" style="background:${dotColor}"></div><div><div style="font-size:13px;font-weight:500">${r.event}</div><div style="font-size:12px;color:var(--text2)">${c?c.name:'—'} · ${fmtDate(r.start)} → ${fmtDate(r.end)}</div></div></div>`;
-  }).join('') : '<p class="empty">Sin reservaciones próximas</p>';
-
-  const low = db.inventory.filter(i => avail(i)/i.total < 0.35).sort((a,b)=>avail(a)/a.total - avail(b)/b.total);
-  document.getElementById('dash-lowstock').innerHTML = low.length ? low.map(i => {
-    const pct = Math.round(avail(i)/i.total*100);
-    const color = pct < 15 ? '#E24B4A' : '#BA7517';
-    return `<div style="margin-bottom:12px"><div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:3px"><span>${i.name}</span><span style="color:var(--text2)">${avail(i)}/${i.total} disponibles</span></div><div class="progress-bar"><div class="progress-fill" style="width:${pct}%;background:${color}"></div></div></div>`;
-  }).join('') : '<p class="empty" style="padding:1rem 0">✓ Todos los equipos tienen buen stock</p>';
-
-  renderCalendar();
+// ── NAVIGATION ────────────────────────────────────────────────────────────────
+const panelTitles={dashboard:'Panel principal',clients:'Clientes',quotes:'Cotizaciones',events:'Eventos',billing:'Cobros',inventory:'Inventario',finance:'Finanzas'};
+function showPanel(name){
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+  const p=document.getElementById('panel-'+name);if(p)p.classList.add('active');
+  const n=document.getElementById('nav-'+name);if(n)n.classList.add('active');
+  const t=document.getElementById('topbar-title');if(t)t.textContent=panelTitles[name]||name;
+  const renders={dashboard:renderDashboard,clients:renderClients,quotes:renderQuotes,events:renderEvents,billing:renderBilling,inventory:renderInventory,finance:renderFinance};
+  if(renders[name])renders[name]();
 }
+function openModal(id){document.getElementById(id).classList.add('open');}
+function closeModal(id){document.getElementById(id).classList.remove('open');}
+document.addEventListener('keydown',e=>{if(e.key==='Escape')document.querySelectorAll('.modal-overlay.open').forEach(m=>m.classList.remove('open'));});
 
-// ─── INVENTORY ────────────────────────────────────────────────────────────────
-function renderInventory() {
-  const search = document.getElementById('inv-search').value.toLowerCase();
-  const filter = document.getElementById('inv-filter').value;
-  const items = db.inventory.filter(i =>
-    (!search || i.name.toLowerCase().includes(search) || (i.code||'').toLowerCase().includes(search)) &&
-    (!filter || i.category === filter)
-  );
-  const tbody = document.getElementById('inv-body');
-  if(!items.length) { tbody.innerHTML = `<tr><td colspan="8"><div class="empty">Sin resultados para la búsqueda</div></td></tr>`; return; }
-  tbody.innerHTML = items.map(i => {
-    const a = avail(i);
-    const pct = Math.round(a/i.total*100);
-    const status = getItemStatus(i);
-    const dotsTotal = Math.min(i.total, 12);
-    const dotsUsed = Math.round(i.used/i.total*dotsTotal);
-    const dots = Array.from({length:dotsTotal},(_,k)=>`<div class="avail-dot ${k<dotsUsed?'dot-used':'dot-free'}"></div>`).join('');
-    return `<tr>
-      <td><div style="font-weight:500">${i.name}</div><div style="font-size:11px;color:var(--text3)">${i.code||''} ${i.notes?'· '+i.notes:''}</div></td>
-      <td>${statusBadge(i.category)}</td>
-      <td style="text-align:center">${i.total}</td>
-      <td style="text-align:center;font-weight:${a===0?'600':'400'};color:${a===0?'var(--red-text)':''}">${a}</td>
-      <td><div class="avail-dots">${dots}</div><div style="font-size:10px;color:var(--text3);margin-top:3px">${pct}% libre</div></td>
-      <td>$${fmt(i.price)}</td>
-      <td>${statusBadge(status)}</td>
-      <td>
-        <div style="display:flex;gap:4px">
-          <button class="btn btn-sm btn-icon" onclick="editItem(${i.id})" title="Editar">✏️</button>
-          <button class="btn btn-sm btn-icon btn-danger" onclick="deleteItem(${i.id})" title="Eliminar">🗑️</button>
-        </div>
-      </td>
-    </tr>`;
-  }).join('');
-}
-
-function openAddItem() {
-  document.getElementById('item-modal-title').textContent = 'Agregar equipo al inventario';
-  document.getElementById('item-edit-id').value = '';
-  ['item-name','item-code','item-qty','item-price','item-notes'].forEach(id => document.getElementById(id).value = '');
-  document.getElementById('item-cat').value = 'Comunicación';
-  openModal('modal-item');
-}
-
-function editItem(id) {
-  const item = db.inventory.find(i=>i.id===id);
-  if(!item) return;
-  document.getElementById('item-modal-title').textContent = 'Editar equipo';
-  document.getElementById('item-edit-id').value = id;
-  document.getElementById('item-name').value = item.name;
-  document.getElementById('item-code').value = item.code||'';
-  document.getElementById('item-qty').value = item.total;
-  document.getElementById('item-price').value = item.price;
-  document.getElementById('item-notes').value = item.notes||'';
-  document.getElementById('item-cat').value = item.category;
-  openModal('modal-item');
-}
-
-function saveItem() {
-  const name = document.getElementById('item-name').value.trim();
-  const qty = parseInt(document.getElementById('item-qty').value)||0;
-  const price = parseFloat(document.getElementById('item-price').value)||0;
-  if(!name || qty < 1) { alert('Ingresa nombre y cantidad válidos.'); return; }
-  const editId = parseInt(document.getElementById('item-edit-id').value)||0;
-  if(editId) {
-    const i = db.inventory.find(x=>x.id===editId);
-    if(i) { i.name=name; i.category=document.getElementById('item-cat').value; i.total=qty; i.price=price; i.code=document.getElementById('item-code').value; i.notes=document.getElementById('item-notes').value; }
-  } else {
-    db.inventory.push({ id:db.nextItemId++, name, category:document.getElementById('item-cat').value, total:qty, price, code:document.getElementById('item-code').value, notes:document.getElementById('item-notes').value, used:0 });
-  }
-  saveDB(); closeModal('modal-item'); renderInventory();
-}
-
-function deleteItem(id) {
-  if(!confirm('¿Eliminar este equipo del inventario? Esta acción no se puede deshacer.')) return;
-  db.inventory = db.inventory.filter(i=>i.id!==id);
-  saveDB(); renderInventory();
-}
-
-// ─── RESERVATIONS ─────────────────────────────────────────────────────────────
-function renderReservations() {
-  const search = document.getElementById('res-search').value.toLowerCase();
-  const filter = document.getElementById('res-filter').value;
-  const items = db.reservations.filter(r => {
-    const c = db.clients.find(x=>x.id===r.clientId);
-    const match = !search || r.id.toLowerCase().includes(search) || r.event.toLowerCase().includes(search) || (c&&c.name.toLowerCase().includes(search)) || (c&&c.company.toLowerCase().includes(search));
-    return match && (!filter || r.status===filter);
-  }).sort((a,b)=>b.id.localeCompare(a.id));
-
-  const tbody = document.getElementById('res-body');
-  if(!items.length) { tbody.innerHTML = `<tr><td colspan="10"><div class="empty">Sin reservaciones encontradas</div></td></tr>`; return; }
-  tbody.innerHTML = items.map(r => {
-    const c = db.clients.find(x=>x.id===r.clientId);
-    const days = daysBetween(r.start, r.end);
-    const itemSummary = r.items.map(ri=>{ const inv=db.inventory.find(x=>x.id===ri.itemId); return inv?`${inv.name} ×${ri.qty}`:'' }).filter(Boolean).join(', ');
-    return `<tr>
-      <td style="font-size:11px;color:var(--text2);font-weight:500">${r.id}</td>
-      <td><div style="font-weight:500">${c?c.name:'—'}</div><div style="font-size:11px;color:var(--text3)">${c?c.company:''}</div></td>
-      <td>${r.event}</td>
-      <td>${fmtDate(r.start)}</td>
-      <td>${fmtDate(r.end)}</td>
-      <td style="text-align:center">${days}</td>
-      <td style="max-width:150px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:12px" title="${itemSummary}">${itemSummary||'—'}</td>
-      <td style="font-weight:600">$${fmt(r.total)}</td>
-      <td>${statusBadge(r.status)}</td>
-      <td>
-        <div style="display:flex;gap:4px">
-          <button class="btn btn-sm btn-icon" onclick="viewReservation('${r.id}')" title="Ver detalle">👁️</button>
-          <button class="btn btn-sm btn-icon" onclick="editReservation('${r.id}')" title="Editar">✏️</button>
-          <button class="btn btn-sm btn-icon" onclick="cycleStatus('${r.id}')" title="Cambiar estado">🔄</button>
-          <button class="btn btn-sm btn-icon btn-danger" onclick="deleteReservation('${r.id}')" title="Eliminar">🗑️</button>
-        </div>
-      </td>
-    </tr>`;
-  }).join('');
-}
-
-function prepResModal(resId) {
-  document.getElementById('res-items-list').innerHTML = '';
-  const sel = document.getElementById('res-client');
-  if(db.clients.length === 0) {
-    sel.innerHTML = '<option value="">— Sin clientes registrados —</option>';
-  } else {
-    sel.innerHTML = db.clients.map(c=>`<option value="${c.id}">${c.name} — ${c.company}</option>`).join('');
-  }
-  if(resId) {
-    const r = db.reservations.find(x=>x.id===resId);
-    if(!r) return;
-    document.getElementById('res-modal-title').textContent = 'Editar reservación';
-    document.getElementById('res-edit-id').value = resId;
-    sel.value = r.clientId;
-    document.getElementById('res-event').value = r.event;
-    document.getElementById('res-start').value = r.start;
-    document.getElementById('res-end').value = r.end;
-    document.getElementById('res-status').value = r.status;
-    document.getElementById('res-notes').value = r.notes||'';
-    document.getElementById('res-total').value = r.total;
-    r.items.forEach(ri => addResItemRow(ri.itemId, ri.qty));
-  } else {
-    document.getElementById('res-modal-title').textContent = 'Nueva reservación';
-    document.getElementById('res-edit-id').value = '';
-    ['res-event','res-start','res-end','res-notes','res-total'].forEach(id=>document.getElementById(id).value='');
-    document.getElementById('res-status').value = 'Pendiente';
-  }
-}
-
-function editReservation(id) { prepResModal(id); document.getElementById('modal-res').classList.add('open'); }
-
-function addResItemRow(selItemId, qty) {
-  const div = document.createElement('div');
-  div.className = 'item-row';
-  div.innerHTML = `
-    <select style="flex:1;font-size:13px">${db.inventory.map(i=>`<option value="${i.id}"${i.id==selItemId?' selected':''}>${i.name} (disp: ${avail(i)})</option>`).join('')}</select>
-    <input type="number" min="1" value="${qty||1}" style="width:80px;font-size:13px" placeholder="Cant.">
-    <button class="btn btn-sm btn-icon btn-danger" onclick="this.parentElement.remove()">✕</button>`;
-  document.getElementById('res-items-list').appendChild(div);
-}
-
-function saveReservation() {
-  const clientRaw = document.getElementById('res-client').value;
-  const clientId = parseInt(clientRaw);
-  const event = document.getElementById('res-event').value.trim();
-  const start = document.getElementById('res-start').value;
-  const end = document.getElementById('res-end').value;
-  const total = parseFloat(document.getElementById('res-total').value)||0;
-  const status = document.getElementById('res-status').value;
-  const notes = document.getElementById('res-notes').value;
-  if(!clientRaw || isNaN(clientId)) { alert('Primero debes registrar al menos un cliente antes de crear una reservación.'); return; }
-  if(!event) { alert('Escribe el nombre del evento.'); return; }
-  if(!start || !end) { alert('Selecciona las fechas de inicio y fin.'); return; }
-  if(end < start) { alert('La fecha de fin no puede ser anterior al inicio.'); return; }
-  const rows = document.getElementById('res-items-list').querySelectorAll('.item-row');
-  const items = Array.from(rows).map(row => {
-    const sel = row.querySelector('select'); const inp = row.querySelector('input[type=number]');
-    return sel && inp ? { itemId:parseInt(sel.value), qty:parseInt(inp.value)||1 } : null;
-  }).filter(Boolean);
-  const editId = document.getElementById('res-edit-id').value;
-  if(editId) {
-    const r = db.reservations.find(x=>x.id===editId);
-    if(r) { r.clientId=clientId; r.event=event; r.start=start; r.end=end; r.items=items; r.total=total; r.status=status; r.notes=notes; }
-  } else {
-    const id = 'RES-' + String(db.nextResNum++).padStart(3,'0');
-    db.reservations.push({ id, clientId, event, start, end, items, total, status, notes });
-  }
-  saveDB(); closeModal('modal-res'); renderReservations();
-}
-
-const statusCycle = ['Pendiente','Confirmada','En curso','Completada','Cancelada'];
-function cycleStatus(id) {
-  const r = db.reservations.find(x=>x.id===id);
-  if(!r) return;
-  r.status = statusCycle[(statusCycle.indexOf(r.status)+1)%statusCycle.length];
-  saveDB(); renderReservations();
-}
-
-function deleteReservation(id) {
-  if(!confirm('¿Eliminar esta reservación?')) return;
-  db.reservations = db.reservations.filter(r=>r.id!==id);
-  saveDB(); renderReservations();
-}
-
-function viewReservation(id) {
-  _printResId = id;
-  const r = db.reservations.find(x=>x.id===id);
-  if(!r) return;
-  const c = db.clients.find(x=>x.id===r.clientId);
-  const itemRows = r.items.map(ri=>{ const inv=db.inventory.find(x=>x.id===ri.itemId); return inv?`<div class="detail-row"><span class="detail-label">${inv.name}</span><span>${ri.qty} unidad(es)</span></div>`:'' }).join('');
-  document.getElementById('detail-title').textContent = r.id + ' — ' + r.event;
-  document.getElementById('detail-body').innerHTML = `
-    <div class="detail-row"><span class="detail-label">Cliente</span><span>${c?c.name+' ('+c.company+')':'—'}</span></div>
-    <div class="detail-row"><span class="detail-label">Fecha inicio</span><span>${fmtDate(r.start)}</span></div>
-    <div class="detail-row"><span class="detail-label">Fecha fin</span><span>${fmtDate(r.end)}</span></div>
-    <div class="detail-row"><span class="detail-label">Duración</span><span>${daysBetween(r.start,r.end)} días</span></div>
-    <div class="detail-row"><span class="detail-label">Estado</span>${statusBadge(r.status)}</div>
-    <div class="detail-row"><span class="detail-label">Total</span><span style="font-weight:600">$${fmt(r.total)} MXN</span></div>
-    ${r.notes?`<div class="detail-row"><span class="detail-label">Notas</span><span>${r.notes}</span></div>`:''}
-    <div style="margin-top:12px"><div style="font-size:12px;font-weight:500;color:var(--text2);margin-bottom:8px">EQUIPO INCLUIDO</div>${itemRows||'<div style="color:var(--text3);font-size:13px">Sin equipo registrado</div>'}</div>`;
-  document.getElementById('modal-detail').classList.add('open');
-}
-
-// ─── CLIENTS ──────────────────────────────────────────────────────────────────
-function renderClients() {
-  const tbody = document.getElementById('cli-body');
-  if(!db.clients.length) { tbody.innerHTML = `<tr><td colspan="7"><div class="empty">Sin clientes registrados</div></td></tr>`; return; }
-  tbody.innerHTML = db.clients.map(c => {
-    const cRes = db.reservations.filter(r=>r.clientId===c.id);
-    const totalBilled = cRes.reduce((a,r)=>a+r.total,0);
-    return `<tr>
-      <td><div style="font-weight:500">${c.name}</div>${c.notes?`<div style="font-size:11px;color:var(--text3)">${c.notes}</div>`:''}</td>
-      <td>${c.company||'—'}</td>
-      <td>${c.phone||'—'}</td>
-      <td style="color:var(--blue-text)">${c.email||'—'}</td>
-      <td style="text-align:center">${cRes.length}</td>
-      <td style="font-weight:600">$${fmt(totalBilled)}</td>
-      <td>
-        <div style="display:flex;gap:4px">
-          <button class="btn btn-sm btn-icon" onclick="editClient(${c.id})" title="Editar">✏️</button>
-          <button class="btn btn-sm btn-icon btn-danger" onclick="deleteClient(${c.id})" title="Eliminar">🗑️</button>
-        </div>
-      </td>
-    </tr>`;
-  }).join('');
-}
-
-function editClient(id) {
-  const c = db.clients.find(x=>x.id===id);
-  if(!c) return;
-  document.getElementById('cli-modal-title').textContent = 'Editar cliente';
-  document.getElementById('cli-edit-id').value = id;
-  document.getElementById('cli-name').value = c.name;
-  document.getElementById('cli-company').value = c.company||'';
-  document.getElementById('cli-phone').value = c.phone||'';
-  document.getElementById('cli-email').value = c.email||'';
-  document.getElementById('cli-notes').value = c.notes||'';
-  openModal('modal-client');
-}
-
-function saveClient() {
-  const name = document.getElementById('cli-name').value.trim();
-  if(!name) { alert('Ingresa el nombre del cliente.'); return; }
-  const editId = parseInt(document.getElementById('cli-edit-id').value)||0;
-  const data = { name, company:document.getElementById('cli-company').value, phone:document.getElementById('cli-phone').value, email:document.getElementById('cli-email').value, notes:document.getElementById('cli-notes').value };
-  if(editId) { const c = db.clients.find(x=>x.id===editId); if(c) Object.assign(c, data); }
-  else db.clients.push({ id:db.nextClientId++, ...data });
-  saveDB(); closeModal('modal-client'); renderClients();
-}
-
-function deleteClient(id) {
-  const inUse = db.reservations.some(r=>r.clientId===id);
-  if(inUse && !confirm('Este cliente tiene reservaciones asociadas. ¿Eliminar de todas formas?')) return;
-  if(!inUse && !confirm('¿Eliminar este cliente?')) return;
-  db.clients = db.clients.filter(c=>c.id!==id);
-  saveDB(); renderClients();
-}
-
-// ─── AVAILABILITY ─────────────────────────────────────────────────────────────
-function renderAvailability() {
-  const start = document.getElementById('avail-start').value;
-  const end   = document.getElementById('avail-end').value;
-  const cat   = document.getElementById('avail-cat').value;
-  const tbody = document.getElementById('avail-body');
-  const info  = document.getElementById('avail-info');
-  const conflicts = document.getElementById('avail-conflicts');
-
-  if(!start || !end) {
-    tbody.innerHTML = `<tr><td colspan="7"><div class="empty">Selecciona un rango de fechas para consultar la disponibilidad</div></td></tr>`;
-    info.innerHTML = '';
-    conflicts.innerHTML = '';
-    return;
-  }
-  if(end < start) {
-    info.innerHTML = `<div style="color:var(--red-text);font-size:13px;padding:8px 12px;background:var(--red-bg);border-radius:var(--radius);">La fecha de fin no puede ser anterior a la de inicio.</div>`;
-    tbody.innerHTML = '';
-    conflicts.innerHTML = '';
-    return;
-  }
-
-  const dias = daysBetween(start, end);
-  info.innerHTML = `<div style="font-size:13px;color:var(--text2);padding:8px 12px;background:var(--surface2);border-radius:var(--radius);display:inline-block;">
-    Consultando del <strong>${fmtDate(start)}</strong> al <strong>${fmtDate(end)}</strong> — <strong>${dias}</strong> día(s)
-  </div>`;
-
-  // Reservaciones que se solapan con el rango consultado (excluir canceladas)
-  const overlapping = db.reservations.filter(r =>
-    r.status !== 'Cancelada' && r.start <= end && r.end >= start
-  );
-
-  // Calcular unidades comprometidas por ítem en ese rango
-  const committed = {};
-  overlapping.forEach(r => {
-    r.items.forEach(ri => {
-      committed[ri.itemId] = (committed[ri.itemId] || 0) + ri.qty;
-    });
-  });
-
-  const items = db.inventory.filter(i => !cat || i.category === cat);
-
-  if(!items.length) {
-    tbody.innerHTML = `<tr><td colspan="7"><div class="empty">No hay equipo registrado${cat ? ' en esta categoría' : ''}.</div></td></tr>`;
-    conflicts.innerHTML = '';
-    return;
-  }
-
-  tbody.innerHTML = items.map(i => {
-    const comp = committed[i.id] || 0;
-    const free = Math.max(0, i.total - comp);
-    const pct  = i.total > 0 ? Math.round(free / i.total * 100) : 0;
-    let statusLabel, statusClass, rowStyle = '';
-    if(free === 0)          { statusLabel = 'Sin disponibilidad'; statusClass = 'badge-danger';  rowStyle = 'background:var(--red-bg);'; }
-    else if(free < i.total * 0.3) { statusLabel = 'Disponibilidad baja'; statusClass = 'badge-warning'; rowStyle = 'background:var(--amber-bg);'; }
-    else                    { statusLabel = 'Disponible';         statusClass = 'badge-success'; }
-
-    const barColor = free === 0 ? '#E24B4A' : free < i.total * 0.3 ? '#BA7517' : '#639922';
-
-    return `<tr style="${rowStyle}">
-      <td><div style="font-weight:500">${i.name}</div><div style="font-size:11px;color:var(--text3)">${i.code||''}</div></td>
-      <td><span class="badge badge-info">${i.category}</span></td>
-      <td style="text-align:center">${i.total}</td>
-      <td style="text-align:center;font-weight:${comp>0?'600':'400'};color:${comp>0?'var(--amber-text)':'var(--text2)'}">
-        ${comp > 0 ? `${comp} <span style="font-weight:400;font-size:11px">reservadas</span>` : '—'}
-      </td>
-      <td>
-        <div style="font-size:16px;font-weight:600;color:${free===0?'var(--red-text)':free<i.total*0.3?'var(--amber-text)':'var(--green-text)'}">${free}</div>
-        <div class="progress-bar" style="margin-top:4px;width:80px"><div class="progress-fill" style="width:${pct}%;background:${barColor}"></div></div>
-      </td>
-      <td>$${fmt(i.price)}/día<div style="font-size:11px;color:var(--text3)">$${fmt(i.price * dias * free)} máx. ${dias}d</div></td>
-      <td><span class="badge ${statusClass}">${statusLabel}</span></td>
-    </tr>`;
-  }).join('');
-
-  // Mostrar qué reservaciones están activas en ese rango
-  if(overlapping.length) {
-    const resRows = overlapping.map(r => {
-      const c = db.clients.find(x=>x.id===r.clientId);
-      const eqSummary = r.items.map(ri => {
-        const inv = db.inventory.find(x=>x.id===ri.itemId);
-        return inv ? `${inv.name} ×${ri.qty}` : '';
-      }).filter(Boolean).join(', ');
-      return `<tr>
-        <td style="font-size:12px;color:var(--text2)">${r.id}</td>
-        <td style="font-weight:500">${c?c.name:'—'}</td>
-        <td>${r.event}</td>
-        <td style="font-size:12px">${fmtDate(r.start)} → ${fmtDate(r.end)}</td>
-        <td style="font-size:12px;color:var(--text2)">${eqSummary}</td>
-        <td>${statusBadge(r.status)}</td>
-      </tr>`;
-    }).join('');
-    conflicts.innerHTML = `
-      <div class="card" style="margin-top:0;border-color:var(--amber-border)">
-        <div class="card-header"><span class="card-title" style="color:var(--amber-text)">⚠️ Reservaciones activas en este período (${overlapping.length})</span></div>
-        <div class="table-wrap">
-          <table>
-            <thead><tr><th>ID</th><th>Cliente</th><th>Evento</th><th>Fechas</th><th>Equipo comprometido</th><th>Estado</th></tr></thead>
-            <tbody>${resRows}</tbody>
-          </table>
-        </div>
-      </div>`;
-  } else {
-    conflicts.innerHTML = `<div style="margin-top:1rem;padding:10px 14px;background:var(--green-bg);color:var(--green-text);border-radius:var(--radius);font-size:13px;">✓ No hay reservaciones activas en este período. Todo el inventario está libre.</div>`;
-  }
-}
-
-// ─── REPORTS ──────────────────────────────────────────────────────────────────
-function renderReports() {
-  const totalRev = db.reservations.reduce((a,r)=>a+r.total,0);
-  const completedRev = db.reservations.filter(r=>r.status==='Completada').reduce((a,r)=>a+r.total,0);
-  const pendingRev = db.reservations.filter(r=>r.status!=='Completada'&&r.status!=='Cancelada').reduce((a,r)=>a+r.total,0);
-  const rate = db.reservations.length ? Math.round(db.reservations.filter(r=>r.status==='Completada').length/db.reservations.length*100) : 0;
-  document.getElementById('rep-metrics').innerHTML = `
-    <div class="metric"><div class="metric-label">Ingresos totales</div><div class="metric-value">$${fmt(totalRev)}</div></div>
-    <div class="metric"><div class="metric-label">Cobrado</div><div class="metric-value" style="color:var(--green-text)">$${fmt(completedRev)}</div></div>
-    <div class="metric"><div class="metric-label">Por cobrar</div><div class="metric-value" style="color:var(--amber-text)">$${fmt(pendingRev)}</div></div>
-    <div class="metric"><div class="metric-label">Tasa completado</div><div class="metric-value">${rate}%</div></div>
-    <div class="metric"><div class="metric-label">Total reservaciones</div><div class="metric-value">${db.reservations.length}</div></div>
-  `;
-
-  const usage = db.inventory.map(i => ({
-    name: i.name,
-    count: db.reservations.flatMap(r=>r.items).filter(ri=>ri.itemId===i.id).reduce((a,ri)=>a+ri.qty,0)
-  })).filter(u=>u.count>0).sort((a,b)=>b.count-a.count).slice(0,6);
-  const maxU = usage[0]?.count||1;
-  document.getElementById('rep-top').innerHTML = usage.length ? usage.map(u=>`
-    <div style="margin-bottom:10px">
-      <div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:3px"><span>${u.name}</span><span style="color:var(--text2)">${u.count} uds.</span></div>
-      <div class="progress-bar"><div class="progress-fill" style="width:${Math.round(u.count/maxU*100)}%;background:#378ADD"></div></div>
-    </div>`).join('') : '<p class="empty">Sin datos de uso</p>';
-
-  const months = ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
-  const byMonth = Array(12).fill(0);
-  db.reservations.forEach(r=>{ const m=parseInt((r.start||'').split('-')[1])-1; if(m>=0) byMonth[m]+=r.total; });
-  const maxRev = Math.max(...byMonth,1);
-  document.getElementById('rep-chart').innerHTML = `
-    <div class="bar-chart">${byMonth.map((v,i)=>`
-      <div class="bar-col">
-        <div class="bar" style="height:${Math.round(v/maxRev*80)+5}px;opacity:${v?1:0.2}" title="$${fmt(v)}"></div>
-        <div class="bar-label">${months[i]}</div>
-      </div>`).join('')}
+// ── DASHBOARD ─────────────────────────────────────────────────────────────────
+function renderDashboard(){
+  const today=new Date().toISOString().slice(0,10);
+  const activeEv=db.events.filter(e=>e.status==='Confirmado'||e.status==='En curso').length;
+  const pendQ=db.quotes.filter(q=>q.status==='Enviada').length;
+  const totalCxC=db.events.reduce((a,ev)=>{const cob=db.payments.filter(p=>String(p.eventId)===String(ev.id)).reduce((s,p)=>s+(parseFloat(p.amount)||0),0);return a+Math.max(0,(parseFloat(ev.total)||0)-cob);},0);
+  const mesStart=today.slice(0,7)+'-01';const mesEnd=new Date(today.slice(0,4),parseInt(today.slice(5,7)),0).toISOString().slice(0,10);
+  const ingMes=db.payments.filter(p=>p.date>=mesStart&&p.date<=mesEnd).reduce((a,p)=>a+(parseFloat(p.amount)||0),0);
+  document.getElementById('dash-metrics').innerHTML=`
+    <div class="metric"><div class="metric-label">Eventos activos</div><div class="metric-value">${activeEv}</div></div>
+    <div class="metric"><div class="metric-label">Cotizaciones enviadas</div><div class="metric-value">${pendQ}</div></div>
+    <div class="metric"><div class="metric-label">Por cobrar</div><div class="metric-value" style="color:var(--amber)">$${fmtD(totalCxC)}</div></div>
+    <div class="metric"><div class="metric-label">Ingresos del mes</div><div class="metric-value" style="color:var(--green)">$${fmtD(ingMes)}</div></div>`;
+  document.getElementById('d-cli').textContent=db.clients.length+' registrados';
+  document.getElementById('d-qt').textContent=db.quotes.length+' total';
+  document.getElementById('d-ev').textContent=activeEv+' activos';
+  document.getElementById('d-bill').textContent='$'+fmtD(ingMes)+' este mes';
+  document.getElementById('d-inv').textContent=db.inventory.length+' equipos';
+  document.getElementById('d-fin').textContent='$'+fmtD(ingMes-db.expenses.filter(e=>e.date>=mesStart&&e.date<=mesEnd).reduce((a,x)=>a+(parseFloat(x.amount)||0),0))+' utilidad';
+  const upcoming=db.events.filter(e=>e.status!=='Cancelado'&&e.status!=='Completado'&&e.start>=today).sort((a,b)=>a.start.localeCompare(b.start)).slice(0,6);
+  const box=document.getElementById('dash-upcoming');
+  if(!upcoming.length){box.innerHTML='<p class="empty">Sin próximos eventos</p>';return;}
+  box.innerHTML=upcoming.map(e=>{
+    const c=db.clients.find(x=>String(x.id)===String(e.clientId));
+    const cobrado=db.payments.filter(p=>String(p.eventId)===String(e.id)).reduce((a,p)=>a+(parseFloat(p.amount)||0),0);
+    const saldo=Math.max(0,(parseFloat(e.total)||0)-cobrado);
+    return`<div style="display:flex;align-items:center;justify-content:space-between;padding:12px 16px;border-bottom:1px solid var(--border)">
+      <div>
+        <div style="font-weight:600">${e.event} <span style="font-size:11px;color:var(--ink3)">${e.id}</span></div>
+        <div style="font-size:12px;color:var(--ink3)">${c?c.name:'—'} · ${fmtDate(e.start)}</div>
+      </div>
+      <div style="display:flex;align-items:center;gap:8px">
+        ${badge(e.status)}
+        ${saldo>0?`<span style="font-size:12px;color:var(--amber)">$${fmtD(saldo)} pendiente</span>`:''}
+      </div>
     </div>`;
+  }).join('');
+}
+</script>
 
-  const tbody = document.getElementById('rep-history');
-  const sorted = [...db.reservations].sort((a,b)=>b.id.localeCompare(a.id));
-  tbody.innerHTML = sorted.map(r=>{
-    const c = db.clients.find(x=>x.id===r.clientId);
-    return `<tr>
-      <td style="font-size:12px;color:var(--text2)">${r.id}</td>
-      <td>${c?c.name:'—'}</td>
-      <td>${r.event}</td>
-      <td style="font-size:12px">${fmtDate(r.start)} → ${fmtDate(r.end)}</td>
-      <td style="font-weight:600">$${fmt(r.total)}</td>
-      <td>${statusBadge(r.status)}</td>
+<script>
+// ── CLIENTES ──────────────────────────────────────────────────────────────────
+function renderClients(){
+  const s=(document.getElementById('cli-search')?.value||'').toLowerCase();
+  const list=db.clients.filter(c=>`${c.name} ${c.company||''}`.toLowerCase().includes(s));
+  const tbody=document.getElementById('cli-body');
+  if(!list.length){tbody.innerHTML=`<tr><td colspan="6" class="empty">Sin clientes registrados</td></tr>`;return;}
+  tbody.innerHTML=list.map(c=>{
+    const evCount=db.events.filter(e=>String(e.clientId)===String(c.id)).length;
+    return`<tr>
+      <td style="font-weight:600">${c.name}</td>
+      <td>${c.company||'—'}</td><td>${c.phone||'—'}</td><td>${c.email||'—'}</td>
+      <td>${evCount}</td>
+      <td><div style="display:flex;gap:4px">
+        <button class="btn btn-sm btn-icon" onclick="openClientModal('${c.id}')">✏️</button>
+        <button class="btn btn-sm btn-icon btn-danger" onclick="deleteClient('${c.id}')">🗑</button>
+      </div></td>
+    </tr>`;
+  }).join('');
+}
+function openClientModal(id){
+  const c=id?db.clients.find(x=>x.id===id):null;
+  document.getElementById('cli-modal-title').textContent=c?'Editar cliente':'Nuevo cliente';
+  document.getElementById('cli-edit-id').value=c?c.id:'';
+  document.getElementById('cli-name').value=c?c.name:'';
+  document.getElementById('cli-company').value=c?c.company||'':'';
+  document.getElementById('cli-phone').value=c?c.phone||'':'';
+  document.getElementById('cli-email').value=c?c.email||'':'';
+  document.getElementById('cli-notes').value=c?c.notes||'':'';
+  openModal('modal-client');
+}
+function saveClient(){
+  const name=document.getElementById('cli-name').value.trim();
+  if(!name){alert('El nombre es requerido.');return;}
+  const editId=document.getElementById('cli-edit-id').value;
+  const data={name,company:document.getElementById('cli-company').value,phone:document.getElementById('cli-phone').value,email:document.getElementById('cli-email').value,notes:document.getElementById('cli-notes').value};
+  if(editId){const c=db.clients.find(x=>x.id===editId);if(c)Object.assign(c,data);}
+  else{if(!db.nextClientNum)db.nextClientNum=1;db.clients.push({id:'CLI-'+String(db.nextClientNum++).padStart(3,'0'),...data});}
+  saveDB();closeModal('modal-client');renderClients();
+}
+function deleteClient(id){if(!confirm('¿Eliminar este cliente?'))return;db.clients=db.clients.filter(x=>x.id!==id);saveDB();renderClients();}
+
+// ── INVENTARIO ────────────────────────────────────────────────────────────────
+function renderInventory(){
+  const s=(document.getElementById('inv-search')?.value||'').toLowerCase();
+  const list=db.inventory.filter(i=>i.name.toLowerCase().includes(s));
+  const tbody=document.getElementById('inv-body');
+  if(!list.length){tbody.innerHTML=`<tr><td colspan="6" class="empty">Sin equipos registrados</td></tr>`;return;}
+  tbody.innerHTML=list.map(i=>`<tr>
+    <td style="font-weight:600">${i.name}</td>
+    <td>${i.cat||'—'}</td>
+    <td>${i.qty||0}</td>
+    <td>$${fmtD(i.price||0)}</td>
+    <td style="color:var(--ink3);font-size:12px">${i.desc||'—'}</td>
+    <td><div style="display:flex;gap:4px">
+      <button class="btn btn-sm btn-icon" onclick="openItemModal('${i.id}')">✏️</button>
+      <button class="btn btn-sm btn-icon btn-danger" onclick="deleteItem('${i.id}')">🗑</button>
+    </div></td>
+  </tr>`).join('');
+}
+function openItemModal(id){
+  const i=id?db.inventory.find(x=>x.id===id):null;
+  document.getElementById('item-modal-title').textContent=i?'Editar equipo':'Nuevo equipo';
+  document.getElementById('item-edit-id').value=i?i.id:'';
+  document.getElementById('item-name').value=i?i.name:'';
+  document.getElementById('item-cat').value=i?i.cat||'':'';
+  document.getElementById('item-qty').value=i?i.qty||1:1;
+  document.getElementById('item-price').value=i?i.price||'':'';
+  document.getElementById('item-desc').value=i?i.desc||'':'';
+  openModal('modal-item');
+}
+function saveItem(){
+  const name=document.getElementById('item-name').value.trim();
+  if(!name){alert('El nombre es requerido.');return;}
+  const editId=document.getElementById('item-edit-id').value;
+  const data={name,cat:document.getElementById('item-cat').value,qty:parseInt(document.getElementById('item-qty').value)||0,price:parseFloat(document.getElementById('item-price').value)||0,desc:document.getElementById('item-desc').value};
+  if(editId){const i=db.inventory.find(x=>x.id===editId);if(i)Object.assign(i,data);}
+  else db.inventory.push({id:'INV-'+Date.now(),...data});
+  saveDB();closeModal('modal-item');renderInventory();
+}
+function deleteItem(id){if(!confirm('¿Eliminar este equipo?'))return;db.inventory=db.inventory.filter(x=>x.id!==id);saveDB();renderInventory();}
+
+// ── COTIZACIONES ──────────────────────────────────────────────────────────────
+function renderQuotes(){
+  const s=(document.getElementById('qt-search')?.value||'').toLowerCase();
+  const f=document.getElementById('qt-filter')?.value||'';
+  const list=db.quotes.filter(q=>`${q.folio||''} ${clientName(q.clientId)} ${q.event}`.toLowerCase().includes(s)&&(!f||q.status===f)).sort((a,b)=>(b.folio||'').localeCompare(a.folio||''));
+  const tbody=document.getElementById('qt-body');
+  if(!list.length){tbody.innerHTML=`<tr><td colspan="7" class="empty">Sin cotizaciones</td></tr>`;return;}
+  tbody.innerHTML=list.map(q=>`<tr>
+    <td style="font-weight:700;color:var(--ax-rosa)">${q.folio||'—'}</td>
+    <td>${clientName(q.clientId)}</td>
+    <td>${q.event}</td>
+    <td style="font-size:12px">${fmtDate(q.start)}<br><span style="color:var(--ink3)">→ ${fmtDate(q.end)}</span></td>
+    <td style="font-weight:700">$${fmtD(calcTotal(q).total)}</td>
+    <td>${badge(q.status||'Borrador')}</td>
+    <td><div style="display:flex;gap:4px;flex-wrap:wrap">
+      <button class="btn btn-sm btn-icon" onclick="openQuoteModal('${q.id}')">✏️</button>
+      <button class="btn btn-sm btn-icon" onclick="cycleQuoteStatus('${q.id}')" title="Cambiar estado">🔄</button>
+      <button class="btn btn-sm btn-icon" style="color:var(--blue)" onclick="previewQuote('${q.id}')" title="Vista previa">👁</button>
+      <button class="btn btn-sm btn-icon" style="color:var(--ink2)" onclick="printQuoteById('${q.id}')" title="Imprimir">🖨️</button>
+      ${q.status==='Aprobada'?`<button class="btn btn-sm btn-icon" style="color:var(--green)" onclick="generarContrato('${q.id}')" title="Contrato">📄</button>`:''}
+      <button class="btn btn-sm btn-icon btn-danger" onclick="deleteQuote('${q.id}')">🗑</button>
+    </div></td>
+  </tr>`).join('');
+}
+
+function calcTotal(q){
+  let sub=0;
+  (q.items||[]).forEach(it=>{
+    const inv=db.inventory.find(x=>String(x.id)===String(it.itemId));
+    const price=it.price!==undefined?parseFloat(it.price):parseFloat(inv?.price||0);
+    const days=it.days||1;const qty=it.qty||1;
+    sub+=price*days*qty;
+  });
+  const disc=(parseFloat(q.disc)||0)/100;
+  const subtotalDisc=sub*(1-disc);
+  const iva=subtotalDisc*0.16;
+  const total=subtotalDisc+iva;
+  const anticipo=total*0.5;
+  return{sub,subtotalDisc,iva,total,anticipo};
+}
+
+function openQuoteModal(id){
+  const q=id?db.quotes.find(x=>x.id===id):null;
+  document.getElementById('qt-modal-title').textContent=q?'Editar cotización':'Nueva cotización';
+  document.getElementById('qt-edit-id').value=q?q.id:'';
+  const sel=document.getElementById('qt-client');
+  sel.innerHTML=db.clients.map(c=>`<option value="${c.id}">${c.name}${c.company?' — '+c.company:''}</option>`).join('');
+  if(q)sel.value=q.clientId;
+  document.getElementById('qt-event').value=q?q.event||'':'';
+  document.getElementById('qt-start').value=q?q.start||'':'';
+  document.getElementById('qt-end').value=q?q.end||'':'';
+  document.getElementById('qt-valid').value=q?q.validUntil||'':'';
+  document.getElementById('qt-disc').value=q?q.disc||0:0;
+  document.getElementById('qt-notes').value=q?q.notes||'':'';
+  const list=document.getElementById('qt-items');list.innerHTML='';
+  (q?.items||[]).forEach(it=>addQtItemRow(it));
+  calcQtTotal();
+  openModal('modal-quote');
+}
+
+function addQtItemRow(it){
+  const list=document.getElementById('qt-items');
+  const div=document.createElement('div');div.className='item-row';
+  const inv=it?db.inventory.find(x=>String(x.id)===String(it.itemId)):null;
+  const price=it?.price!==undefined?it.price:(inv?.price||0);
+  div.innerHTML=`
+    <select style="flex:2;min-width:0" onchange="calcQtTotal()">
+      ${db.inventory.map(i=>`<option value="${i.id}" ${it&&String(it.itemId)===String(i.id)?'selected':''}>${i.name}</option>`).join('')}
+    </select>
+    <input type="number" min="1" value="${it?it.qty:1}" placeholder="Cant." style="width:70px;flex-shrink:0" oninput="calcQtTotal()">
+    <input type="number" min="1" value="${it?it.days:1}" placeholder="Días" style="width:70px;flex-shrink:0" oninput="calcQtTotal()">
+    <input type="number" min="0" step="0.01" value="${price}" placeholder="$/día" style="width:90px;flex-shrink:0" oninput="calcQtTotal()">
+    <button class="btn btn-sm btn-icon btn-danger" onclick="this.parentElement.remove();calcQtTotal()">✕</button>`;
+  list.appendChild(div);
+}
+
+function calcQtTotal(){
+  let sub=0;
+  document.querySelectorAll('#qt-items .item-row').forEach(row=>{
+    const qty=parseFloat(row.querySelectorAll('input')[0]?.value)||1;
+    const days=parseFloat(row.querySelectorAll('input')[1]?.value)||1;
+    const price=parseFloat(row.querySelectorAll('input')[2]?.value)||0;
+    sub+=price*days*qty;
+  });
+  const disc=(parseFloat(document.getElementById('qt-disc')?.value)||0)/100;
+  const subtotalDisc=sub*(1-disc);
+  const iva=subtotalDisc*0.16;
+  const total=subtotalDisc+iva;
+  const box=document.getElementById('qt-total-box');
+  if(box)box.innerHTML=`<span>Subtotal: $${fmtD(sub)}</span>${disc>0?` &nbsp;|&nbsp; <span style="color:var(--red)">Desc. ${disc*100}%: -$${fmtD(sub*disc)}</span>`:''} &nbsp;|&nbsp; <span>IVA 16%: $${fmtD(iva)}</span> &nbsp;|&nbsp; <strong style="color:var(--ax-rosa);font-size:15px">Total: $${fmtD(total)}</strong>`;
+}
+
+function saveQuote(){
+  const clientId=document.getElementById('qt-client').value;
+  const event=document.getElementById('qt-event').value.trim();
+  const start=document.getElementById('qt-start').value;
+  const end=document.getElementById('qt-end').value;
+  if(!clientId||!event||!start||!end){alert('Completa cliente, evento y fechas.');return;}
+  const items=[];
+  document.querySelectorAll('#qt-items .item-row').forEach(row=>{
+    const sel=row.querySelector('select');
+    const inps=row.querySelectorAll('input');
+    if(sel?.value)items.push({itemId:sel.value,qty:parseInt(inps[0]?.value)||1,days:parseInt(inps[1]?.value)||1,price:parseFloat(inps[2]?.value)||0});
+  });
+  const editId=document.getElementById('qt-edit-id').value;
+  const data={clientId,event,start,end,validUntil:document.getElementById('qt-valid').value,disc:parseFloat(document.getElementById('qt-disc').value)||0,notes:document.getElementById('qt-notes').value,items};
+  if(editId){const q=db.quotes.find(x=>x.id===editId);if(q)Object.assign(q,data);}
+  else{
+    if(!db.nextQuoteNum)db.nextQuoteNum=1;
+    const folio='COT-'+String(db.nextQuoteNum++).padStart(4,'0');
+    db.quotes.push({id:'qt'+Date.now(),folio,status:'Borrador',...data});
+  }
+  saveDB();closeModal('modal-quote');renderQuotes();
+}
+
+const qtCycle=['Borrador','Enviada','Aprobada','Rechazada'];
+function cycleQuoteStatus(id){
+  const q=db.quotes.find(x=>x.id===id);if(!q)return;
+  const next=qtCycle[(qtCycle.indexOf(q.status||'Borrador')+1)%qtCycle.length];
+  q.status=next;saveDB();renderQuotes();
+  if(next==='Aprobada')aprobarCotizacion(id);
+}
+
+function aprobarCotizacion(quoteId){
+  const q=db.quotes.find(x=>x.id===quoteId);if(!q||q.eventId)return;
+  if(!confirm('¿Crear evento a partir de esta cotización?'))return;
+  if(!db.nextEventNum)db.nextEventNum=1;
+  const evId='EV-'+String(db.nextEventNum++).padStart(3,'0');
+  const{total}=calcTotal(q);
+  const ev={id:evId,clientId:q.clientId,event:q.event,start:q.start,end:q.end,status:'Confirmado',total,items:(q.items||[]).map(it=>({itemId:it.itemId,qty:it.qty||1})),notes:q.notes||''};
+  db.events.push(ev);q.eventId=evId;
+  saveDB();createEventReminders(ev);
+  alert(`✓ Evento ${evId} creado.`);renderQuotes();
+}
+
+function deleteQuote(id){if(!confirm('¿Eliminar esta cotización?'))return;db.quotes=db.quotes.filter(x=>x.id!==id);saveDB();renderQuotes();}
+
+// ── PRINT HELPERS ─────────────────────────────────────────────────────────────
+function buildQtHTML(q){
+  const c=db.clients.find(x=>String(x.id)===String(q.clientId));
+  const logoData=localStorage.getItem('artaxos_logo');
+  const firmaData=localStorage.getItem('artaxos_firma');
+  const logoHtml=logoData?`<img src="${logoData}" style="height:50px;width:auto;display:block" alt="Artaxos">`:`<div style="font-family:'Archivo',sans-serif;font-size:22px;font-weight:800;color:#131315">ARTAXOS</div>`;
+  const firmaHtml=firmaData?`<img src="${firmaData}" style="height:50px;width:auto;display:block;margin:0 auto" alt="Firma">`:` <div style="height:50px"></div>`;
+  const{sub,subtotalDisc,iva,total,anticipo}=calcTotal(q);
+  const disc=parseFloat(q.disc)||0;
+  let rows='';
+  (q.items||[]).forEach(it=>{
+    const inv=db.inventory.find(x=>String(x.id)===String(it.itemId));
+    const price=it.price!==undefined?parseFloat(it.price):parseFloat(inv?.price||0);
+    const days=it.days||1;const qty=it.qty||1;const st=price*days*qty;
+    rows+=`<tr><td style="padding:7px 10px;border-bottom:1px solid #e5e5e5">${inv?inv.name:it.itemId}</td><td style="padding:7px 10px;border-bottom:1px solid #e5e5e5;text-align:center">${qty}</td><td style="padding:7px 10px;border-bottom:1px solid #e5e5e5;text-align:center">${days}</td><td style="padding:7px 10px;border-bottom:1px solid #e5e5e5;text-align:right">$${fmtD(price)}</td><td style="padding:7px 10px;border-bottom:1px solid #e5e5e5;text-align:right">$${fmtD(st)}</td></tr>`;
+  });
+  return{c,logoHtml,firmaHtml,sub,subtotalDisc,iva,total,anticipo,rows,disc};
+}
+
+function buildQtDocHTML(q, isContrato=false){
+  const{c,logoHtml,firmaHtml,sub,subtotalDisc,iva,total,anticipo,rows,disc}=buildQtHTML(q);
+  const folio=isContrato?(q.folio?q.folio.replace('COT','CONT'):'CONT-'+Date.now()):q.folio||'—';
+  const titulo=isContrato?'COTIZACIÓN':'COTIZACIÓN';
+
+  return`<!DOCTYPE html><html><head><meta charset="UTF-8">
+  <title>${folio}</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@700;800&family=Inter:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    *{box-sizing:border-box;margin:0;padding:0;-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important}
+    body{font-family:'Inter',sans-serif;padding:20px 28px;font-size:12px;color:#111}
+    h2{font-family:'Archivo',sans-serif;font-size:13px;margin:10px 0 4px;border-bottom:1px solid #eee;padding-bottom:3px}
+    table{width:100%;border-collapse:collapse}
+    .np{text-align:center;margin-bottom:16px;padding:10px;background:#f5f5f5;border-radius:6px}
+    @media print{.np{display:none}@page{size:A4;margin:10mm 12mm}}
+  </style></head><body>
+  <div class="np">Ctrl+P → <strong>Guardar como PDF</strong>&nbsp;&nbsp;
+    <button onclick="window.print()" style="padding:6px 16px;background:#131315;color:#fff;border:none;border-radius:4px;cursor:pointer;font-family:'Inter',sans-serif">🖨️ Imprimir</button>
+  </div>
+
+  <!-- HEADER -->
+  <div style="background:#131315;padding:20px 24px;margin-bottom:0">
+    <div style="display:flex;justify-content:space-between;align-items:flex-start">
+      <div style="display:flex;align-items:center;gap:14px">
+        ${AX_ISOTIPO_SVG}
+        <div>
+          <div style="font-family:'Archivo',sans-serif;font-size:22px;font-weight:800;color:#fff;letter-spacing:1px">ARTAXOS</div>
+          <div style="font-size:10px;color:#B4B4BC;margin-top:2px">Comercializadora S.A.S. de C.V.</div>
+        </div>
+      </div>
+      <div style="text-align:right">
+        <div style="font-family:'Archivo',sans-serif;font-size:18px;font-weight:800;color:#fff">COTIZACIÓN</div>
+        <div style="font-size:12px;color:#FF015B;font-weight:700;margin-top:4px">${folio}</div>
+        <div style="font-size:11px;color:#B4B4BC;margin-top:2px">Fecha: ${fmtFecha(new Date().toISOString().slice(0,10))}</div>
+        ${q.validUntil?`<div style="font-size:11px;color:#B4B4BC">Válida hasta: ${fmtFecha(q.validUntil)}</div>`:''}
+      </div>
+    </div>
+  </div>
+  <div style="height:4px;background:#FF015B"></div>
+
+  <!-- INFO -->
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:20px 0">
+    <div style="border:1px solid #e5e5e5;border-radius:8px;padding:14px">
+      <div style="font-size:10px;font-weight:700;color:#9a9a97;text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px">CLIENTE</div>
+      <div style="font-weight:700;font-size:14px">${c?.name||'—'}</div>
+      ${c?.company?`<div style="color:#555;font-size:12px">${c.company}</div>`:''}
+      ${c?.phone?`<div style="font-size:12px">Tel: ${c.phone}</div>`:''}
+      ${c?.email?`<div style="font-size:12px">${c.email}</div>`:''}
+    </div>
+    <div style="border:1px solid #e5e5e5;border-radius:8px;padding:14px">
+      <div style="font-size:10px;font-weight:700;color:#9a9a97;text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px">EVENTO</div>
+      <div style="font-weight:700;font-size:14px">${q.event}</div>
+      <div style="font-size:12px;color:#555">Inicio: ${fmtFecha(q.start)}</div>
+      <div style="font-size:12px;color:#555">Fin: ${fmtFecha(q.end)}</div>
+    </div>
+  </div>
+
+  <!-- TABLA EQUIPOS -->
+  <table>
+    <thead><tr style="background:#131315">
+      <th style="padding:9px 10px;color:#fff;font-family:'Archivo',sans-serif;text-align:left">Equipo</th>
+      <th style="padding:9px 10px;color:#fff;text-align:center">Cant.</th>
+      <th style="padding:9px 10px;color:#fff;text-align:center">Días</th>
+      <th style="padding:9px 10px;color:#fff;text-align:right">$/día</th>
+      <th style="padding:9px 10px;color:#fff;text-align:right">Subtotal</th>
+    </tr></thead>
+    <tbody>${rows}</tbody>
+    <tfoot>
+      <tr style="background:#f5f5f5"><td colspan="4" style="padding:7px 10px;text-align:right;border-top:1px solid #e5e5e5">Subtotal:</td><td style="padding:7px 10px;text-align:right;border-top:1px solid #e5e5e5">$${fmtD(sub)}</td></tr>
+      ${disc>0?`<tr style="background:#fff8e1"><td colspan="4" style="padding:7px 10px;text-align:right;color:#a32d2d">Descuento (${disc}%):</td><td style="padding:7px 10px;text-align:right;color:#a32d2d">-$${fmtD(sub*(disc/100))}</td></tr>`:''}
+      <tr style="background:#f5f5f5"><td colspan="4" style="padding:7px 10px;text-align:right">IVA (16%):</td><td style="padding:7px 10px;text-align:right">$${fmtD(iva)}</td></tr>
+      <tr style="background:#131315"><td colspan="4" style="padding:10px;text-align:right;color:#fff;font-family:'Archivo',sans-serif;font-weight:800">TOTAL:</td><td style="padding:10px;text-align:right;color:#FF015B;font-family:'Archivo',sans-serif;font-size:16px;font-weight:800">$${fmtD(total)}</td></tr>
+      <tr style="background:#FFF0F5"><td colspan="5" style="padding:8px 10px;font-size:11px;color:#D9004C"><strong>Anticipo 50%:</strong> $${fmtD(anticipo)} &nbsp;|&nbsp; <strong>Liquidación:</strong> $${fmtD(anticipo)} el día del evento</td></tr>
+    </tfoot>
+  </table>
+
+  <!-- DATOS BANCARIOS -->
+  <div style="margin-top:20px;border:1px solid #e5e5e5;border-radius:8px;overflow:hidden">
+    <div style="background:#131315;padding:8px 14px;font-family:'Archivo',sans-serif;font-weight:700;color:#fff;font-size:12px">DATOS PARA TRANSFERENCIA</div>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:0">
+      <div style="padding:10px 14px;border-right:1px solid #e5e5e5"><div style="font-size:10px;color:#9a9a97;margin-bottom:2px">RAZÓN SOCIAL</div><div style="font-weight:700;font-size:12px">Artaxos Comercializadora S.A.S. de C.V.</div></div>
+      <div style="padding:10px 14px;border-right:1px solid #e5e5e5"><div style="font-size:10px;color:#9a9a97;margin-bottom:2px">BANCO / CUENTA</div><div style="font-weight:700">Banco Santander</div><div style="font-size:12px">65-51105499-1</div></div>
+      <div style="padding:10px 14px"><div style="font-size:10px;color:#9a9a97;margin-bottom:2px">CLABE</div><div style="font-weight:700;letter-spacing:.5px">014744655110549912</div></div>
+    </div>
+    <div style="padding:8px 14px;background:#f5f5f5;font-size:11px;color:#555;border-top:1px solid #e5e5e5">Concepto: <strong>${folio} — ${q.event}</strong> &nbsp;·&nbsp; Comprobante a <strong>contacto@artaxos.com</strong> o WhatsApp <strong>55 31 96 90 83</strong></div>
+  </div>
+
+  ${q.notes?`<div style="margin-top:16px;padding:10px 14px;background:#f0f7ff;border-left:4px solid #1a4080;border-radius:4px;font-size:11px;color:#1a4080"><strong>Notas:</strong> ${q.notes}</div>`:''}
+
+  <!-- WATERMARK -->
+  <div style="position:fixed;top:50%;left:50%;transform:translate(-50%,-50%) rotate(-35deg);font-family:'Archivo',sans-serif;font-size:80px;font-weight:800;color:rgba(255,1,91,0.04);pointer-events:none;z-index:0;white-space:nowrap">ARTAXOS</div>
+
+  <!-- FOOTER -->
+  <div style="margin-top:24px;padding-top:12px;border-top:2px solid #FF015B;display:flex;justify-content:space-between;font-size:10px;color:#9a9a97">
+    <div>Lago Zirahuén 214, Col. Anáhuac I Secc., Alcaldía Miguel Hidalgo, C.P. 11320, CDMX</div>
+    <div>contacto@artaxos.com · 55 31 96 90 83</div>
+  </div>
+  </body></html>`;
+}
+
+function previewQuote(id){
+  const q=db.quotes.find(x=>x.id===id);if(!q)return;
+  const{c,logoHtml,firmaHtml,sub,subtotalDisc,iva,total,anticipo,rows,disc}=buildQtHTML(q);
+  const{total:t2}=calcTotal(q);
+  document.getElementById('printable-qt').innerHTML=buildQtDocHTML(q).replace('<!DOCTYPE html><html>','').replace('</html>','').replace(/<head>[\s\S]*?<\/head>/,'').replace('<body>','').replace('</body>','');
+  openModal('modal-qt-preview');
+}
+
+function printQuoteById(id){
+  const q=db.quotes.find(x=>x.id===id);if(!q)return;
+  const html=buildQtDocHTML(q);
+  const blob=new Blob([html],{type:'text/html'});
+  const url=URL.createObjectURL(blob);
+  const w=window.open(url,'_blank');if(!w)alert('Activa ventanas emergentes.');
+  setTimeout(()=>URL.revokeObjectURL(url),15000);
+}
+
+function printQuote(){
+  const content=document.getElementById('printable-qt')?.innerHTML;if(!content)return;
+  const html=buildQtDocHTML(db.quotes[db.quotes.length-1]||{items:[],event:'',start:'',end:''});
+  const blob=new Blob([html],{type:'text/html'});
+  const url=URL.createObjectURL(blob);
+  const w=window.open(url,'_blank');if(!w)alert('Activa ventanas emergentes.');
+  setTimeout(()=>URL.revokeObjectURL(url),15000);
+}
+</script>
+
+<script>
+// ── CONTRATO ──────────────────────────────────────────────────────────────────
+function generarContrato(quoteId){
+  const q=db.quotes.find(x=>x.id===quoteId);if(!q){alert('Cotización no encontrada.');return;}
+  const ev=q.eventId?db.events.find(x=>x.id===q.eventId):null;
+  const{c,firmaHtml,sub,iva,total,anticipo,rows}=buildQtHTML(q);
+  const folio=q.folio?q.folio.replace('COT','CONT'):'CONT-'+Date.now();
+  q.contratoFolio=folio;saveDB();
+
+  const html=`<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Contrato ${folio}</title>
+  <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@700;800&family=Inter:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    *{box-sizing:border-box;margin:0;padding:0;-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important}
+    body{font-family:'Inter',sans-serif;font-size:12px;color:#111;padding:16mm 18mm}
+    h2{font-family:'Archivo',sans-serif;font-size:13px;margin:10px 0 4px;border-bottom:1px solid #eee;padding-bottom:3px}
+    p{margin:4px 0;line-height:1.6;text-align:justify}
+    .cl{font-weight:700;margin-top:12px;margin-bottom:4px}
+    table{width:100%;border-collapse:collapse;margin:8px 0}
+    .fr{display:flex;justify-content:space-between;margin-top:40px}
+    .fb{text-align:center;width:44%}
+    .fl{border-top:1.5px solid #111;padding-top:6px;margin-top:4px}
+    .np{text-align:center;margin-bottom:16px;padding:10px;background:#f5f5f5;border-radius:6px}
+    .pb{page-break-after:always}
+    @media print{.np{display:none}@page{size:A4;margin:12mm 18mm}}
+  </style></head><body>
+  <div class="np">Ctrl+P → <strong>Guardar como PDF</strong>&nbsp;&nbsp;
+    <button onclick="window.print()" style="padding:6px 16px;background:#131315;color:#fff;border:none;border-radius:4px;cursor:pointer">🖨️ Imprimir</button>
+  </div>
+
+  <!-- HEADER CONTRATO -->
+  <div style="background:#131315;padding:16px 20px;margin-bottom:0">
+    <div style="display:flex;justify-content:space-between;align-items:flex-start">
+      <div style="display:flex;align-items:center;gap:12px">
+        ${AX_ISOTIPO_SVG}
+        <div>
+          <div style="font-family:'Archivo',sans-serif;font-size:20px;font-weight:800;color:#fff;letter-spacing:1px">ARTAXOS</div>
+          <div style="font-size:10px;color:#B4B4BC">Comercializadora S.A.S. de C.V.</div>
+          <div style="font-size:10px;color:#B4B4BC">Lago Zirahuén 214, Col. Anáhuac I Secc., C.P. 11320, CDMX</div>
+          <div style="font-size:10px;color:#B4B4BC">Tel. 55 31 96 90 83 · contacto@artaxos.com</div>
+        </div>
+      </div>
+      <div style="text-align:right">
+        <div style="font-family:'Archivo',sans-serif;font-size:16px;font-weight:800;color:#fff">CONTRATO DE ARRENDAMIENTO</div>
+        <div style="font-size:12px;color:#FF015B;font-weight:700">Folio: ${folio}</div>
+        <div style="font-size:11px;color:#B4B4BC">Cotización: ${q.folio||'—'}</div>
+        ${ev?`<div style="font-size:11px;color:#B4B4BC">Evento: ${ev.id}</div>`:''}
+        <div style="font-size:11px;color:#B4B4BC">Fecha: ${fmtFecha(new Date().toISOString().slice(0,10))}</div>
+      </div>
+    </div>
+  </div>
+  <div style="height:4px;background:#FF015B;margin-bottom:16px"></div>
+
+  <p>En la Ciudad de México, siendo el día ${fmtFecha(new Date().toISOString().slice(0,10))}, comparecen a celebrar el presente Contrato de Arrendamiento de Equipo:</p>
+  <h2>DECLARACIONES</h2>
+  <p class="cl">I. EL ARRENDADOR:</p>
+  <p>Artaxos Comercializadora S.A.S. de C.V., representada por <strong>Guillermo Castillo Villela</strong>, Representante Legal, Lago Zirahuén 214, Col. Anáhuac I Secc., Alcaldía Miguel Hidalgo, C.P. 11320, Ciudad de México.</p>
+  <p class="cl">II. EL ARRENDATARIO:</p>
+  <table style="border:none"><tr><td style="width:35%;color:#666;padding:2px 0">Nombre:</td><td><strong>${c?.name||'_________________________'}</strong></td></tr>${c?.company?`<tr><td style="color:#666;padding:2px 0">Empresa:</td><td>${c.company}</td></tr>`:''}<tr><td style="color:#666;padding:2px 0">Teléfono:</td><td>${c?.phone||'_________________________'}</td></tr><tr><td style="color:#666;padding:2px 0">Correo:</td><td>${c?.email||'_________________________'}</td></tr></table>
+  <p class="cl">III. DATOS DEL EVENTO:</p>
+  <table style="border:none"><tr><td style="width:35%;color:#666;padding:2px 0">Evento:</td><td><strong>${q.event}</strong></td></tr><tr><td style="color:#666;padding:2px 0">Fecha inicio:</td><td>${fmtFecha(q.start)}</td></tr><tr><td style="color:#666;padding:2px 0">Fecha término:</td><td>${fmtFecha(q.end)}</td></tr></table>
+  <h2>CLÁUSULAS</h2>
+  <p class="cl">PRIMERA.- OBJETO</p><p>EL ARRENDADOR da en arrendamiento el equipo del Anexo A para uso exclusivo en el evento indicado. Queda prohibido subarrendar o ceder el uso a terceros.</p>
+  <p class="cl">SEGUNDA.- VIGENCIA</p><p>Del <strong>${fmtFecha(q.start)}</strong> al <strong>${fmtFecha(q.end)}</strong>. Cualquier extensión deberá acordarse por escrito.</p>
+  <p class="cl">TERCERA.- OPERACIÓN</p><p>EL ARRENDATARIO opera el equipo por su cuenta. Instalación y desinstalación en planta baja incluidas dentro de CDMX, días hábiles (L-S 08:00–18:00 hrs.).</p>
+  <p class="cl">CUARTA.- PAGO</p><p>Total: <strong>$${fmtD(total)}</strong> (IVA incluido). Anticipo 50%: <strong>$${fmtD(anticipo)}</strong> al confirmar el evento. Liquidación: <strong>$${fmtD(anticipo)}</strong> el día del evento.</p>
+  <p class="cl">QUINTA.- CANCELACIÓN</p><p>Penalización del 10% del total ($${fmtD(total*.1)}).</p>
+  <p class="cl">SEXTA.- RESPONSABILIDAD</p><p>El equipo queda bajo responsabilidad de EL ARRENDATARIO desde su entrega. Daños o pérdidas se cobrarán a precio de mercado.</p>
+  <p class="cl">SÉPTIMA.- DATOS PERSONALES</p><p>Conforme a la LFPDPPP, los datos se tratarán exclusivamente para los fines de esta relación contractual.</p>
+  <p class="cl">OCTAVA.- JURISDICCIÓN</p><p>Las partes se someten al Código Civil para la Ciudad de México y la jurisdicción de sus tribunales competentes.</p>
+  <p style="margin-top:14px">Leído el presente y enteradas las partes de su contenido, lo firman en la Ciudad de México el día indicado.</p>
+  ${q.notes?`<div style="margin-top:10px;padding:8px 12px;background:#f0f7ff;border-left:3px solid #1a4080;border-radius:4px;font-size:11px;color:#1a4080"><strong>Notas adicionales:</strong> ${q.notes}</div>`:''}
+  <div class="fr">
+    <div class="fb"><div style="margin-bottom:4px;font-size:11px;color:#555">Atentamente</div>${firmaHtml}<div class="fl"><strong>Guillermo Castillo Villela</strong><br><span style="color:#666;font-size:11px">Representante Legal — EL ARRENDADOR</span></div></div>
+    <div class="fb"><div style="height:58px"></div><div class="fl"><strong>${c?.name||'_______________________'}</strong><br><span style="color:#666;font-size:11px">${c?.company||'EL ARRENDATARIO'}</span></div></div>
+  </div>
+
+  <div class="pb"></div>
+
+  <!-- ANEXO A -->
+  <div style="background:#131315;padding:12px 20px;margin-bottom:0">
+    <div style="display:flex;justify-content:space-between;align-items:center">
+      <div style="font-family:'Archivo',sans-serif;font-size:16px;font-weight:800;color:#fff">ARTAXOS</div>
+      <div style="text-align:right">
+        <div style="font-size:14px;font-weight:700;color:#fff;font-family:'Archivo',sans-serif">ANEXO A — EQUIPO ARRENDADO</div>
+        <div style="font-size:11px;color:#B4B4BC">Contrato: ${folio}</div>
+      </div>
+    </div>
+  </div>
+  <div style="height:4px;background:#FF015B;margin-bottom:12px"></div>
+  <table><thead><tr style="background:#131315"><th style="padding:8px 10px;text-align:left;color:#fff;font-family:'Archivo',sans-serif">Equipo</th><th style="padding:8px 10px;text-align:center;color:#fff">Cant.</th><th style="padding:8px 10px;text-align:center;color:#fff">Días</th><th style="padding:8px 10px;text-align:right;color:#fff">$/día</th><th style="padding:8px 10px;text-align:right;color:#fff">Subtotal</th></tr></thead>
+  <tbody>${rows}</tbody>
+  <tfoot>
+    <tr style="background:#f5f5f5"><td colspan="4" style="padding:6px 10px;text-align:right;border-top:1px solid #ddd">Subtotal:</td><td style="padding:6px 10px;text-align:right;border-top:1px solid #ddd">$${fmtD(sub)}</td></tr>
+    <tr style="background:#f5f5f5"><td colspan="4" style="padding:6px 10px;text-align:right">IVA (16%):</td><td style="padding:6px 10px;text-align:right">$${fmtD(iva)}</td></tr>
+    <tr style="background:#131315"><td colspan="4" style="padding:8px 10px;text-align:right;color:#fff;font-family:'Archivo',sans-serif;font-weight:800">TOTAL:</td><td style="padding:8px 10px;text-align:right;color:#FF015B;font-family:'Archivo',sans-serif;font-weight:800;font-size:15px">$${fmtD(total)}</td></tr>
+    <tr style="background:#FFF0F5"><td colspan="5" style="padding:6px 10px;font-size:11px;color:#D9004C"><strong>Anticipo 50%:</strong> $${fmtD(anticipo)} &nbsp;|&nbsp; <strong>Liquidación:</strong> $${fmtD(anticipo)} el día del evento</td></tr>
+  </tfoot></table>
+  <p style="margin-top:12px">Estado del equipo en entrega: ___________________________________________________</p>
+  <div class="fr" style="margin-top:30px">
+    <div class="fb">${firmaHtml}<div class="fl"><strong>EL ARRENDADOR</strong><br><span style="color:#666;font-size:11px">Entregó conforme</span></div></div>
+    <div class="fb"><div style="height:58px"></div><div class="fl"><strong>EL ARRENDATARIO</strong><br><span style="color:#666;font-size:11px">Recibió conforme</span></div></div>
+  </div>
+
+  <div class="pb"></div>
+
+  <!-- ANEXO B -->
+  <div style="background:#131315;padding:12px 20px;margin-bottom:0">
+    <div style="display:flex;justify-content:space-between;align-items:center">
+      <div style="font-family:'Archivo',sans-serif;font-size:16px;font-weight:800;color:#fff">ARTAXOS</div>
+      <div style="text-align:right">
+        <div style="font-size:14px;font-weight:700;color:#fff;font-family:'Archivo',sans-serif">ANEXO B — DATOS BANCARIOS</div>
+        <div style="font-size:11px;color:#B4B4BC">Contrato: ${folio}</div>
+      </div>
+    </div>
+  </div>
+  <div style="height:4px;background:#FF015B;margin-bottom:12px"></div>
+  <table><tr style="background:#131315"><td style="padding:8px 10px;color:#fff;font-weight:700;width:35%">Razón Social</td><td style="padding:8px 10px;color:#fff">Artaxos Comercializadora S.A.S. de C.V.</td></tr><tr style="background:#f8f8f8"><td style="padding:8px 10px;font-weight:700">Banco</td><td>Banco Santander</td></tr><tr style="background:#131315"><td style="padding:8px 10px;color:#fff;font-weight:700">No. de cuenta</td><td style="padding:8px 10px;color:#fff">65-51105499-1</td></tr><tr style="background:#f8f8f8"><td style="padding:8px 10px;font-weight:700">CLABE</td><td>014744655110549912</td></tr><tr style="background:#131315"><td style="padding:8px 10px;color:#fff;font-weight:700">Concepto</td><td style="padding:8px 10px;color:#fff">Contrato ${folio} — ${q.event}</td></tr></table>
+  <p style="margin-top:10px;color:#666;font-size:11px">Enviar comprobante a <strong>contacto@artaxos.com</strong> o WhatsApp <strong>55 31 96 90 83</strong>.</p>
+
+  <!-- WATERMARK -->
+  <div style="position:fixed;top:50%;left:50%;transform:translate(-50%,-50%) rotate(-35deg);font-family:'Archivo',sans-serif;font-size:80px;font-weight:800;color:rgba(255,1,91,0.04);pointer-events:none;z-index:0;white-space:nowrap">ARTAXOS</div>
+  </body></html>`;
+
+  const blob=new Blob([html],{type:'text/html'});
+  const url=URL.createObjectURL(blob);
+  const w=window.open(url,'_blank');if(!w)alert('Activa ventanas emergentes.');
+  setTimeout(()=>URL.revokeObjectURL(url),15000);
+}
+</script>
+
+<script>
+// ── EVENTOS ───────────────────────────────────────────────────────────────────
+let calYear=new Date().getFullYear(),calMonth=new Date().getMonth();
+
+function renderEvents(){
+  const active=db.events.filter(e=>e.status==='Confirmado'||e.status==='En curso').length;
+  const completed=db.events.filter(e=>e.status==='Completado').length;
+  document.getElementById('ev-metrics').innerHTML=`
+    <div class="metric"><div class="metric-label">Activos</div><div class="metric-value">${active}</div></div>
+    <div class="metric"><div class="metric-label">Completados</div><div class="metric-value">${completed}</div></div>
+    <div class="metric"><div class="metric-label">Total</div><div class="metric-value">${db.events.length}</div></div>`;
+  renderCal();
+}
+
+function renderEventSearch(){
+  const s=(document.getElementById('ev-search')?.value||'').trim().toLowerCase();
+  const results=document.getElementById('ev-search-results');
+  if(!results)return;
+  if(!s){results.style.display='none';return;}
+  const list=db.events.filter(e=>`${e.id} ${clientName(e.clientId)} ${e.event}`.toLowerCase().includes(s));
+  if(!list.length){results.style.display='block';results.innerHTML='<p class="empty" style="padding:12px">Sin resultados</p>';return;}
+  results.style.display='block';
+  results.innerHTML=list.map(e=>{
+    const cobrado=db.payments.filter(p=>String(p.eventId)===String(e.id)).reduce((a,p)=>a+(parseFloat(p.amount)||0),0);
+    const q=db.quotes.find(x=>x.eventId===e.id);
+    return`<div style="padding:12px 14px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;gap:12px">
+      <div>
+        <div style="font-weight:600;font-size:13px">${e.event} <span style="font-size:11px;color:var(--ink3)">${e.id}</span></div>
+        <div style="font-size:12px;color:var(--ink3)">${clientName(e.clientId)} · ${fmtDate(e.start)} → ${fmtDate(e.end)}</div>
+      </div>
+      <div style="display:flex;align-items:center;gap:6px;flex-shrink:0">
+        ${badge(e.status)}
+        <button class="btn btn-sm btn-icon" onclick="openEventModal('${e.id}')">✏️</button>
+        <button class="btn btn-sm btn-icon" style="color:var(--green)" onclick="openPayModal(null,'${e.id}')">💰</button>
+        ${q?`<button class="btn btn-sm btn-icon" style="color:var(--blue)" onclick="generarContrato('${q.id}')">📄</button>`:''}
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function openEventModal(id){
+  const ev=id?db.events.find(x=>x.id===id):null;
+  document.getElementById('ev-modal-title').textContent=ev?'Editar evento':'Nuevo evento';
+  document.getElementById('ev-edit-id').value=ev?ev.id:'';
+  const sel=document.getElementById('ev-client');
+  sel.innerHTML=db.clients.map(c=>`<option value="${c.id}">${c.name}${c.company?' — '+c.company:''}</option>`).join('');
+  if(ev){sel.value=ev.clientId;document.getElementById('ev-event').value=ev.event||'';document.getElementById('ev-start').value=ev.start||'';document.getElementById('ev-end').value=ev.end||'';document.getElementById('ev-status').value=ev.status||'Confirmado';document.getElementById('ev-total').value=ev.total||0;document.getElementById('ev-notes').value=ev.notes||'';}
+  else{['ev-event','ev-start','ev-end','ev-notes'].forEach(i=>document.getElementById(i).value='');document.getElementById('ev-status').value='Confirmado';document.getElementById('ev-total').value='';}
+  const list=document.getElementById('ev-items');list.innerHTML='';
+  (ev?.items||[]).forEach(ri=>addEvItemRow(ri));openModal('modal-event');
+}
+function addEvItemRow(ri){
+  const list=document.getElementById('ev-items');const div=document.createElement('div');div.className='item-row';
+  div.innerHTML=`<select style="flex:2;min-width:0">${db.inventory.map(i=>`<option value="${i.id}" ${ri&&String(ri.itemId)===String(i.id)?'selected':''}>${i.name}</option>`).join('')}</select><input type="number" min="1" value="${ri?ri.qty:1}" placeholder="Cant." style="width:80px;flex-shrink:0"><button class="btn btn-sm btn-icon btn-danger" onclick="this.parentElement.remove()">✕</button>`;
+  list.appendChild(div);
+}
+function addEvItem(){addEvItemRow(null);}
+function saveEvent(){
+  const clientId=document.getElementById('ev-client').value;const event=document.getElementById('ev-event').value.trim();
+  const start=document.getElementById('ev-start').value;const end=document.getElementById('ev-end').value;
+  if(!clientId||!event||!start||!end){alert('Completa cliente, evento y fechas.');return;}
+  const items=[];
+  document.querySelectorAll('#ev-items .item-row').forEach(row=>{const sel=row.querySelector('select');const inp=row.querySelector('input');if(sel?.value)items.push({itemId:sel.value,qty:parseInt(inp?.value)||1});});
+  const conflicts=[];const editId=document.getElementById('ev-edit-id').value;
+  for(const item of items){const inv=db.inventory.find(x=>String(x.id)===String(item.itemId));if(!inv)continue;const committed=db.events.filter(e=>e.status!=='Cancelado'&&e.id!==editId&&e.start<=end&&e.end>=start).flatMap(e=>e.items||[]).filter(ri=>String(ri.itemId)===String(item.itemId)).reduce((a,ri)=>a+(ri.qty||1),0);const invTotal=inv.qty||0;if(item.qty>invTotal-committed)conflicts.push(`• ${inv.name}: pedido ${item.qty}, disponible ${Math.max(0,invTotal-committed)}`);}
+  if(conflicts.length&&!confirm(`⚠️ Sin disponibilidad:\n${conflicts.join('\n')}\n\n¿Continuar?`))return;
+  const data={clientId,event,start,end,status:document.getElementById('ev-status').value,total:parseFloat(document.getElementById('ev-total').value)||0,notes:document.getElementById('ev-notes').value,items};
+  if(editId){const ev=db.events.find(x=>x.id===editId);if(ev){Object.assign(ev,data);}}
+  else{
+    if(!db.nextEventNum)db.nextEventNum=1;
+    const id='EV-'+String(db.nextEventNum++).padStart(3,'0');
+    const newEv={id,...data};db.events.push(newEv);
+    if(data.status==='Confirmado')createEventReminders(newEv);
+  }
+  saveDB();closeModal('modal-event');renderEvents();
+}
+const evCycle=['Confirmado','En curso','Completado','Cancelado'];
+function cycleEventStatus(id){
+  const ev=db.events.find(x=>x.id===id);if(!ev)return;
+  ev.status=evCycle[(evCycle.indexOf(ev.status)+1)%evCycle.length];
+  saveDB();renderEvents();
+  if(ev.status==='Completado'){const cobrado=db.payments.filter(p=>String(p.eventId)===String(id)).reduce((a,p)=>a+(parseFloat(p.amount)||0),0);const saldo=(parseFloat(ev.total)||0)-cobrado;if(saldo>0.01)alert(`⚠️ Evento completado con saldo pendiente de $${fmtD(saldo)}.`);}
+}
+function deleteEvent(id){if(!confirm('¿Eliminar este evento?'))return;db.events=db.events.filter(x=>x.id!==id);saveDB();renderEvents();}
+
+function renderCal(){
+  const label=document.getElementById('cal-label');if(label)label.textContent=`${MONTHS[calMonth]} ${calYear}`;
+  const grid=document.getElementById('cal-grid');if(!grid)return;
+  const days=['Dom','Lun','Mar','Mié','Jue','Vie','Sáb'];
+  const totalUnits=db.inventory.reduce((a,i)=>a+(i.qty||0),0)||1;
+  const today=new Date().toISOString().slice(0,10);
+  let html=days.map(d=>`<div style="font-size:10px;font-weight:600;color:var(--ink3);text-align:center;padding:6px 4px">${d}</div>`).join('');
+  const first=new Date(calYear,calMonth,1).getDay();
+  for(let i=0;i<first;i++)html+=`<div></div>`;
+  const dim=new Date(calYear,calMonth+1,0).getDate();
+  for(let d=1;d<=dim;d++){
+    const ds=`${calYear}-${String(calMonth+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+    const dayEvents=db.events.filter(e=>e.status!=='Cancelado'&&e.start<=ds&&e.end>=ds);
+    let committed=0;dayEvents.forEach(e=>{const iq=(e.items||[]).reduce((a,ri)=>a+(ri.qty||1),0);committed+=iq>0?iq:1;});
+    const pct=Math.min(committed/totalUnits,1);
+    const dispPct=Math.max(0,Math.round((1-pct)*100));
+    const bg=pct===0?'#e8f5e9':pct<.3?'#e8f5e9':pct<.7?'#fff8e1':pct<1?'#ffece0':'#fce8e8';
+    const bor=pct===0?'#97c459':pct<.3?'#97c459':pct<.7?'#f0c040':pct<1?'#f08040':'#f09090';
+    const tc=pct===0?'#1a6b3a':pct<.7?'#8a5c00':pct<1?'#7a3a00':'#a32d2d';
+    const isToday=ds===today;
+    const evLabels=dayEvents.slice(0,2).map(e=>`<div style="font-size:9px;font-weight:600;color:${tc};background:rgba(255,255,255,0.6);border-radius:3px;padding:1px 3px;margin-top:2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${e.id}</div>`).join('');
+    const more=dayEvents.length>2?`<div style="font-size:9px;color:${tc};margin-top:1px">+${dayEvents.length-2} más</div>`:'';
+    html+=`<div onclick="showCalDetail('${ds}')" style="background:${bg};border:${isToday?'2px solid var(--ax-rosa)':'1px solid '+bor};border-radius:6px;padding:6px 4px 4px;cursor:${dayEvents.length?'pointer':'default'};min-height:64px;display:flex;flex-direction:column;transition:box-shadow .15s" onmouseover="if(${dayEvents.length>0})this.style.boxShadow='0 2px 8px rgba(0,0,0,0.15)'" onmouseout="this.style.boxShadow='none'">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start">
+        <span style="font-size:13px;font-weight:${isToday?'800':'600'};color:${isToday?'var(--ax-rosa)':tc}">${d}</span>
+        ${pct>0?`<span style="font-size:9px;font-weight:700;color:${tc};background:rgba(255,255,255,0.7);border-radius:3px;padding:1px 4px">${dispPct}%</span>`:''}
+      </div>${evLabels}${more}
+    </div>`;
+  }
+  grid.innerHTML=html;
+}
+
+function showCalDetail(ds){
+  const dayEvents=db.events.filter(e=>e.status!=='Cancelado'&&e.start<=ds&&e.end>=ds);
+  const detail=document.getElementById('cal-detail');
+  const title=document.getElementById('cal-detail-title');
+  const body=document.getElementById('cal-detail-body');
+  if(!detail||!title||!body)return;
+  const[y,m,d]=ds.split('-');
+  const meses=['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
+  title.textContent=`Eventos del ${parseInt(d)} de ${meses[parseInt(m)-1]} de ${y}`;
+  if(!dayEvents.length){body.innerHTML=`<p style="color:var(--ink3);font-size:13px;text-align:center;padding:12px">Sin eventos este día</p>`;detail.style.display='block';return;}
+  body.innerHTML=dayEvents.map(e=>{
+    const c=db.clients.find(x=>String(x.id)===String(e.clientId));
+    const cobrado=db.payments.filter(p=>String(p.eventId)===String(e.id)).reduce((a,p)=>a+(parseFloat(p.amount)||0),0);
+    const saldo=Math.max(0,(parseFloat(e.total)||0)-cobrado);
+    const q=db.quotes.find(x=>x.eventId===e.id);
+    return`<div style="border:1px solid var(--border);border-radius:8px;padding:14px;margin-bottom:10px">
+      <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:8px">
+        <div><div style="font-weight:700">${e.event}</div><div style="font-size:12px;color:var(--ink3)">${e.id} · ${c?c.name:'—'}</div></div>
+        ${badge(e.status)}
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;font-size:12px;margin-bottom:10px">
+        <div style="background:var(--bg);border-radius:6px;padding:8px"><div style="color:var(--ink3);font-size:10px;margin-bottom:2px">PERÍODO</div><div style="font-weight:600">${fmtDate(e.start)}</div><div style="color:var(--ink3)">→ ${fmtDate(e.end)}</div></div>
+        <div style="background:var(--bg);border-radius:6px;padding:8px"><div style="color:var(--ink3);font-size:10px;margin-bottom:2px">TOTAL</div><div style="font-weight:700">$${fmtD(e.total||0)}</div><div style="color:var(--green);font-size:11px">Cobrado: $${fmtD(cobrado)}</div></div>
+        <div style="background:${saldo>0?'var(--amber-bg)':'var(--green-bg)'};border-radius:6px;padding:8px"><div style="color:var(--ink3);font-size:10px;margin-bottom:2px">SALDO</div><div style="font-weight:700;color:${saldo>0?'var(--amber)':'var(--green)'}">$${fmtD(saldo)}</div></div>
+      </div>
+      <div style="display:flex;gap:6px;flex-wrap:wrap">
+        <button class="btn btn-sm" onclick="openEventModal('${e.id}')">✏️ Editar</button>
+        <button class="btn btn-sm" style="color:var(--green)" onclick="openPayModal(null,'${e.id}')">💰 Cobro</button>
+        ${q?`<button class="btn btn-sm" style="color:var(--blue)" onclick="generarContrato('${q.id}')">📄 Contrato</button>`:''}
+        <button class="btn btn-sm" onclick="cycleEventStatus('${e.id}')">🔄 ${e.status}</button>
+      </div>
+    </div>`;
+  }).join('');
+  detail.style.display='block';
+  detail.scrollIntoView({behavior:'smooth',block:'nearest'});
+}
+function calPrev(){calMonth--;if(calMonth<0){calMonth=11;calYear--;}renderCal();}
+function calNext(){calMonth++;if(calMonth>11){calMonth=0;calYear++;}renderCal();}
+</script>
+
+<script>
+// ── COBROS ────────────────────────────────────────────────────────────────────
+function renderBilling(){
+  const totalCobrado=db.payments.filter(p=>p.status==='Pagado').reduce((a,p)=>a+(parseFloat(p.amount)||0),0);
+  const totalPend=db.payments.filter(p=>p.status!=='Pagado').reduce((a,p)=>a+(parseFloat(p.amount)||0),0);
+  document.getElementById('bill-metrics').innerHTML=`
+    <div class="metric"><div class="metric-label">Total cobrado</div><div class="metric-value" style="color:var(--green)">$${fmtD(totalCobrado)}</div></div>
+    <div class="metric"><div class="metric-label">Pendiente</div><div class="metric-value" style="color:var(--amber)">$${fmtD(totalPend)}</div></div>
+    <div class="metric"><div class="metric-label">Registros</div><div class="metric-value">${db.payments.length}</div></div>`;
+  const s=(document.getElementById('bill-search')?.value||'').toLowerCase();
+  const filter=document.getElementById('bill-filter')?.value||'';
+  const list=db.payments.filter(p=>{const ev=db.events.find(x=>String(x.id)===String(p.eventId));const c=ev?db.clients.find(x=>String(x.id)===String(ev.clientId)):null;return`${ev?.event||''} ${c?.name||''}`.toLowerCase().includes(s)&&(!filter||p.status===filter);}).sort((a,b)=>(b.date||'').localeCompare(a.date||''));
+  const tbody=document.getElementById('bill-body');
+  if(!list.length){tbody.innerHTML=`<tr><td colspan="9" class="empty">Sin cobros registrados</td></tr>`;return;}
+  tbody.innerHTML=list.map(p=>{
+    const ev=db.events.find(x=>String(x.id)===String(p.eventId));
+    const c=ev?db.clients.find(x=>String(x.id)===String(ev.clientId)):null;
+    const totalEv=parseFloat(ev?.total||0);
+    const allPaid=db.payments.filter(x=>String(x.eventId)===String(p.eventId)).reduce((a,x)=>a+(parseFloat(x.amount)||0),0);
+    const saldo=Math.max(0,totalEv-allPaid);
+    const pagos=p.pagos||[];
+    const pagosHtml=pagos.length>1?`<div style="margin-top:4px;display:flex;flex-direction:column;gap:2px">${pagos.map((pg,i)=>`<div style="font-size:11px;color:var(--ink3);display:flex;gap:8px;align-items:center"><span>${i+1}.</span><span style="font-weight:600;color:var(--green)">$${fmtD(pg.monto)}</span><span>${fmtDate(pg.fecha)}</span><span>${pg.metodo}</span>${pg.ref?`<span>${pg.ref}</span>`:''}</div>`).join('')}</div>`:'';
+    return`<tr>
+      <td style="font-weight:500">${ev?.event||'—'}${pagosHtml}</td>
+      <td>${c?.name||'—'}</td>
+      <td>$${fmtD(totalEv)}</td>
+      <td style="color:var(--green);font-weight:600">$${fmtD(p.amount||0)}</td>
+      <td style="color:${saldo>0?'var(--red)':'var(--green)'};font-weight:600">$${fmtD(saldo)}</td>
+      <td style="font-size:12px">${pagos.length>1?`${pagos.length} pagos`:pagos[0]?.metodo||p.method||'—'}</td>
+      <td style="font-size:12px">${fmtDate(p.date)}</td>
+      <td>${badge(p.status)}</td>
+      <td><div style="display:flex;gap:4px">
+        <button class="btn btn-sm btn-icon" onclick="openPayModal('${p.id}')" title="Editar">✏️</button>
+        <button class="btn btn-sm btn-icon btn-danger" onclick="deletePay('${p.id}')">🗑</button>
+      </div></td>
     </tr>`;
   }).join('');
 }
 
-// ─── EXPORT / IMPORT ──────────────────────────────────────────────────────────
-function exportData() {
-  const blob = new Blob([JSON.stringify(db, null, 2)], {type:'application/json'});
-  const a = document.createElement('a');
-  a.href = URL.createObjectURL(blob);
-  a.download = 'secuevent-backup-' + new Date().toISOString().slice(0,10) + '.json';
-  a.click();
+function updatePayEventInfo(){
+  const evId=document.getElementById('pay-event').value;
+  const ev=db.events.find(x=>x.id===evId);
+  const info=document.getElementById('pay-event-info');
+  if(!ev){if(info)info.style.display='none';return;}
+  const editId=document.getElementById('pay-edit-id').value;
+  const existingPagos=db.payments.filter(p=>String(p.eventId)===String(evId)&&p.id!==editId);
+  const yaCobrado=existingPagos.reduce((a,p)=>a+(parseFloat(p.amount)||0),0);
+  const total=parseFloat(ev.total)||0;const saldo=Math.max(0,total-yaCobrado);
+  document.getElementById('pay-ev-total').textContent='$'+fmtD(total);
+  document.getElementById('pay-ev-cobrado').textContent='$'+fmtD(yaCobrado);
+  document.getElementById('pay-ev-saldo').textContent='$'+fmtD(saldo);
+  if(info)info.style.display='flex';
 }
 
-function importData(event) {
-  const file = event.target.files[0];
-  if(!file) return;
-  const reader = new FileReader();
-  reader.onload = e => {
-    try {
-      const data = JSON.parse(e.target.result);
-      if(!data.inventory||!data.clients||!data.reservations) { alert('Archivo inválido. Asegúrate de importar un backup generado por SecuEvent.'); return; }
-      if(!confirm('Esto reemplazará todos los datos actuales. ¿Continuar?')) return;
-      db = data;
-      saveDB();
-      showPanel('dashboard');
-      alert('Datos importados correctamente.');
-    } catch(err) { alert('Error al leer el archivo: ' + err.message); }
-  };
-  reader.readAsText(file);
-  event.target.value = '';
+let _pagos=[];
+function addPagoRow(existing){
+  const id='pago_'+Date.now()+'_'+Math.random().toString(36).slice(2,6);
+  _pagos.push({id,monto:existing?.monto||'',fecha:existing?.fecha||new Date().toISOString().slice(0,10),metodo:existing?.metodo||'Transferencia',ref:existing?.ref||'',pdfData:existing?.pdfData||null,pdfName:existing?.pdfName||null});
+  renderPagosRows();calcPagosTotal();
+}
+function removePagoRow(id){_pagos=_pagos.filter(p=>p.id!==id);renderPagosRows();calcPagosTotal();}
+function updatePagoField(id,field,value){const p=_pagos.find(x=>x.id===id);if(p)p[field]=value;calcPagosTotal();}
+function renderPagosRows(){
+  const list=document.getElementById('pagos-list');if(!list)return;
+  if(!_pagos.length){list.innerHTML='<p style="font-size:12px;color:var(--ink3);text-align:center;padding:12px">Sin pagos. Haz clic en "+ Agregar pago".</p>';calcPagosTotal();return;}
+  list.innerHTML=_pagos.map((p,i)=>`
+    <div style="border:1px solid var(--border);border-radius:8px;padding:12px;margin-bottom:8px">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+        <span style="font-size:12px;font-weight:600">Pago ${i+1}</span>
+        <button class="btn btn-sm btn-icon btn-danger" onclick="removePagoRow('${p.id}')">✕</button>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+        <div><div style="font-size:11px;color:var(--ink3);margin-bottom:3px">Monto ($MXN) *</div>
+          <input type="number" placeholder="0.00" step="0.01" min="0" value="${p.monto||''}" style="font-size:13px;font-weight:700;color:var(--green)" oninput="updatePagoField('${p.id}','monto',parseFloat(this.value)||0);calcPagosTotal()"></div>
+        <div><div style="font-size:11px;color:var(--ink3);margin-bottom:3px">Fecha *</div>
+          <input type="date" value="${p.fecha||''}" onchange="updatePagoField('${p.id}','fecha',this.value)"></div>
+        <div><div style="font-size:11px;color:var(--ink3);margin-bottom:3px">Forma de pago</div>
+          <select onchange="updatePagoField('${p.id}','metodo',this.value)"><option ${p.metodo==='Transferencia'?'selected':''}>Transferencia</option><option ${p.metodo==='Efectivo'?'selected':''}>Efectivo</option></select></div>
+        <div><div style="font-size:11px;color:var(--ink3);margin-bottom:3px">Referencia</div>
+          <input type="text" placeholder="No. transferencia" value="${p.ref||''}" oninput="updatePagoField('${p.id}','ref',this.value)"></div>
+      </div>
+    </div>`).join('');
+}
+function calcPagosTotal(){
+  const total=_pagos.reduce((a,p)=>a+(parseFloat(p.monto)||0),0);
+  const el=document.getElementById('pagos-total');
+  if(!el)return;
+  if(_pagos.length>0){el.style.display='block';el.textContent=`Total registrado: $${fmtD(total)}`;}
+  else el.style.display='none';
 }
 
-// ─── PRINT DOCUMENT (cotización / carta) con membrete Artaxos ─────────────────
-let _printResId = null;
+function openPayModal(id,preEventId){
+  const p=(id&&typeof id==='string'&&!id.startsWith('EV-'))?db.payments.find(x=>x.id===id):null;
+  document.getElementById('pay-modal-title').textContent=p?'Editar cobro':'Registrar cobro';
+  document.getElementById('pay-edit-id').value=p?p.id:'';
+  const sel=document.getElementById('pay-event');
+  sel.innerHTML=db.events.filter(e=>e.status!=='Cancelado').map(e=>{
+    const c=db.clients.find(x=>String(x.id)===String(e.clientId));
+    return`<option value="${e.id}">${e.id} — ${c?c.name:'?'} — ${e.event}</option>`;
+  }).join('');
+  if(p)sel.value=p.eventId;
+  if(preEventId)sel.value=preEventId;
+  document.getElementById('pay-status').value=p?p.status||'Pendiente':'Pendiente';
+  document.getElementById('pay-notes').value=p?p.notes||'':'';
+  _pagos=[];
+  if(p?.pagos?.length){_pagos=p.pagos.map(pg=>({...pg}));}
+  else if(p?.amount){_pagos=[{id:'pago_legacy_'+p.id,monto:p.amount,fecha:p.date||'',metodo:p.method||'Transferencia',ref:p.ref||'',pdfData:null,pdfName:null}];}
+  renderPagosRows();calcPagosTotal();updatePayEventInfo();openModal('modal-pay');
+}
+function savePayment(){
+  const eventId=document.getElementById('pay-event').value;
+  if(!eventId){alert('Selecciona un evento.');return;}
+  if(!_pagos.length){alert('Agrega al menos un pago.');return;}
+  const invalid=_pagos.find(p=>!p.monto||!p.fecha);
+  if(invalid){alert('Cada pago debe tener monto y fecha.');return;}
+  const totalAmount=_pagos.reduce((a,p)=>a+(parseFloat(p.monto)||0),0);
+  const editId=document.getElementById('pay-edit-id').value;
+  const data={eventId,status:document.getElementById('pay-status').value,notes:document.getElementById('pay-notes').value,pagos:_pagos,amount:totalAmount,date:_pagos[_pagos.length-1]?.fecha||new Date().toISOString().slice(0,10)};
+  if(editId){const p=db.payments.find(x=>x.id===editId);if(p)Object.assign(p,data);}
+  else db.payments.push({id:'pay'+Date.now(),...data});
+  saveDB();closeModal('modal-pay');renderBilling();
+}
+function deletePay(id){if(!confirm('¿Eliminar este cobro?'))return;db.payments=db.payments.filter(x=>x.id!==id);saveDB();renderBilling();}
 
-function printDocument() {
-  if(!_printResId) return;
-  const r = db.reservations.find(x=>x.id===_printResId);
-  if(!r) return;
-  const c = db.clients.find(x=>x.id===r.clientId);
-  const dias = daysBetween(r.start, r.end);
+// ── FINANZAS ──────────────────────────────────────────────────────────────────
+let _finView='monthly',_finYear=new Date().getFullYear(),_finMonth=new Date().getMonth(),_finWeek=0;
+const CAT_COLORS={Combustible:'#e67e22',Nómina:'#2980b9',Mantenimiento:'#8e44ad',Renta:'#c0392b',Servicios:'#16a085',Compras:'#f39c12',Logística:'#27ae60',Marketing:'#d35400',Impuestos:'#7f8c8d',Otro:'#95a5a6'};
+function setFinView(v){_finView=v;document.getElementById('fin-btn-m').style.cssText=v==='monthly'?'background:var(--ax-rosa);color:#fff':'';document.getElementById('fin-btn-w').style.cssText=v==='weekly'?'background:var(--ax-rosa);color:#fff':'';if(v==='weekly'){const now=new Date();_finYear=now.getFullYear();_finWeek=Math.floor((now-new Date(_finYear,0,1))/(7*24*3600*1000));}renderFinance();}
+function finToday(){const now=new Date();_finYear=now.getFullYear();_finMonth=now.getMonth();_finWeek=Math.floor((now-new Date(_finYear,0,1))/(7*24*3600*1000));renderFinance();}
+function finPrev(){if(_finView==='monthly'){_finMonth--;if(_finMonth<0){_finMonth=11;_finYear--;}}else{_finWeek--;if(_finWeek<0){_finYear--;_finWeek=52;}}renderFinance();}
+function finNext(){if(_finView==='monthly'){_finMonth++;if(_finMonth>11){_finMonth=0;_finYear++;}}else{_finWeek++;if(_finWeek>52){_finYear++;_finWeek=0;}}renderFinance();}
+function getFinDates(){if(_finView==='monthly')return{start:`${_finYear}-${String(_finMonth+1).padStart(2,'0')}-01`,end:new Date(_finYear,_finMonth+1,0).toISOString().slice(0,10)};const j=new Date(_finYear,0,1);const s=new Date(j.getTime()+_finWeek*7*24*3600*1000);const e=new Date(s.getTime()+6*24*3600*1000);return{start:s.toISOString().slice(0,10),end:e.toISOString().slice(0,10)};}
 
-  // Filas de equipo
-  var itemRows = r.items.map(function(ri) {
-    var inv = db.inventory.find(function(x){ return x.id===ri.itemId; });
-    if(!inv) return '';
-    var subtotal = inv.price * ri.qty * dias;
-    return '<tr>'
-      + '<td>' + inv.name + (inv.code ? ' <span style="color:#aaa;font-size:10px">(' + inv.code + ')</span>' : '') + '</td>'
-      + '<td style="text-align:center">' + ri.qty + '</td>'
-      + '<td style="text-align:center">' + dias + '</td>'
-      + '<td style="text-align:right">$' + fmt(inv.price) + '</td>'
-      + '<td style="text-align:right;font-weight:600">$' + fmt(subtotal) + '</td>'
-      + '</tr>';
-  }).filter(Boolean).join('');
-
-  var now = new Date();
-  var fechaDoc = now.toLocaleDateString('es-MX', {day:'2-digit',month:'long',year:'numeric'});
-
-  var docHTML = '<div id="print-doc" style="display:block">'
-    + '<div class="doc-watermark">Artaxos</div>'
-    + '<div class="doc-header">'
-    +   '<div class="doc-header-brand">'
-    +     '<svg width="40" height="40" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">'
-    +       '<circle cx="50"   cy="28"   r="7.5"  fill="#FF015B"/>'
-    +       '<circle cx="72"   cy="50"   r="7.5"  fill="#FF015B"/>'
-    +       '<circle cx="50"   cy="72"   r="7.5"  fill="#FF015B"/>'
-    +       '<circle cx="28"   cy="50"   r="7.5"  fill="#FF015B"/>'
-    +       '<circle cx="65.6" cy="34.4" r="5.5"  fill="#FF015B"/>'
-    +       '<circle cx="65.6" cy="65.6" r="5.5"  fill="#FF015B"/>'
-    +       '<circle cx="34.4" cy="65.6" r="5.5"  fill="#FF015B"/>'
-    +       '<circle cx="34.4" cy="34.4" r="5.5"  fill="#FF015B"/>'
-    +       '<circle cx="59.5" cy="29.5" r="3.2"  fill="#FF015B"/>'
-    +       '<circle cx="70.5" cy="40.5" r="3.2"  fill="#FF015B"/>'
-    +       '<circle cx="70.5" cy="59.5" r="3.2"  fill="#FF015B"/>'
-    +       '<circle cx="59.5" cy="70.5" r="3.2"  fill="#FF015B"/>'
-    +       '<circle cx="40.5" cy="70.5" r="3.2"  fill="#FF015B"/>'
-    +       '<circle cx="29.5" cy="59.5" r="3.2"  fill="#FF015B"/>'
-    +       '<circle cx="29.5" cy="40.5" r="3.2"  fill="#FF015B"/>'
-    +       '<circle cx="40.5" cy="29.5" r="3.2"  fill="#FF015B"/>'
-    +     '</svg>'
-    +     '<div>'
-    +       '<div class="brand-name">Artaxos</div>'
-    +       '<div class="brand-tagline">Especialistas en Crowd Management</div>'
-    +     '</div>'
-    +   '</div>'
-    +   '<div class="doc-header-meta">'
-    +     '<strong>' + r.id + '</strong>'
-    +     'Fecha: ' + fechaDoc + '<br>'
-    +     'Estado: ' + r.status
-    +   '</div>'
-    + '</div>'
-    + '<div class="doc-stripe"></div>'
-    + '<div class="doc-body">'
-
-    // Evento
-    +   '<div style="display:flex;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:12px;">'
-    +     '<div>'
-    +       '<div class="doc-section-title">Evento</div>'
-    +       '<div style="font-size:18px;font-weight:700;font-family:\'Archivo\',\'Arial Black\',sans-serif;">' + r.event + '</div>'
-    +       (r.notes ? '<div style="font-size:11px;color:#666;margin-top:3px">' + r.notes + '</div>' : '')
-    +     '</div>'
-    +     '<div style="text-align:right;">'
-    +       '<div class="doc-section-title" style="justify-content:flex-end;">Período</div>'
-    +       '<div style="font-size:13px;font-weight:600;">' + fmtDate(r.start) + ' → ' + fmtDate(r.end) + '</div>'
-    +       '<div style="font-size:11px;color:#888;">' + dias + ' día(s)</div>'
-    +     '</div>'
-    +   '</div>'
-
-    // Cliente
-    +   '<div class="doc-section-title">Cliente</div>'
-    +   '<table class="doc-table">'
-    +     '<tr>'
-    +       '<td><strong>' + (c ? c.name : '—') + '</strong></td>'
-    +       '<td>' + (c && c.company ? c.company : '—') + '</td>'
-    +       '<td>' + (c && c.phone ? c.phone : '—') + '</td>'
-    +       '<td>' + (c && c.email ? c.email : '—') + '</td>'
-    +     '</tr>'
-    +   '</table>'
-
-    // Equipo
-    +   '<div class="doc-section-title">Equipo contratado</div>'
-    +   '<table class="doc-table">'
-    +     '<thead><tr><th>Equipo</th><th style="text-align:center">Cant.</th><th style="text-align:center">Días</th><th style="text-align:right">Precio/día</th><th style="text-align:right">Subtotal</th></tr></thead>'
-    +     '<tbody>' + (itemRows || '<tr><td colspan="5" style="color:#aaa;font-style:italic">Sin equipo registrado</td></tr>') + '</tbody>'
-    +   '</table>'
-
-    // Total
-    +   '<div class="doc-total">'
-    +     '<div>'
-    +       '<div class="doc-total-label">Total del servicio</div>'
-    +       '<div style="font-size:10px;color:rgba(255,255,255,0.4);margin-top:2px;">Artaxos Comercializadora S.A.S. de C.V.</div>'
-    +     '</div>'
-    +     '<div class="doc-total-value">$' + fmt(r.total) + ' <span style="font-size:12px;font-weight:400;color:rgba(255,255,255,0.5)">MXN</span></div>'
-    +   '</div>'
-
-    // Footer
-    +   '<div class="doc-footer">'
-    +     '<div><span class="doc-footer-brand">Artaxos</span> · contacto@artaxos.com · WhatsApp 55 3196 9083 · www.artaxos.com</div>'
-    +     '<div>Hacemos de tu evento el lugar <strong>más seguro.</strong></div>'
-    +   '</div>'
-    + '</div>'
-    + '</div>';
-
-  // Escribir en ventana de impresión
-  var win = window.open('', '_blank', 'width=900,height=700');
-  win.document.write('<!DOCTYPE html><html lang="es"><head>'
-    + '<meta charset="UTF-8">'
-    + '<title>Artaxos · ' + r.id + ' · ' + r.event + '</title>'
-    + '<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">'
-    + '<style>'
-    + 'body{margin:0;padding:24px;font-family:Inter,Arial,sans-serif;color:#131315;background:#fff;font-size:12px;}'
-    + '@media print{@page{margin:14mm 16mm;}body{padding:0;}}'
-    + '.doc-header{background:#131315;color:#fff;padding:18px 24px 14px;display:flex;align-items:center;justify-content:space-between;border-radius:4px 4px 0 0;}'
-    + '.brand-name{font-family:Archivo,"Arial Black",sans-serif;font-size:22px;font-weight:800;color:#FF015B;letter-spacing:-0.3px;}'
-    + '.brand-tagline{font-size:9px;color:rgba(255,255,255,0.5);text-transform:uppercase;letter-spacing:1px;margin-top:2px;}'
-    + '.doc-header-meta{text-align:right;font-size:11px;color:rgba(255,255,255,0.7);}'
-    + '.doc-header-meta strong{display:block;color:#FF015B;font-size:13px;margin-bottom:2px;}'
-    + '.doc-stripe{height:4px;background:#FF015B;margin-bottom:20px;}'
-    + '.doc-body{padding:0 2px;}'
-    + '.doc-section-title{font-size:9px;font-weight:700;letter-spacing:1.4px;text-transform:uppercase;color:#FF015B;border-bottom:1px solid #FF015B;padding-bottom:4px;margin:16px 0 8px;display:flex;align-items:center;}'
-    + '.doc-table{width:100%;border-collapse:collapse;font-size:11px;margin-bottom:12px;}'
-    + '.doc-table th{background:#131315;color:#fff;padding:6px 10px;text-align:left;font-size:9px;letter-spacing:.8px;text-transform:uppercase;}'
-    + '.doc-table td{padding:8px 10px;border-bottom:1px solid #e8e5e8;vertical-align:top;}'
-    + '.doc-table tr:nth-child(even) td{background:#faf8f9;}'
-    + '.doc-total{background:#131315;color:#fff;padding:12px 16px;border-radius:4px;display:flex;justify-content:space-between;align-items:center;margin-top:12px;}'
-    + '.doc-total-label{font-size:10px;text-transform:uppercase;letter-spacing:1px;color:rgba(255,255,255,0.6);}'
-    + '.doc-total-value{font-family:Archivo,"Arial Black",sans-serif;font-size:20px;font-weight:800;color:#FF015B;}'
-    + '.doc-footer{margin-top:24px;padding-top:10px;border-top:1px solid #e8e5e8;display:flex;justify-content:space-between;font-size:9px;color:#aaa;}'
-    + '.doc-watermark{position:fixed;bottom:40mm;right:20mm;opacity:0.04;pointer-events:none;transform:rotate(-15deg);font-family:Archivo,"Arial Black",sans-serif;font-size:72px;font-weight:900;color:#FF015B;white-space:nowrap;}'
-    + '</style></head><body>'
-    + docHTML
-    + '<script>window.onload=function(){window.print();}<\/script>'
-    + '</body></html>');
-  win.document.close();
+function renderFinance(){
+  const{start,end}=getFinDates();
+  const label=_finView==='monthly'?`${MONTHS[_finMonth]} ${_finYear}`:`${fmtDate(start)} — ${fmtDate(end)}`;
+  document.getElementById('fin-label').textContent=label;
+  const ingresos=db.payments.filter(p=>p.date>=start&&p.date<=end).reduce((a,p)=>a+(parseFloat(p.amount)||0),0);
+  const egresos=db.expenses.filter(e=>e.date>=start&&e.date<=end).reduce((a,e)=>a+(parseFloat(e.amount)||0),0);
+  const utilidad=ingresos-egresos;
+  const totalCxC=db.events.reduce((a,ev)=>{const cob=db.payments.filter(p=>String(p.eventId)===String(ev.id)).reduce((s,p)=>s+(parseFloat(p.amount)||0),0);return a+Math.max(0,(parseFloat(ev.total)||0)-cob);},0);
+  document.getElementById('fin-metrics').innerHTML=`
+    <div class="metric"><div class="metric-label">Ingresos</div><div class="metric-value" style="color:var(--green)">$${fmtD(ingresos)}</div></div>
+    <div class="metric"><div class="metric-label">Egresos</div><div class="metric-value" style="color:var(--red)">$${fmtD(egresos)}</div></div>
+    <div class="metric"><div class="metric-label">Utilidad neta</div><div class="metric-value" style="color:${utilidad>=0?'var(--green)':'var(--red)'}">$${fmtD(utilidad)}</div></div>
+    <div class="metric"><div class="metric-label">Por cobrar</div><div class="metric-value" style="color:var(--amber)">$${fmtD(totalCxC)}</div></div>`;
+  const bars=[];
+  for(let i=5;i>=0;i--){
+    let s2,e2,lbl;
+    if(_finView==='monthly'){let mm=_finMonth-i,yy=_finYear;while(mm<0){mm+=12;yy--;}s2=`${yy}-${String(mm+1).padStart(2,'0')}-01`;e2=new Date(yy,mm+1,0).toISOString().slice(0,10);lbl=MONTHS_S[mm];}
+    else{const wk=_finWeek-i;const j=new Date(_finYear,0,1);const sd=new Date(j.getTime()+(wk<0?wk+52:wk)*7*24*3600*1000);s2=sd.toISOString().slice(0,10);e2=new Date(sd.getTime()+6*24*3600*1000).toISOString().slice(0,10);lbl=`S${(wk<0?wk+52:wk)+1}`;}
+    const ing=db.payments.filter(p=>p.date>=s2&&p.date<=e2).reduce((a,p)=>a+(parseFloat(p.amount)||0),0);
+    const egr=db.expenses.filter(e=>e.date>=s2&&e.date<=e2).reduce((a,e)=>a+(parseFloat(e.amount)||0),0);
+    bars.push({lbl,ing,egr});
+  }
+  const maxB=Math.max(...bars.flatMap(b=>[b.ing,b.egr]),1);const barH=100;
+  document.getElementById('fin-bars').innerHTML=bars.map(b=>`<div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:2px"><div style="width:100%;display:flex;gap:2px;align-items:flex-end;height:${barH}px"><div style="flex:1;background:#2e7d32;border-radius:3px 3px 0 0;height:${Math.max(4,Math.round(b.ing/maxB*barH))}px;opacity:.85" title="$${fmtD(b.ing)}"></div><div style="flex:1;background:#c0392b;border-radius:3px 3px 0 0;height:${Math.max(4,Math.round(b.egr/maxB*barH))}px;opacity:.85" title="$${fmtD(b.egr)}"></div></div><div style="font-size:10px;color:var(--ink3)">${b.lbl}</div></div>`).join('')+`<div style="position:absolute;bottom:6px;left:16px;display:flex;gap:10px;font-size:10px;color:var(--ink3)"><span><span style="display:inline-block;width:8px;height:8px;background:#2e7d32;border-radius:2px;margin-right:3px"></span>Ingresos</span><span><span style="display:inline-block;width:8px;height:8px;background:#c0392b;border-radius:2px;margin-right:3px"></span>Egresos</span></div>`;
+  const ivaI=ingresos/1.16*.16;const ivaE=db.expenses.filter(e=>e.date>=start&&e.date<=end&&e.iva==='si').reduce((a,e)=>a+(parseFloat(e.amount)||0)/1.16*.16,0);const ivaSAT=ivaI-ivaE;
+  document.getElementById('fin-iva').innerHTML=`<div style="font-size:12px"><div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--border)"><span style="color:var(--ink3)">IVA cobrado:</span><span style="color:var(--green);font-weight:600">$${fmtD(ivaI)}</span></div><div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--border)"><span style="color:var(--ink3)">IVA acreditable:</span><span style="color:var(--red);font-weight:600">$${fmtD(ivaE)}</span></div><div style="padding:10px 12px;margin-top:8px;background:${ivaSAT>=0?'var(--amber-bg)':'var(--green-bg)'};border-radius:8px;text-align:center"><div style="font-size:11px;font-weight:600;color:${ivaSAT>=0?'var(--amber)':'var(--green)'};margin-bottom:4px">${ivaSAT>=0?'IVA a pagar al SAT':'IVA a favor'}</div><div style="font-size:20px;font-weight:800;color:${ivaSAT>=0?'var(--amber)':'var(--green)'}">$${fmtD(Math.abs(ivaSAT))}</div></div></div>`;
+  const expSearch=(document.getElementById('exp-search')?.value||'').toLowerCase();const catF=document.getElementById('exp-cat-filter')?.value||'';
+  const expList=db.expenses.filter(e=>e.date>=start&&e.date<=end&&`${e.desc} ${e.vendor||''}`.toLowerCase().includes(expSearch)&&(!catF||e.cat===catF)).sort((a,b)=>b.date.localeCompare(a.date));
+  const tbody=document.getElementById('exp-body');
+  if(!expList.length){tbody.innerHTML=`<tr><td colspan="5" class="empty">Sin egresos en este período</td></tr>`;return;}
+  tbody.innerHTML=expList.map(e=>`<tr><td style="font-size:12px">${fmtDate(e.date)}</td><td><span style="padding:2px 8px;border-radius:12px;font-size:11px;background:${CAT_COLORS[e.cat]||'#95a5a6'}22;color:${CAT_COLORS[e.cat]||'#555'};font-weight:600">${e.cat}</span></td><td>${e.desc}${e.vendor?` <span style="color:var(--ink3);font-size:11px">— ${e.vendor}</span>`:''}</td><td style="font-weight:600;color:var(--red)">$${fmtD(e.amount)}</td><td><div style="display:flex;gap:4px"><button class="btn btn-sm btn-icon" onclick="openExpenseModal('${e.id}')">✏️</button><button class="btn btn-sm btn-icon btn-danger" onclick="deleteExpense('${e.id}')">🗑</button></div></td></tr>`).join('');
 }
 
-// ─── INIT ─────────────────────────────────────────────────────────────────────
+function openExpenseModal(id){
+  const e=id?db.expenses.find(x=>x.id===id):null;
+  document.getElementById('exp-modal-title').textContent=e?'Editar egreso':'Registrar egreso';
+  document.getElementById('exp-edit-id').value=e?e.id:'';
+  document.getElementById('exp-date').value=e?e.date:new Date().toISOString().slice(0,10);
+  document.getElementById('exp-cat').value=e?e.cat:'Combustible';
+  document.getElementById('exp-desc').value=e?e.desc:'';
+  document.getElementById('exp-amount').value=e?e.amount:'';
+  document.getElementById('exp-iva').value=e?e.iva||'si':'si';
+  document.getElementById('exp-vendor').value=e?e.vendor||'':'';
+  openModal('modal-expense');
+}
+function saveExpense(){
+  const date=document.getElementById('exp-date').value;const desc=document.getElementById('exp-desc').value.trim();const amount=parseFloat(document.getElementById('exp-amount').value);
+  if(!date||!desc||!amount){alert('Completa fecha, descripción y monto.');return;}
+  const editId=document.getElementById('exp-edit-id').value;
+  const data={date,desc,cat:document.getElementById('exp-cat').value,amount,iva:document.getElementById('exp-iva').value,vendor:document.getElementById('exp-vendor').value};
+  if(editId){const e=db.expenses.find(x=>x.id===editId);if(e)Object.assign(e,data);}else db.expenses.push({id:'exp'+Date.now(),...data});
+  saveDB();closeModal('modal-expense');renderFinance();
+}
+function deleteExpense(id){if(!confirm('¿Eliminar?'))return;db.expenses=db.expenses.filter(x=>x.id!==id);saveDB();renderFinance();}
+
+// ── INIT ──────────────────────────────────────────────────────────────────────
 loadDB();
-renderDashboard();
-
-// Wire up "Agregar equipo" button
-document.querySelector('#panel-inventory .btn-primary').addEventListener('click', openAddItem);
-// Reset cli modal on open
-document.querySelector('#panel-clients .btn-primary').addEventListener('click', () => {
-  document.getElementById('cli-modal-title').textContent = 'Nuevo cliente';
-  document.getElementById('cli-edit-id').value = '';
-  ['cli-name','cli-company','cli-phone','cli-email','cli-notes'].forEach(id=>document.getElementById(id).value='');
-  openModal('modal-client');
-});
+if(gdriveHandleRedirect()){renderDashboard();}else{renderDashboard();gdriveInit();}
 </script>
 </body>
 </html>
