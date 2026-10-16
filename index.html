@@ -943,9 +943,12 @@ function saveQuote(){
   });
   const editId=document.getElementById('qt-edit-id').value;
   const NOTE_ARCO='Cada arco detector incluye: un detector manual tipo handheld, una mesa de plástico plegable con funda negra, dos charolas de plástico y una extensión eléctrica de 5 m.';
+  const NOTE_FILTRO='El precio por elemento para la operación de arco detector, se presenta tomando en consideración un turno de 12 horas.';
   let notesVal=document.getElementById('qt-notes').value;
   const tieneArco=items.some(it=>{const inv=db.inventory.find(x=>String(x.id)===String(it.itemId));return inv&&/arco/i.test(inv.name);});
+  const tieneFiltro=items.some(it=>{const inv=db.inventory.find(x=>String(x.id)===String(it.itemId));return inv&&/filtro/i.test(inv.name);});
   if(tieneArco&&!notesVal.includes(NOTE_ARCO)){notesVal=notesVal?notesVal+'\n'+NOTE_ARCO:NOTE_ARCO;}
+  if(tieneFiltro&&!notesVal.includes(NOTE_FILTRO)){notesVal=notesVal?notesVal+'\n'+NOTE_FILTRO:NOTE_FILTRO;}
   const data={clientId,event,start,end,validUntil:document.getElementById('qt-valid').value,disc:parseFloat(document.getElementById('qt-disc').value)||0,notes:notesVal,items};
   if(editId){const q=db.quotes.find(x=>x.id===editId);if(q)Object.assign(q,data);}
   else{
