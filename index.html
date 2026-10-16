@@ -1026,7 +1026,7 @@ function buildQtDocHTML(q, isContrato=false){
     <div style="display:flex;justify-content:space-between;align-items:flex-start">
       <div style="display:flex;align-items:center;gap:14px">
         ${logoHtml.includes('<img')
-          ? `<img src="${logoData}" style="height:60px;width:auto;display:block" alt="Artaxos">`
+          ? `<img src="${logoData}" style="height:60px;width:auto;display:block;mix-blend-mode:screen;filter:brightness(1.05)" alt="Artaxos">`
           : `${AX_ISOTIPO_SVG}<div><div style="font-family:'Archivo',sans-serif;font-size:22px;font-weight:800;color:#fff;letter-spacing:1px">ARTAXOS</div><div style="font-size:10px;color:#B4B4BC;margin-top:2px">Comercializadora S.A.S. de C.V.</div></div>`}
       </div>
       <div style="text-align:right">
