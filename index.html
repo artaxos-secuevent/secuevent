@@ -997,11 +997,11 @@ function buildQtHTML(q){
     const days=it.days||1;const qty=it.qty||1;const st=price*days*qty;
     rows+=`<tr><td style="padding:7px 10px;border-bottom:1px solid #e5e5e5">${inv?inv.name:it.itemId}</td><td style="padding:7px 10px;border-bottom:1px solid #e5e5e5;text-align:center">${qty}</td><td style="padding:7px 10px;border-bottom:1px solid #e5e5e5;text-align:center">${days}</td><td style="padding:7px 10px;border-bottom:1px solid #e5e5e5;text-align:right">$${fmtD(price)}</td><td style="padding:7px 10px;border-bottom:1px solid #e5e5e5;text-align:right">$${fmtD(st)}</td></tr>`;
   });
-  return{c,logoHtml,firmaHtml,sub,subtotalDisc,iva,total,anticipo,rows,disc};
+  return{c,logoHtml,logoData,firmaHtml,sub,subtotalDisc,iva,total,anticipo,rows,disc};
 }
 
 function buildQtDocHTML(q, isContrato=false){
-  const{c,logoHtml,firmaHtml,sub,subtotalDisc,iva,total,anticipo,rows,disc}=buildQtHTML(q);
+  const{c,logoHtml,logoData,firmaHtml,sub,subtotalDisc,iva,total,anticipo,rows,disc}=buildQtHTML(q);
   const folio=isContrato?(q.folio?q.folio.replace('COT','CONT'):'CONT-'+Date.now()):q.folio||'—';
   const titulo=isContrato?'COTIZACIÓN':'COTIZACIÓN';
 
@@ -1025,11 +1025,9 @@ function buildQtDocHTML(q, isContrato=false){
   <div style="background:#131315;padding:20px 24px;margin-bottom:0">
     <div style="display:flex;justify-content:space-between;align-items:flex-start">
       <div style="display:flex;align-items:center;gap:14px">
-        ${AX_ISOTIPO_SVG}
-        <div>
-          <div style="font-family:'Archivo',sans-serif;font-size:22px;font-weight:800;color:#fff;letter-spacing:1px">ARTAXOS</div>
-          <div style="font-size:10px;color:#B4B4BC;margin-top:2px">Comercializadora S.A.S. de C.V.</div>
-        </div>
+        ${logoHtml.includes('<img')
+          ? `<img src="${logoData}" style="height:60px;width:auto;display:block" alt="Artaxos">`
+          : `${AX_ISOTIPO_SVG}<div><div style="font-family:'Archivo',sans-serif;font-size:22px;font-weight:800;color:#fff;letter-spacing:1px">ARTAXOS</div><div style="font-size:10px;color:#B4B4BC;margin-top:2px">Comercializadora S.A.S. de C.V.</div></div>`}
       </div>
       <div style="text-align:right">
         <div style="font-family:'Archivo',sans-serif;font-size:18px;font-weight:800;color:#fff">COTIZACIÓN</div>
@@ -1080,16 +1078,16 @@ function buildQtDocHTML(q, isContrato=false){
   <div style="display:grid;grid-template-columns:1fr 1fr;gap:0;border:1px solid #e5e5e5;border-radius:0 0 8px 8px;border-top:none;overflow:hidden;margin-top:0">
     <div style="background:#131315;padding:8px 14px;font-family:'Archivo',sans-serif;font-weight:700;color:#fff;font-size:12px;grid-column:1">DATOS PARA TRANSFERENCIA</div>
     <div style="background:#FFF0F5;padding:8px 14px;font-size:11px;color:#D9004C;font-weight:700;grid-column:2;display:flex;align-items:center">FORMA DE PAGO</div>
-    <div style="padding:10px 14px;border-right:1px solid #e5e5e5;border-top:1px solid #e5e5e5;font-size:11px;line-height:1.8">
-      <div><span style="color:#9a9a97;font-size:10px">RAZÓN SOCIAL</span><br><strong>Artaxos Comercializadora S.A.S. de C.V.</strong></div>
-      <div style="margin-top:6px"><span style="color:#9a9a97;font-size:10px">BANCO / CUENTA</span><br><strong>Banco Santander &nbsp; 65-51105499-1</strong></div>
-      <div style="margin-top:6px"><span style="color:#9a9a97;font-size:10px">CLABE</span><br><strong style="letter-spacing:.5px">014744655110549912</strong></div>
-      <div style="margin-top:8px;font-size:10px;color:#555">Concepto: <strong>${folio} — ${q.event}</strong><br>Comprobante a <strong>contacto@artaxos.com</strong> o WhatsApp <strong>55 31 96 90 83</strong></div>
+    <div style="padding:8px 14px;border-right:1px solid #e5e5e5;border-top:1px solid #e5e5e5;font-size:11px;line-height:1.4">
+      <div><span style="color:#9a9a97;font-size:9px">RAZÓN SOCIAL</span><br><strong>Artaxos Comercializadora S.A.S. de C.V.</strong></div>
+      <div style="margin-top:4px"><span style="color:#9a9a97;font-size:9px">BANCO / CUENTA</span><br><strong>Banco Santander &nbsp; 65-51105499-1</strong></div>
+      <div style="margin-top:4px"><span style="color:#9a9a97;font-size:9px">CLABE</span><br><strong style="letter-spacing:.5px">014744655110549912</strong></div>
+      <div style="margin-top:5px;font-size:10px;color:#555">Concepto: <strong>${folio} — ${q.event}</strong><br>Comprobante a <strong>contacto@artaxos.com</strong> o WhatsApp <strong>55 31 96 90 83</strong></div>
     </div>
-    <div style="padding:10px 14px;background:#FFF0F5;border-top:1px solid #ffd6e7;font-size:12px;color:#D9004C;line-height:2">
+    <div style="padding:8px 14px;background:#FFF0F5;border-top:1px solid #ffd6e7;font-size:12px;color:#D9004C;line-height:1.6">
       <div><strong>Anticipo 50%:</strong> $${fmtD(anticipo)}</div>
       <div><strong>Liquidación:</strong> $${fmtD(anticipo)}</div>
-      <div style="font-size:10px;color:#888;margin-top:4px">Liquidación el día del evento</div>
+      <div style="font-size:10px;color:#888;margin-top:2px">Liquidación el día del evento</div>
     </div>
   </div>
 
