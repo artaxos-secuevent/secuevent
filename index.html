@@ -942,7 +942,11 @@ function saveQuote(){
     if(sel?.value)items.push({itemId:sel.value,qty:parseInt(inps[0]?.value)||1,days:parseInt(inps[1]?.value)||1,price:parseFloat(inps[2]?.value)||0});
   });
   const editId=document.getElementById('qt-edit-id').value;
-  const data={clientId,event,start,end,validUntil:document.getElementById('qt-valid').value,disc:parseFloat(document.getElementById('qt-disc').value)||0,notes:document.getElementById('qt-notes').value,items};
+  const NOTE_ARCO='Cada arco detector incluye: un detector manual tipo handheld, una mesa de plástico plegable con funda negra, dos charolas de plástico y una extensión eléctrica de 5 m.';
+  let notesVal=document.getElementById('qt-notes').value;
+  const tieneArco=items.some(it=>{const inv=db.inventory.find(x=>String(x.id)===String(it.itemId));return inv&&/arco/i.test(inv.name);});
+  if(tieneArco&&!notesVal.includes(NOTE_ARCO)){notesVal=notesVal?notesVal+'\n'+NOTE_ARCO:NOTE_ARCO;}
+  const data={clientId,event,start,end,validUntil:document.getElementById('qt-valid').value,disc:parseFloat(document.getElementById('qt-disc').value)||0,notes:notesVal,items};
   if(editId){const q=db.quotes.find(x=>x.id===editId);if(q)Object.assign(q,data);}
   else{
     if(!db.nextQuoteNum)db.nextQuoteNum=1;
@@ -1081,7 +1085,21 @@ function buildQtDocHTML(q, isContrato=false){
     <div style="padding:8px 14px;background:#f5f5f5;font-size:11px;color:#555;border-top:1px solid #e5e5e5">Concepto: <strong>${folio} — ${q.event}</strong> &nbsp;·&nbsp; Comprobante a <strong>contacto@artaxos.com</strong> o WhatsApp <strong>55 31 96 90 83</strong></div>
   </div>
 
-  ${q.notes?`<div style="margin-top:16px;padding:10px 14px;background:#f0f7ff;border-left:4px solid #1a4080;border-radius:4px;font-size:11px;color:#1a4080"><strong>Notas:</strong> ${q.notes}</div>`:''}
+  ${q.notes?`<div style="margin-top:16px;padding:10px 14px;background:#f0f7ff;border-left:4px solid #1a4080;border-radius:4px;font-size:11px;color:#1a4080"><strong>Notas:</strong>${q.notes.split('\n').filter(l=>l.trim()).map(l=>`<p style="margin:6px 0 0 0">• ${l.trim()}</p>`).join('')}</div>`:''}
+
+  <!-- CONDICIONES GENERALES -->
+  <div style="margin-top:20px;border:1px solid #e5e5e5;border-radius:8px;overflow:hidden">
+    <div style="background:#131315;padding:8px 14px;font-family:'Archivo',sans-serif;font-weight:700;color:#fff;font-size:12px">CONDICIONES GENERALES</div>
+    <div style="padding:12px 14px;font-size:11px;color:#333;line-height:1.6">
+      <p style="margin:0 0 6px 0">• La presente cotización tiene una vigencia de 15 días naturales a partir de su fecha de emisión.</p>
+      <p style="margin:0 0 6px 0">• Para confirmar el servicio se requiere un anticipo del 50% del total. La liquidación deberá realizarse el día del evento.</p>
+      <p style="margin:0 0 6px 0">• El equipo se entregará y retirará en planta baja, dentro de la Ciudad de México, en días hábiles (lunes a sábado de 08:00 a 18:00 hrs.).</p>
+      <p style="margin:0 0 6px 0">• En caso de cancelación se aplicará una penalización del 10% sobre el total cotizado.</p>
+      <p style="margin:0 0 6px 0">• El equipo queda bajo responsabilidad del arrendatario desde el momento de su entrega. Daños o pérdidas serán cobrados a precio de mercado.</p>
+      <p style="margin:0 0 6px 0">• Los precios incluyen IVA (16%). No incluyen instalación en alturas, traslados fuera de CDMX ni servicios adicionales no especificados.</p>
+      <p style="margin:0">• La renta se factura por día calendario. La hora de instalación y recolección no modifica la contabilización; cualquier periodo que abarque parcialmente un día adicional se considerará como un día completo de renta.</p>
+    </div>
+  </div>
 
   <!-- WATERMARK -->
   <div style="position:fixed;top:50%;left:50%;transform:translate(-50%,-50%) rotate(-35deg);font-family:'Archivo',sans-serif;font-size:80px;font-weight:800;color:rgba(255,1,91,0.04);pointer-events:none;z-index:0;white-space:nowrap">ARTAXOS</div>
@@ -1191,7 +1209,7 @@ function generarContrato(quoteId){
   <p class="cl">SÉPTIMA.- DATOS PERSONALES</p><p>Conforme a la LFPDPPP, los datos se tratarán exclusivamente para los fines de esta relación contractual.</p>
   <p class="cl">OCTAVA.- JURISDICCIÓN</p><p>Las partes se someten al Código Civil para la Ciudad de México y la jurisdicción de sus tribunales competentes.</p>
   <p style="margin-top:14px">Leído el presente y enteradas las partes de su contenido, lo firman en la Ciudad de México el día indicado.</p>
-  ${q.notes?`<div style="margin-top:10px;padding:8px 12px;background:#f0f7ff;border-left:3px solid #1a4080;border-radius:4px;font-size:11px;color:#1a4080"><strong>Notas adicionales:</strong> ${q.notes}</div>`:''}
+  ${q.notes?`<div style="margin-top:10px;padding:8px 12px;background:#f0f7ff;border-left:3px solid #1a4080;border-radius:4px;font-size:11px;color:#1a4080"><strong>Notas adicionales:</strong>${q.notes.split('\n').filter(l=>l.trim()).map(l=>`<p style="margin:6px 0 0 0">• ${l.trim()}</p>`).join('')}</div>`:''}
   <div class="fr">
     <div class="fb"><div style="margin-bottom:4px;font-size:11px;color:#555">Atentamente</div>${firmaHtml}<div class="fl"><strong>Guillermo Castillo Villela</strong><br><span style="color:#666;font-size:11px">Representante Legal — EL ARRENDADOR</span></div></div>
     <div class="fb"><div style="height:58px"></div><div class="fl"><strong>${c?.name||'_______________________'}</strong><br><span style="color:#666;font-size:11px">${c?.company||'EL ARRENDATARIO'}</span></div></div>
