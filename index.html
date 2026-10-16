@@ -1073,19 +1073,24 @@ function buildQtDocHTML(q, isContrato=false){
       ${disc>0?`<tr style="background:#fff8e1"><td colspan="4" style="padding:7px 10px;text-align:right;color:#a32d2d">Descuento (${disc}%):</td><td style="padding:7px 10px;text-align:right;color:#a32d2d">-$${fmtD(sub*(disc/100))}</td></tr>`:''}
       <tr style="background:#f5f5f5"><td colspan="4" style="padding:7px 10px;text-align:right">IVA (16%):</td><td style="padding:7px 10px;text-align:right">$${fmtD(iva)}</td></tr>
       <tr style="background:#131315"><td colspan="4" style="padding:10px;text-align:right;color:#fff;font-family:'Archivo',sans-serif;font-weight:800">TOTAL:</td><td style="padding:10px;text-align:right;color:#FF015B;font-family:'Archivo',sans-serif;font-size:16px;font-weight:800">$${fmtD(total)}</td></tr>
-      <tr style="background:#FFF0F5"><td colspan="5" style="padding:8px 10px;font-size:11px;color:#D9004C"><strong>Anticipo 50%:</strong> $${fmtD(anticipo)} &nbsp;|&nbsp; <strong>Liquidación:</strong> $${fmtD(anticipo)} el día del evento</td></tr>
     </tfoot>
   </table>
 
-  <!-- DATOS BANCARIOS -->
-  <div style="margin-top:20px;border:1px solid #e5e5e5;border-radius:8px;overflow:hidden">
-    <div style="background:#131315;padding:8px 14px;font-family:'Archivo',sans-serif;font-weight:700;color:#fff;font-size:12px">DATOS PARA TRANSFERENCIA</div>
-    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:0">
-      <div style="padding:10px 14px;border-right:1px solid #e5e5e5"><div style="font-size:10px;color:#9a9a97;margin-bottom:2px">RAZÓN SOCIAL</div><div style="font-weight:700;font-size:12px">Artaxos Comercializadora S.A.S. de C.V.</div></div>
-      <div style="padding:10px 14px;border-right:1px solid #e5e5e5"><div style="font-size:10px;color:#9a9a97;margin-bottom:2px">BANCO / CUENTA</div><div style="font-weight:700">Banco Santander</div><div style="font-size:12px">65-51105499-1</div></div>
-      <div style="padding:10px 14px"><div style="font-size:10px;color:#9a9a97;margin-bottom:2px">CLABE</div><div style="font-weight:700;letter-spacing:.5px">014744655110549912</div></div>
+  <!-- ANTICIPO + DATOS BANCARIOS -->
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:0;border:1px solid #e5e5e5;border-radius:0 0 8px 8px;border-top:none;overflow:hidden;margin-top:0">
+    <div style="background:#131315;padding:8px 14px;font-family:'Archivo',sans-serif;font-weight:700;color:#fff;font-size:12px;grid-column:1">DATOS PARA TRANSFERENCIA</div>
+    <div style="background:#FFF0F5;padding:8px 14px;font-size:11px;color:#D9004C;font-weight:700;grid-column:2;display:flex;align-items:center">FORMA DE PAGO</div>
+    <div style="padding:10px 14px;border-right:1px solid #e5e5e5;border-top:1px solid #e5e5e5;font-size:11px;line-height:1.8">
+      <div><span style="color:#9a9a97;font-size:10px">RAZÓN SOCIAL</span><br><strong>Artaxos Comercializadora S.A.S. de C.V.</strong></div>
+      <div style="margin-top:6px"><span style="color:#9a9a97;font-size:10px">BANCO / CUENTA</span><br><strong>Banco Santander &nbsp; 65-51105499-1</strong></div>
+      <div style="margin-top:6px"><span style="color:#9a9a97;font-size:10px">CLABE</span><br><strong style="letter-spacing:.5px">014744655110549912</strong></div>
+      <div style="margin-top:8px;font-size:10px;color:#555">Concepto: <strong>${folio} — ${q.event}</strong><br>Comprobante a <strong>contacto@artaxos.com</strong> o WhatsApp <strong>55 31 96 90 83</strong></div>
     </div>
-    <div style="padding:8px 14px;background:#f5f5f5;font-size:11px;color:#555;border-top:1px solid #e5e5e5">Concepto: <strong>${folio} — ${q.event}</strong> &nbsp;·&nbsp; Comprobante a <strong>contacto@artaxos.com</strong> o WhatsApp <strong>55 31 96 90 83</strong></div>
+    <div style="padding:10px 14px;background:#FFF0F5;border-top:1px solid #ffd6e7;font-size:12px;color:#D9004C;line-height:2">
+      <div><strong>Anticipo 50%:</strong> $${fmtD(anticipo)}</div>
+      <div><strong>Liquidación:</strong> $${fmtD(anticipo)}</div>
+      <div style="font-size:10px;color:#888;margin-top:4px">Liquidación el día del evento</div>
+    </div>
   </div>
 
   ${q.notes?`<div style="margin-top:16px;padding:10px 14px;background:#f0f7ff;border-left:4px solid #1a4080;border-radius:4px;font-size:11px;color:#1a4080"><strong>Notas:</strong>${q.notes.split('\n').filter(l=>l.trim()).map(l=>`<p style="margin:6px 0 0 0">• ${l.trim()}</p>`).join('')}</div>`:''}
