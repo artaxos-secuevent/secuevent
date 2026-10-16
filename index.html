@@ -1220,10 +1220,11 @@ function printQuote(){
 
 <script>
 // ── CONTRATO ──────────────────────────────────────────────────────────────────
-function generarContrato(quoteId){
+async function generarContrato(quoteId){
   const q=db.quotes.find(x=>x.id===quoteId);if(!q){alert('Cotización no encontrada.');return;}
   const ev=q.eventId?db.events.find(x=>x.id===q.eventId):null;
   const{c,firmaHtml,sub,iva,total,anticipo,rows}=buildQtHTML(q);
+  const logoProcessed=await getLogoProcessed();
   const folio=q.folio?q.folio.replace('COT','CONT'):'CONT-'+Date.now();
   q.contratoFolio=folio;saveDB();
 
@@ -1251,10 +1252,11 @@ function generarContrato(quoteId){
   <div style="background:#131315;padding:16px 20px;margin-bottom:0">
     <div style="display:flex;justify-content:space-between;align-items:flex-start">
       <div style="display:flex;align-items:center;gap:12px">
-        ${AX_ISOTIPO_SVG}
-        <div>
-          <div style="font-family:'Archivo',sans-serif;font-size:20px;font-weight:800;color:#fff;letter-spacing:1px">ARTAXOS</div>
-          <div style="font-size:10px;color:#B4B4BC">Comercializadora S.A.S. de C.V.</div>
+        ${logoProcessed
+          ? `<img src="${logoProcessed}" style="height:48px;width:auto;display:block" alt="Artaxos">`
+          : `${AX_ISOTIPO_SVG}<div><div style="font-family:'Archivo',sans-serif;font-size:20px;font-weight:800;color:#fff;letter-spacing:1px">ARTAXOS</div><div style="font-size:10px;color:#B4B4BC">Comercializadora S.A.S. de C.V.</div></div>`}
+        <div style="margin-left:${logoProcessed?'8px':'0'}">
+          ${logoProcessed?`<div style="font-size:10px;color:#B4B4BC">Comercializadora S.A.S. de C.V.</div>`:''}
           <div style="font-size:10px;color:#B4B4BC">Lago Zirahuén 214, Col. Anáhuac I Secc., C.P. 11320, CDMX</div>
           <div style="font-size:10px;color:#B4B4BC">Tel. 55 31 96 90 83 · contacto@artaxos.com</div>
         </div>
