@@ -1053,109 +1053,139 @@ function buildQtDocHTML(q, isContrato=false, logoOverride=null){
   <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@700;800&family=Inter:wght@400;600&display=swap" rel="stylesheet">
   <style>
     *{box-sizing:border-box;margin:0;padding:0;-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important}
-    body{font-family:'Inter',sans-serif;padding:20px 28px;font-size:12px;color:#111}
-    h2{font-family:'Archivo',sans-serif;font-size:13px;margin:10px 0 4px;border-bottom:1px solid #eee;padding-bottom:3px}
+    body{font-family:'Inter',sans-serif;padding:0 28px 24px;font-size:12px;color:#222;background:#fff}
     table{width:100%;border-collapse:collapse}
     .np{text-align:center;margin-bottom:16px;padding:10px;background:#f5f5f5;border-radius:6px}
-    @media print{.np{display:none}@page{size:A4;margin:10mm 12mm}}
+    @media print{.np{display:none}@page{size:A4;margin:8mm 12mm}}
   </style></head><body>
   <div class="np">Ctrl+P → <strong>Guardar como PDF</strong>&nbsp;&nbsp;
-    <button onclick="window.print()" style="padding:6px 16px;background:#131315;color:#fff;border:none;border-radius:4px;cursor:pointer;font-family:'Inter',sans-serif">🖨️ Imprimir</button>
+    <button onclick="window.print()" style="padding:6px 16px;background:#FF015B;color:#fff;border:none;border-radius:4px;cursor:pointer;font-family:'Inter',sans-serif">🖨️ Imprimir</button>
   </div>
 
-  <!-- HEADER -->
-  <div style="background:#131315;padding:20px 24px;margin-bottom:0">
-    <div style="display:flex;justify-content:space-between;align-items:flex-start">
-      <div style="display:flex;align-items:center;gap:14px">
+  <!-- HEADER: franja negra compacta arriba, datos en blanco abajo -->
+  <div style="background:#131315;padding:16px 24px 14px">
+    <div style="display:flex;justify-content:space-between;align-items:center">
+      <div>
         ${logoFinal
-          ? `<img src="${logoFinal}" style="height:60px;width:auto;display:block" alt="Artaxos">`
-          : `${AX_ISOTIPO_SVG}<div><div style="font-family:'Archivo',sans-serif;font-size:22px;font-weight:800;color:#fff;letter-spacing:1px">ARTAXOS</div><div style="font-size:10px;color:#B4B4BC;margin-top:2px">Comercializadora S.A.S. de C.V.</div></div>`}
+          ? `<img src="${logoFinal}" style="height:48px;width:auto;display:block" alt="Artaxos">`
+          : `${AX_ISOTIPO_SVG}<div style="font-family:'Archivo',sans-serif;font-size:20px;font-weight:800;color:#fff;letter-spacing:1px">ARTAXOS</div>`}
       </div>
       <div style="text-align:right">
-        <div style="font-family:'Archivo',sans-serif;font-size:18px;font-weight:800;color:#fff">COTIZACIÓN</div>
-        <div style="font-size:12px;color:#FF015B;font-weight:700;margin-top:4px">${folio}</div>
-        <div style="font-size:11px;color:#B4B4BC;margin-top:2px">Fecha: ${fmtFecha(new Date().toISOString().slice(0,10))}</div>
-        ${q.validUntil?`<div style="font-size:11px;color:#B4B4BC">Válida hasta: ${fmtFecha(q.validUntil)}</div>`:''}
+        <div style="font-family:'Archivo',sans-serif;font-size:22px;font-weight:800;color:#fff;letter-spacing:2px">COTIZACIÓN</div>
+        <div style="font-size:13px;color:#FF015B;font-weight:700;margin-top:2px">${folio}</div>
       </div>
     </div>
   </div>
-  <div style="height:4px;background:#FF015B"></div>
+  <!-- Franja rosa delgada separadora -->
+  <div style="height:3px;background:linear-gradient(90deg,#FF015B,#D9004C)"></div>
 
-  <!-- INFO -->
-  <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:20px 0">
-    <div style="border:1px solid #e5e5e5;border-radius:8px;padding:14px">
-      <div style="font-size:10px;font-weight:700;color:#9a9a97;text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px">CLIENTE</div>
-      <div style="font-weight:700;font-size:14px">${c?.name||'—'}</div>
-      ${c?.company?`<div style="color:#555;font-size:12px">${c.company}</div>`:''}
-      ${c?.phone?`<div style="font-size:12px">Tel: ${c.phone}</div>`:''}
-      ${c?.email?`<div style="font-size:12px">${c.email}</div>`:''}
+  <!-- META INFO: fecha + cliente + evento en fila clara -->
+  <div style="display:grid;grid-template-columns:auto 1fr 1fr;gap:0;border-bottom:1px solid #ebebeb;padding:14px 24px;background:#fafafa;align-items:start">
+    <!-- Fechas -->
+    <div style="padding-right:24px;border-right:1px solid #ebebeb;min-width:130px">
+      <div style="font-size:9px;font-weight:700;color:#aaa;text-transform:uppercase;letter-spacing:.6px;margin-bottom:4px">Fecha</div>
+      <div style="font-size:12px;font-weight:600">${fmtFecha(new Date().toISOString().slice(0,10))}</div>
+      ${q.validUntil?`<div style="font-size:9px;color:#aaa;margin-top:6px;text-transform:uppercase;letter-spacing:.6px">Válida hasta</div><div style="font-size:12px;font-weight:600">${fmtFecha(q.validUntil)}</div>`:''}
     </div>
-    <div style="border:1px solid #e5e5e5;border-radius:8px;padding:14px">
-      <div style="font-size:10px;font-weight:700;color:#9a9a97;text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px">EVENTO</div>
-      <div style="font-weight:700;font-size:14px">${q.event}</div>
-      <div style="font-size:12px;color:#555">Inicio: ${fmtFecha(q.start)}</div>
-      <div style="font-size:12px;color:#555">Fin: ${fmtFecha(q.end)}</div>
+    <!-- Cliente -->
+    <div style="padding:0 24px;border-right:1px solid #ebebeb">
+      <div style="font-size:9px;font-weight:700;color:#aaa;text-transform:uppercase;letter-spacing:.6px;margin-bottom:4px">Cliente</div>
+      <div style="font-weight:700;font-size:13px;color:#131315">${c?.name||'—'}</div>
+      ${c?.company?`<div style="color:#666;font-size:11px;margin-top:1px">${c.company}</div>`:''}
+      ${c?.phone?`<div style="color:#888;font-size:11px">Tel: ${c.phone}</div>`:''}
+      ${c?.email?`<div style="color:#888;font-size:11px">${c.email}</div>`:''}
+    </div>
+    <!-- Evento -->
+    <div style="padding-left:24px">
+      <div style="font-size:9px;font-weight:700;color:#aaa;text-transform:uppercase;letter-spacing:.6px;margin-bottom:4px">Evento</div>
+      <div style="font-weight:700;font-size:13px;color:#131315">${q.event}</div>
+      <div style="color:#666;font-size:11px;margin-top:1px">${fmtFecha(q.start)}${q.start!==q.end?' — '+fmtFecha(q.end):''}</div>
     </div>
   </div>
 
   <!-- TABLA EQUIPOS -->
-  <table>
-    <thead><tr style="background:#131315">
-      <th style="padding:9px 10px;color:#fff;font-family:'Archivo',sans-serif;text-align:left">Equipo</th>
-      <th style="padding:9px 10px;color:#fff;text-align:center">Cant.</th>
-      <th style="padding:9px 10px;color:#fff;text-align:center">Días</th>
-      <th style="padding:9px 10px;color:#fff;text-align:right">$/día</th>
-      <th style="padding:9px 10px;color:#fff;text-align:right">Subtotal</th>
+  <table style="margin-top:0">
+    <thead><tr style="border-bottom:2px solid #FF015B">
+      <th style="padding:9px 10px 8px;color:#131315;font-family:'Archivo',sans-serif;font-size:11px;text-align:left;text-transform:uppercase;letter-spacing:.5px">Equipo / Servicio</th>
+      <th style="padding:9px 10px 8px;color:#131315;font-family:'Archivo',sans-serif;font-size:11px;text-align:center;text-transform:uppercase;letter-spacing:.5px">Cant.</th>
+      <th style="padding:9px 10px 8px;color:#131315;font-family:'Archivo',sans-serif;font-size:11px;text-align:center;text-transform:uppercase;letter-spacing:.5px">Días</th>
+      <th style="padding:9px 10px 8px;color:#131315;font-family:'Archivo',sans-serif;font-size:11px;text-align:right;text-transform:uppercase;letter-spacing:.5px">$/día</th>
+      <th style="padding:9px 10px 8px;color:#131315;font-family:'Archivo',sans-serif;font-size:11px;text-align:right;text-transform:uppercase;letter-spacing:.5px">Subtotal</th>
     </tr></thead>
     <tbody>${rows}</tbody>
     <tfoot>
-      <tr style="background:#f5f5f5"><td colspan="4" style="padding:7px 10px;text-align:right;border-top:1px solid #e5e5e5">Subtotal:</td><td style="padding:7px 10px;text-align:right;border-top:1px solid #e5e5e5">$${fmtD(sub)}</td></tr>
-      ${disc>0?`<tr style="background:#fff8e1"><td colspan="4" style="padding:7px 10px;text-align:right;color:#a32d2d">Descuento (${disc}%):</td><td style="padding:7px 10px;text-align:right;color:#a32d2d">-$${fmtD(sub*(disc/100))}</td></tr>`:''}
-      <tr style="background:#f5f5f5"><td colspan="4" style="padding:7px 10px;text-align:right">IVA (16%):</td><td style="padding:7px 10px;text-align:right">$${fmtD(iva)}</td></tr>
-      <tr style="background:#131315"><td colspan="4" style="padding:10px;text-align:right;color:#fff;font-family:'Archivo',sans-serif;font-weight:800">TOTAL:</td><td style="padding:10px;text-align:right;color:#FF015B;font-family:'Archivo',sans-serif;font-size:16px;font-weight:800">$${fmtD(total)}</td></tr>
+      <tr><td colspan="4" style="padding:7px 10px;text-align:right;border-top:1px solid #ebebeb;color:#666">Subtotal:</td><td style="padding:7px 10px;text-align:right;border-top:1px solid #ebebeb">$${fmtD(sub)}</td></tr>
+      ${disc>0?`<tr><td colspan="4" style="padding:5px 10px;text-align:right;color:#c0392b">Descuento (${disc}%):</td><td style="padding:5px 10px;text-align:right;color:#c0392b">-$${fmtD(sub*(disc/100))}</td></tr>`:''}
+      <tr><td colspan="4" style="padding:7px 10px;text-align:right;color:#666;border-top:1px solid #ebebeb">IVA (16%):</td><td style="padding:7px 10px;text-align:right;border-top:1px solid #ebebeb">$${fmtD(iva)}</td></tr>
+      <tr style="border-top:2px solid #FF015B">
+        <td colspan="4" style="padding:10px 10px 10px;text-align:right;font-family:'Archivo',sans-serif;font-weight:800;font-size:13px;color:#131315">TOTAL:</td>
+        <td style="padding:10px 10px 10px;text-align:right;font-family:'Archivo',sans-serif;font-size:18px;font-weight:800;color:#FF015B">$${fmtD(total)}</td>
+      </tr>
     </tfoot>
   </table>
 
   <!-- ANTICIPO + DATOS BANCARIOS -->
-  <div style="display:grid;grid-template-columns:1fr 1fr;gap:0;border:1px solid #e5e5e5;border-radius:0 0 8px 8px;border-top:none;overflow:hidden;margin-top:0">
-    <div style="background:#131315;padding:8px 14px;font-family:'Archivo',sans-serif;font-weight:700;color:#fff;font-size:12px;grid-column:1">DATOS PARA TRANSFERENCIA</div>
-    <div style="background:#FFF0F5;padding:8px 14px;font-size:11px;color:#D9004C;font-weight:700;grid-column:2;display:flex;align-items:center">FORMA DE PAGO</div>
-    <div style="padding:8px 14px;border-right:1px solid #e5e5e5;border-top:1px solid #e5e5e5;font-size:11px;line-height:1.4">
-      <div><span style="color:#9a9a97;font-size:9px">RAZÓN SOCIAL</span><br><strong>Artaxos Comercializadora S.A.S. de C.V.</strong></div>
-      <div style="margin-top:4px"><span style="color:#9a9a97;font-size:9px">BANCO / CUENTA</span><br><strong>Banco Santander &nbsp; 65-51105499-1</strong></div>
-      <div style="margin-top:4px"><span style="color:#9a9a97;font-size:9px">CLABE</span><br><strong style="letter-spacing:.5px">014744655110549912</strong></div>
-      <div style="margin-top:5px;font-size:10px;color:#555">Concepto: <strong>${folio} — ${q.event}</strong><br>Comprobante a <strong>contacto@artaxos.com</strong> o WhatsApp <strong>55 31 96 90 83</strong></div>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:16px">
+    <!-- Datos bancarios -->
+    <div style="border:1px solid #ebebeb;border-radius:8px;overflow:hidden">
+      <div style="padding:7px 14px;border-bottom:1px solid #ebebeb;display:flex;align-items:center;gap:8px">
+        <div style="width:3px;height:14px;background:#FF015B;border-radius:2px"></div>
+        <span style="font-family:'Archivo',sans-serif;font-weight:700;font-size:11px;color:#131315;text-transform:uppercase;letter-spacing:.4px">Datos para transferencia</span>
+      </div>
+      <div style="padding:10px 14px;font-size:11px;line-height:1.6;color:#333">
+        <div><span style="color:#aaa;font-size:9px;text-transform:uppercase;letter-spacing:.4px">Razón social</span><br><strong>Artaxos Comercializadora S.A.S. de C.V.</strong></div>
+        <div style="margin-top:5px"><span style="color:#aaa;font-size:9px;text-transform:uppercase;letter-spacing:.4px">Banco / Cuenta</span><br><strong>Santander &nbsp;65-51105499-1</strong></div>
+        <div style="margin-top:5px"><span style="color:#aaa;font-size:9px;text-transform:uppercase;letter-spacing:.4px">CLABE</span><br><strong style="letter-spacing:.5px">014744655110549912</strong></div>
+        <div style="margin-top:6px;font-size:10px;color:#666">Concepto: <strong>${folio} — ${q.event}</strong><br>Enviar comprobante a <strong>contacto@artaxos.com</strong></div>
+      </div>
     </div>
-    <div style="padding:8px 14px;background:#FFF0F5;border-top:1px solid #ffd6e7;font-size:12px;color:#D9004C;line-height:1.6">
-      <div><strong>Anticipo 50%:</strong> $${fmtD(anticipo)}</div>
-      <div><strong>Liquidación:</strong> $${fmtD(anticipo)}</div>
-      <div style="font-size:10px;color:#888;margin-top:2px">Liquidación el día del evento</div>
+    <!-- Forma de pago -->
+    <div style="border:1px solid #ebebeb;border-radius:8px;overflow:hidden">
+      <div style="padding:7px 14px;border-bottom:1px solid #ebebeb;display:flex;align-items:center;gap:8px">
+        <div style="width:3px;height:14px;background:#FF015B;border-radius:2px"></div>
+        <span style="font-family:'Archivo',sans-serif;font-weight:700;font-size:11px;color:#131315;text-transform:uppercase;letter-spacing:.4px">Forma de pago</span>
+      </div>
+      <div style="padding:10px 14px;font-size:12px;color:#333;line-height:1.8">
+        <div style="display:flex;justify-content:space-between;align-items:baseline">
+          <span style="color:#666">Anticipo 50%</span>
+          <strong style="color:#131315">$${fmtD(anticipo)}</strong>
+        </div>
+        <div style="display:flex;justify-content:space-between;align-items:baseline">
+          <span style="color:#666">Liquidación 50%</span>
+          <strong style="color:#131315">$${fmtD(anticipo)}</strong>
+        </div>
+        <div style="margin-top:6px;font-size:10px;color:#aaa">La liquidación se realiza el día del evento</div>
+        <div style="margin-top:8px;font-size:10px;color:#666">WhatsApp: <strong>55 31 96 90 83</strong></div>
+      </div>
     </div>
   </div>
 
-  ${q.notes?`<div style="margin-top:16px;padding:10px 14px;background:#f0f7ff;border-left:4px solid #1a4080;border-radius:4px;font-size:11px;color:#1a4080"><strong>Notas:</strong>${q.notes.split('\n').filter(l=>l.trim()).map(l=>`<p style="margin:6px 0 0 0">• ${l.trim()}</p>`).join('')}</div>`:''}
+  ${q.notes?`<div style="margin-top:14px;padding:10px 14px;background:#f8f8f8;border-left:3px solid #FF015B;border-radius:0 6px 6px 0;font-size:11px;color:#333"><strong style="color:#131315">Notas:</strong>${q.notes.split('\n').filter(l=>l.trim()).map(l=>`<p style="margin:5px 0 0 0;color:#555">• ${l.trim()}</p>`).join('')}</div>`:''}
 
   <!-- CONDICIONES GENERALES -->
-  <div style="margin-top:20px;border:1px solid #e5e5e5;border-radius:8px;overflow:hidden">
-    <div style="background:#131315;padding:8px 14px;font-family:'Archivo',sans-serif;font-weight:700;color:#fff;font-size:12px">CONDICIONES GENERALES</div>
-    <div style="padding:12px 14px;font-size:11px;color:#333;line-height:1.6">
-      <p style="margin:0 0 6px 0">• La presente cotización tiene una vigencia de 15 días naturales a partir de su fecha de emisión.</p>
-      <p style="margin:0 0 6px 0">• Para confirmar el servicio se requiere un anticipo del 50% del total. La liquidación deberá realizarse el día del evento.</p>
-      <p style="margin:0 0 6px 0">• El equipo se entregará y retirará en planta baja, dentro de la Ciudad de México, en días hábiles (lunes a sábado de 08:00 a 18:00 hrs.).</p>
-      <p style="margin:0 0 6px 0">• En caso de cancelación se aplicará una penalización del 10% sobre el total cotizado.</p>
-      <p style="margin:0 0 6px 0">• El equipo queda bajo responsabilidad del arrendatario desde el momento de su entrega. Daños o pérdidas serán cobrados a precio de mercado.</p>
-      <p style="margin:0 0 6px 0">• Los precios incluyen IVA (16%). No incluyen instalación en alturas, traslados fuera de CDMX ni servicios adicionales no especificados.</p>
-      <p style="margin:0">• La renta se factura por día calendario. La hora de instalación y recolección no modifica la contabilización; cualquier periodo que abarque parcialmente un día adicional se considerará como un día completo de renta.</p>
+  <div style="margin-top:14px;border:1px solid #ebebeb;border-radius:8px;overflow:hidden">
+    <div style="padding:7px 14px;border-bottom:1px solid #ebebeb;display:flex;align-items:center;gap:8px">
+      <div style="width:3px;height:14px;background:#FF015B;border-radius:2px"></div>
+      <span style="font-family:'Archivo',sans-serif;font-weight:700;font-size:11px;color:#131315;text-transform:uppercase;letter-spacing:.4px">Condiciones Generales</span>
+    </div>
+    <div style="padding:10px 14px;font-size:10.5px;color:#555;line-height:1.65;columns:2;column-gap:20px">
+      <p style="margin:0 0 5px;break-inside:avoid">• La presente cotización tiene una vigencia de 15 días naturales a partir de su fecha de emisión.</p>
+      <p style="margin:0 0 5px;break-inside:avoid">• Para confirmar el servicio se requiere un anticipo del 50% del total. La liquidación deberá realizarse el día del evento.</p>
+      <p style="margin:0 0 5px;break-inside:avoid">• El equipo se entregará y retirará en planta baja, dentro de la Ciudad de México, en días hábiles (lunes a sábado de 08:00 a 18:00 hrs.).</p>
+      <p style="margin:0 0 5px;break-inside:avoid">• En caso de cancelación se aplicará una penalización del 10% sobre el total cotizado.</p>
+      <p style="margin:0 0 5px;break-inside:avoid">• El equipo queda bajo responsabilidad del arrendatario desde el momento de su entrega. Daños o pérdidas serán cobrados a precio de mercado.</p>
+      <p style="margin:0 0 5px;break-inside:avoid">• Los precios incluyen IVA (16%). No incluyen instalación en alturas, traslados fuera de CDMX ni servicios adicionales no especificados.</p>
+      <p style="margin:0;break-inside:avoid">• La renta se factura por día calendario. Cualquier periodo que abarque parcialmente un día adicional se considerará como un día completo.</p>
     </div>
   </div>
 
   <!-- WATERMARK -->
-  <div style="position:fixed;top:50%;left:50%;transform:translate(-50%,-50%) rotate(-35deg);font-family:'Archivo',sans-serif;font-size:80px;font-weight:800;color:rgba(255,1,91,0.04);pointer-events:none;z-index:0;white-space:nowrap">ARTAXOS</div>
+  <div style="position:fixed;top:50%;left:50%;transform:translate(-50%,-50%) rotate(-35deg);font-family:'Archivo',sans-serif;font-size:80px;font-weight:800;color:rgba(255,1,91,0.03);pointer-events:none;z-index:0;white-space:nowrap">ARTAXOS</div>
 
   <!-- FOOTER -->
-  <div style="margin-top:24px;padding-top:12px;border-top:2px solid #FF015B;display:flex;justify-content:space-between;font-size:10px;color:#9a9a97">
-    <div>Lago Zirahuén 214, Col. Anáhuac I Secc., Alcaldía Miguel Hidalgo, C.P. 11320, CDMX</div>
-    <div>contacto@artaxos.com · 55 31 96 90 83</div>
+  <div style="margin-top:20px;padding-top:10px;border-top:1px solid #ebebeb;display:flex;justify-content:space-between;align-items:center;font-size:10px;color:#bbb">
+    <div>Lago Zirahuén 214, Col. Anáhuac I Secc., Miguel Hidalgo, C.P. 11320, CDMX</div>
+    <div style="color:#FF015B;font-weight:600">contacto@artaxos.com · 55 31 96 90 83</div>
   </div>
   </body></html>`;
 }
